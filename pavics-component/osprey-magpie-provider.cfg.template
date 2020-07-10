@@ -1,0 +1,8 @@
+providers:
+  osprey:
+    url: http://${PAVICS_FQDN}:8100/wps
+    title: osprey
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps

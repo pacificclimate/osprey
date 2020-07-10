@@ -1,0 +1,15 @@
+permissions:
+  - service: osprey
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: osprey
+    permission: describeprocess
+    group: anonymous
+    action: create
+
+  - service: osprey
+    permission: execute
+    group: anonymous
+    action: create
