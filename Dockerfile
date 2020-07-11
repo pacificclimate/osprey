@@ -5,9 +5,12 @@ LABEL Description="osprey WPS" Vendor="pacificclimate" Version="0.1.0"
 
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
+RUN apt-get update && apt-get install -y \
+    build-essential
+
 WORKDIR /code
 
-COPY requirements.txt requirements_dev.txt .
+COPY requirements.txt requirements_dev.txt ./
 
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt -r requirements_dev.txt && \
