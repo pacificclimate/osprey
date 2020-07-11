@@ -5,9 +5,13 @@ osprey
    :target: http://osprey.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://travis-ci.org/nikola-rados/osprey.svg?branch=master
-   :target: https://travis-ci.org/nikola-rados/osprey
-   :alt: Travis Build
+.. image:: https://github.com/pacificclimate/osprey/workflows/Docker%20Publishing/badge.svg
+   :target: https://github.com/pacificclimate/osprey
+   :alt: Docker Publishing
+
+.. image:: https://github.com/pacificclimate/osprey/workflows/Python%20CI/badge.svg
+   :target: https://github.com/pacificclimate/osprey
+   :alt: Python CI
 
 .. image:: https://img.shields.io/github/license/nikola-rados/osprey.svg
     :target: https://github.com/nikola-rados/osprey/blob/master/LICENSE.txt
