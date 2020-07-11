@@ -22,10 +22,10 @@ osprey
     :alt: Join the chat at https://gitter.im/bird-house/birdhouse
 
 
-osprey (the bird)
-  *osprey is a bird ...*
+Osprey
+  *The osprey or more specifically the western osprey — also called sea hawk (go hawks!), river hawk, and fish hawk — is a diurnal, fish-eating bird of prey with a cosmopolitan range. It is a large raptor, reaching more than 60 cm in length and 180 cm across the wings.*
 
-A Web Processing Service for Climate Data Analysis.
+A Web Processing Service for RVIC streamflow routing model.
 
 Documentation
 -------------
