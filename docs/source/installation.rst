@@ -24,18 +24,24 @@ Check out code from the osprey GitHub repo and start the installation:
    $ git clone https://github.com/nikola-rados/osprey.git
    $ cd osprey
 
-Create Conda environment named `osprey`:
+Create Python environment named `venv`:
 
 .. code-block:: console
 
-   $ conda env create -f environment.yml
-   $ source activate osprey
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+
+Install requirements:
+
+.. code-block:: console
+
+   (venv)$ pip install -r requirements.txt
 
 Install osprey app:
 
 .. code-block:: console
 
-  $ pip install -e .
+  (venv)$ pip install -e .
   OR
   make install
 
@@ -43,7 +49,7 @@ For development you can use this command:
 
 .. code-block:: console
 
-  $ pip install -e .[dev]
+  (venv)$ pip install -e .[dev]
   OR
   $ make develop
 
@@ -54,12 +60,12 @@ After successful installation you can start the service using the ``osprey`` com
 
 .. code-block:: console
 
-   $ osprey --help # show help
-   $ osprey start  # start service with default configuration
+   (venv)$ osprey --help # show help
+   (venv)$ osprey start  # start service with default configuration
 
    OR
 
-   $ osprey start --daemon # start service as daemon
+   (venv)$ osprey start --daemon # start service as daemon
    loading configuration
    forked process id: 42
 
@@ -100,9 +106,12 @@ Run osprey as Docker container
 
 You can also run osprey as a Docker container.
 
-.. warning::
+.. code-block:: console
 
-  TODO: Describe Docker container support.
+  $ docker-compose build
+  $ docker-compose up
+
+osprey will be available on port 8100.
 
 Use Ansible to deploy osprey on your System
 -------------------------------------------
