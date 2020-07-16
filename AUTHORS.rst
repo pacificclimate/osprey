@@ -10,4 +10,5 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Sangwon Lim <sangwonl@uvic.ca>
+* Eric Yvorchuk <eyvorchuk@uvic.ca>
