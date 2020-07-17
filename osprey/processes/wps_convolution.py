@@ -1,7 +1,7 @@
 from pywps import Process, LiteralInput, ComplexOutput, FORMATS
 from pywps.app.Common import Metadata
 
-from rvic.convolution import convolution
+from rvic.convolution import convolution_init, convolution_run, convolution_final
 from rvic.core.config import read_config
 
 import os
@@ -48,7 +48,13 @@ class Convolution(Process):
         if not os.path.isfile(config):
             raise IOError("config_file: {0} does not " "exist".format(config))
 
-        convolution(config)
+        hist_tapes, data_model, rout_var, time_handle, directories = convolution_init(
+            config
+        )
+        time_handle, hist_tapes = convolution_run(
+            hist_tapes, data_model, rout_var, time_handle, directories
+        )
+        convolution_final(time_handle, hist_tapes)
 
         response.outputs["output"].file = self.get_outfile(
             "sample.rvic.h0a.2013-01-01.nc"
