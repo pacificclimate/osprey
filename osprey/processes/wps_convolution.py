@@ -1,7 +1,7 @@
 from pywps import Process, LiteralInput, ComplexOutput, FORMATS
 from pywps.app.Common import Metadata
 
-from rvic.convolution import convolution_init, convolution_run, convolution_final
+from rvic.convolution import convolution
 from rvic.core.config import read_config
 
 from datetime import datetime, timedelta
@@ -53,13 +53,7 @@ class Convolution(Process):
         else:
             config_dict = json.loads(config)
 
-        hist_tapes, data_model, rout_var, time_handle, directories = convolution_init(
-            config_dict
-        )
-        time_handle, hist_tapes = convolution_run(
-            hist_tapes, data_model, rout_var, time_handle, directories
-        )
-        convolution_final(time_handle, hist_tapes)
+        convolution(config_dict)
 
         CASEID = config_dict["OPTIONS"]["CASEID"]
         STOP_DATE = config_dict["OPTIONS"]["STOP_DATE"]
@@ -67,7 +61,7 @@ class Convolution(Process):
             datetime.strptime(STOP_DATE, "%Y-%m-%d").date() + timedelta(days=1)
         )
 
-        directory = directories["hist"]
+        directory = os.path.join(config_dict["OPTIONS"]["CASEDIR"], "hist")
         filename = ".".join([CASEID, "rvic", "h0a", end_date, "nc"])
 
         response.outputs["output"].file = self.get_outfile(
