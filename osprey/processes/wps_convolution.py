@@ -1,6 +1,10 @@
-from pywps import Process, LiteralInput, LiteralOutput, UOM
+from pywps import Process, LiteralInput, ComplexOutput, FORMATS
 from pywps.app.Common import Metadata
 
+from rvic.convolution import convolution
+from rvic.core.config import read_config
+
+import os
 import logging
 
 LOGGER = logging.getLogger("PYWPS")
@@ -10,20 +14,19 @@ class Convolution(Process):
     def __init__(self):
         inputs = [
             LiteralInput(
-                "name",
-                "Your name",
-                abstract="Please enter your name.",
-                keywords=["name", "firstname"],
+                "config",
+                "Configuration",
+                abstract="Path to input configuration file or input dictionary",
                 data_type="string",
-            )
+            ),
         ]
         outputs = [
-            LiteralOutput(
+            ComplexOutput(
                 "output",
-                "Output response",
-                abstract="A friendly Hello from us.",
-                keywords=["output", "result", "response"],
-                data_type="string",
+                "Output",
+                as_reference=True,
+                abstract="Output Netcdf File",
+                supported_formats=[FORMATS.NETCDF],
             )
         ]
 
@@ -31,16 +34,24 @@ class Convolution(Process):
             self._handler,
             identifier="convolution",
             title="Flow Convolution",
-            abstract="Aggregates the flow contribution from all upstream grid cells at every timestep lagged according the Impuls Response Functions.",
+            abstract="Aggregates the flow contribution from all upstream grid cells"
+            "at every timestep lagged according the Impuls Response Functions.",
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
             status_supported=True,
         )
 
-    @staticmethod
-    def _handler(request, response):
-        LOGGER.info("say hello")
-        response.outputs["output"].data = "Hello " + request.inputs["name"][0].data
-        response.outputs["output"].uom = UOM("unity")
+    def _handler(self, request, response):
+        config = request.inputs["config"][0].data
+
+        if not os.path.isfile(config):
+            raise IOError("config_file: {0} does not " "exist".format(config))
+
+        convolution(config)
+
+        response.outputs["output"].file = self.get_outfile(
+            "sample.rvic.h0a.2013-01-01.nc"
+        )
+
         return response
