@@ -4,8 +4,11 @@ from pywps.app.Common import Metadata
 from rvic.convolution import convolution_init, convolution_run, convolution_final
 from rvic.core.config import read_config
 
+from datetime import datetime, timedelta
+
 import os
 import logging
+import json
 
 LOGGER = logging.getLogger("PYWPS")
 
@@ -45,19 +48,30 @@ class Convolution(Process):
     def _handler(self, request, response):
         config = request.inputs["config"][0].data
 
-        if not os.path.isfile(config):
-            raise IOError("config_file: {0} does not " "exist".format(config))
+        if os.path.isfile(config):
+            config_dict = read_config(config)
+        else:
+            config_dict = json.loads(config)
 
         hist_tapes, data_model, rout_var, time_handle, directories = convolution_init(
-            config
+            config_dict
         )
         time_handle, hist_tapes = convolution_run(
             hist_tapes, data_model, rout_var, time_handle, directories
         )
         convolution_final(time_handle, hist_tapes)
 
+        CASEID = config_dict["OPTIONS"]["CASEID"]
+        STOP_DATE = config_dict["OPTIONS"]["STOP_DATE"]
+        end_date = str(
+            datetime.strptime(STOP_DATE, "%Y-%m-%d").date() + timedelta(days=1)
+        )
+
+        directory = directories["hist"]
+        filename = ".".join([CASEID, "rvic", "h0a", end_date, "nc"])
+
         response.outputs["output"].file = self.get_outfile(
-            "sample.rvic.h0a.2013-01-01.nc"
+            os.path.join(directory, filename)
         )
 
         return response
