@@ -3,4 +3,3 @@ jinja2
 click
 psutil
 rvic
-json

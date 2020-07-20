@@ -48,12 +48,23 @@ class Convolution(Process):
     def _handler(self, request, response):
         config = request.inputs["config"][0].data
 
-        if os.path.isfile(config):
-            config_dict = read_config(config)
-        else:
-            config_dict = json.loads(config)
+        # *********************************************
+        # This step needs to be done in RVIC 1.1.1
+        # *********************************************
+        # if os.path.isfile(config):
+        #     config_dict = read_config(config)
+        # else:
+        #     config_dict = json.loads(config)
+        #
+        # convolution(config_dict)
+        # *********************************************
 
-        convolution(config_dict)
+        # *********************************************
+        # This step needs to be done in RVIC 1.1.0.post1
+        # *********************************************
+        config_dict = read_config(config)
+        convolution(config)
+        # *********************************************
 
         CASEID = config_dict["OPTIONS"]["CASEID"]
         STOP_DATE = config_dict["OPTIONS"]["STOP_DATE"]
