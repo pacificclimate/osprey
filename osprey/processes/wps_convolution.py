@@ -72,11 +72,9 @@ class Convolution(Process):
             datetime.strptime(STOP_DATE, "%Y-%m-%d").date() + timedelta(days=1)
         )
 
-        directory = os.path.join(config_dict["OPTIONS"]["CASEDIR"], "hist")
+        directory = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "hist")
         filename = ".".join([CASEID, "rvic", "h0a", end_date, "nc"])
 
-        response.outputs["output"].file = self.get_outfile(
-            os.path.join(directory, filename)
-        )
+        response.outputs["output"].file = os.path.join(directory, filename)
 
         return response
