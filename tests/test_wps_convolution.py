@@ -3,22 +3,8 @@ from pywps import Service
 from pywps.tests import client_for, assert_response_success
 from pkg_resources import resource_filename
 
-from .common import get_output
+from .common import run_wps_process
 from osprey.processes.wps_convolution import Convolution
-
-
-def run_wps_process(process, params):
-    client = client_for(Service(processes=[process]))
-    datainputs = params
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier=process.identifier,
-        datainputs=datainputs,
-    )
-
-    assert_response_success(resp)
 
 
 @mark.parametrize(
