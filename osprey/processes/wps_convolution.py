@@ -61,14 +61,14 @@ class Convolution(Process):
             config_dict = read_config(config)
             convolution(config)
 
-        CASEID = config_dict["OPTIONS"]["CASEID"]
-        STOP_DATE = config_dict["OPTIONS"]["STOP_DATE"]
+        case_id = config_dict["OPTIONS"]["CASEID"]
+        stop_date = config_dict["OPTIONS"]["STOP_DATE"]
         end_date = str(
-            datetime.strptime(STOP_DATE, "%Y-%m-%d").date() + timedelta(days=1)
+            datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1)
         )
 
         directory = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "hist")
-        filename = ".".join([CASEID, "rvic", "h0a", end_date, "nc"])
+        filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
 
         response.outputs["output"].file = os.path.join(directory, filename)
 
