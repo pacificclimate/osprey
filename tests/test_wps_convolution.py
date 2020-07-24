@@ -8,9 +8,8 @@ from osprey.processes.wps_convolution import Convolution
 
 
 @mark.parametrize(
-    ("config"),
-    [f"file:///{resource_filename(__name__, 'configs/convolve_opendap.cfg')}"],
+    ("config"), [f"{resource_filename(__name__, 'configs/convolve_opendap.cfg')}"],
 )
 def test_wps_convolution(config):
-    params = ("config=@xlink:href={0};").format(config)
+    params = ("config={0};").format(config)
     run_wps_process(Convolution(), params)
