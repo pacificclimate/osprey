@@ -8,11 +8,11 @@ from pywps.app.Common import Metadata
 # Tool imports
 from rvic.parameters import parameters
 from rvic.core.config import read_config
-from thunderbird.utils import (
+from wps_tools.utils import (
     collect_output_files,
     log_handler,
 )
-from thunderbird.wps_io import (
+from wps_tools.io import (
     log_level,
     nc_output,
 )
