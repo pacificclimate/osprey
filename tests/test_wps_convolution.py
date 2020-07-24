@@ -7,6 +7,8 @@ from .common import run_wps_process
 from osprey.processes.wps_convolution import Convolution
 
 
+@mark.slow
+@mark.online
 @mark.parametrize(
     ("config"), [f"{resource_filename(__name__, 'configs/convolve_opendap.cfg')}"],
 )
