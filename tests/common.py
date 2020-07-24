@@ -42,6 +42,7 @@ def get_output(doc):
 
     return output
 
+
 def run_wps_process(process, params):
     client = client_for(Service(processes=[process]))
     datainputs = params
