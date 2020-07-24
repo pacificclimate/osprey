@@ -3,6 +3,7 @@ from pywps.app.Common import Metadata
 
 from rvic.convolution import convolution
 from rvic.core.config import read_config
+from rvic.version import version
 
 from datetime import datetime, timedelta
 
@@ -48,23 +49,17 @@ class Convolution(Process):
     def _handler(self, request, response):
         config = request.inputs["config"][0].data
 
-        # *********************************************
-        # This step needs to be done in RVIC 1.1.1
-        # *********************************************
-        # if os.path.isfile(config):
-        #     config_dict = read_config(config)
-        # else:
-        #     config_dict = json.loads(config)
-        #
-        # convolution(config_dict)
-        # *********************************************
+        if version == "1.1.1":
+            if os.path.isfile(config):
+                config_dict = read_config(config)
+            else:
+                config_dict = json.loads(config)
 
-        # *********************************************
-        # This step needs to be done in RVIC 1.1.0.post1
-        # *********************************************
-        config_dict = read_config(config)
-        convolution(config)
-        # *********************************************
+            convolution(config_dict)
+
+        elif version == "1.1.0-1":
+            config_dict = read_config(config)
+            convolution(config)
 
         CASEID = config_dict["OPTIONS"]["CASEID"]
         STOP_DATE = config_dict["OPTIONS"]["STOP_DATE"]
