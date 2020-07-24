@@ -2,3 +2,4 @@ pywps>=4.2
 jinja2
 click
 psutil
+rvic==1.1.0post1
