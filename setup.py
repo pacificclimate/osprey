@@ -49,6 +49,7 @@ setup(
     license="GNU General Public License v3",
     keywords="wps pywps birdhouse osprey",
     packages=find_packages(),
+    package_data={"osprey": ["tests/cofigs/*.cfg"], "tests": ["configs/*.cfg"],},
     include_package_data=True,
     install_requires=reqs,
     extras_require={"dev": dev_reqs,},  # pip install ".[dev]"
