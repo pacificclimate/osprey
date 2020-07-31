@@ -1,5 +1,4 @@
 from pywps import Service
-
 from .common import client_for
 from osprey.processes import processes
 
@@ -11,5 +10,5 @@ def test_wps_caps():
         "/wps:Capabilities" "/wps:ProcessOfferings" "/wps:Process" "/ows:Identifier"
     )
     assert sorted(names.split()) == [
-        "hello",
+        "convolution",
     ]
