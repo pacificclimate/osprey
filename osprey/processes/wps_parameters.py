@@ -20,6 +20,7 @@ from wps_tools.io import (
 # Library imports
 import logging
 import os
+import json
 
 pywps_logger = logging.getLogger("PYWPS")
 
@@ -28,9 +29,7 @@ class Parameters(Process):
     def __init__(self):
         self.status_percentage_steps = {
             "start": 0,
-            "dry_run": 5,
             "process": 10,
-            "collect_files": 90,
             "build_output": 95,
             "complete": 100,
         }
@@ -82,10 +81,10 @@ class Parameters(Process):
         return (config_file, np)
 
     def get_outfile(self, config):
-        if isinstance(config, dict):
-            config_dict = config
-        else:
+        if os.path.isfile(config):
             config_dict = read_config(config)
+        else:
+            config_dict = json.loads(config)  # config is dictionary of inputs
         outdir = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "params")
         (param_file,) = collect_output_files("rvic", outdir)
         return os.path.join(outdir, param_file)
@@ -100,11 +99,6 @@ class Parameters(Process):
         log_handler(
             self, response, "Starting Process", process_step="start", level=loglevel
         )
-        if config[0] != "{":
-            if not os.path.isfile(config):
-                raise IOError("config_file: {0} does not " "exist".format(config))
-        else:  # configuration is dictionary of inputs
-            config = eval(config)
 
         log_handler(
             self,
