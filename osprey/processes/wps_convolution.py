@@ -1,5 +1,6 @@
 from pywps import Process, LiteralInput, ComplexOutput, FORMATS
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
 from rvic.core.config import read_config
@@ -29,6 +30,58 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
 
 class Convolution(Process):
     def __init__(self):
+        self.config_dict={
+            "OPTIONS":{
+                "LOG_LEVEL": "INFO",
+                "VERBOSE": True,
+                "CASE_DIR": None,
+                "CASEID": None,
+                "CASESTR": "historical",
+                "CALENDAR": "standard",
+                "RUN_TYPE": "drystart", # automatic run
+                "RUN_STARTDATE": None,
+                "STOP_OPTION": "date",
+                "STOP_N": -999,
+                "STOP_DATE": None,
+                "REST_OPTION": "date",
+                "REST_N": -999,
+                "REST_DATE": None,
+                "REST_NCFORM": "NETCDF4",
+            },
+            "HISTORY":{
+                "RVICHIST_NTAPES": 1,
+                "RVICHIST_MFILT": 100000,
+                "RVICHIST_NDENS": 1,
+                "RVICHIST_NHTFRQ": 1,
+                "RVICHIST_AVGFLAG": "A",
+                "RVICHIST_OUTTYPE": "array",
+                "RVICHIST_NCFORM": "NETCDF4",
+                "RVICHIST_UNITS": "m3/s",
+            },
+            "DOMAIN":{
+                "FILE_NAME": None,
+                "LONGITUDE_VAR": "lon", 
+                "LATITUDE_VAR": "lat",
+                "AREA_VAR": "area",
+                "LAND_MASK_VAR": "mask",
+                "FRACTION_VAR": "frac",
+            },
+            "INITIAL_STATE":{
+                "FILE_NAME": None
+            },
+            "PARAM_FILE":{
+                "FILE_NAME": None
+            },
+            "INPUT_FORCINGS":{
+                "DATL_PATH": None,
+                "DATL_FILE": None,
+                "TIME_VAR": "time",
+                "LATITUDE_VAR": "lat",
+                "DATL_LIQ_FLDS": "RUNOFF, BASEFLOW",
+                "START": None,
+                "END": None,
+            },
+        }
         self.status_percentage_steps = {
             "start": 0,
             "process": 10,
@@ -72,6 +125,32 @@ class Convolution(Process):
             status_supported=True,
         )
 
+    def config_dict_hander(self, config):
+        input_dict = json.loads(config)
+        try:
+            for upper_key in input_dict.keys():
+                for lower_key in input_dict[upper_key].keys():
+                    self.config_dict[upper_key][lower_key]=input_dict[upper_key][lower_key]
+
+            if self.config_dict["OPTIONS"]["CASE_DIR"] == None:
+                self.config_dict["OPTIONS"]["CASE_DIR"] = os.path.join(self.workdir, self.config_dict["OPTIONS"]["CASEID"])   
+            if self.config_dict["OPTIONS"]["REST_DATE"] == None:
+                self.config_dict["OPTIONS"]["REST_DATE"] = self.config_dict["OPTIONS"]["STOP_DATE"]
+
+        except KeyError as e:
+            raise ProcessError(f"Invalid config key provided")
+
+    def config_file_builder(self, config_dict):
+        cfg_filepath = os.path.join(self.workdir, "convolve_file.cfg")
+        with open(cfg_filepath, "w") as cfg_file:
+            for upper_key in self.config_dict.keys():
+                cfg_file.write(f"[{upper_key}]\n")
+                for k, v in self.config_dict[upper_key].items():
+                    cfg_file.write(f"{k}: {str(v)}\n")
+        
+        return cfg_filepath
+
+
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
@@ -79,31 +158,22 @@ class Convolution(Process):
         )
         config = request.inputs["config"][0].data
 
-        if version == "1.1.1":
-            if os.path.isfile(config):
-                config_dict = read_config(config)
-            else:
-                config_dict = json.loads(config)
-
-            log_handler(
-                self,
-                response,
-                "Run Flux Convolution",
-                process_step="process",
-                level=loglevel,
-            )
-            convolution(config_dict)
-
-        elif version == "1.1.0-1":
+        if os.path.isfile(config):
             config_dict = read_config(config)
-            log_handler(
-                self,
-                response,
-                "Run Flux Convolution",
-                process_step="process",
-                level=loglevel,
-            )
-            convolution(config)
+        else:
+            config_dict = self.config_dict_hander(config)
+            if version == "1.1.0-1":
+                config = self.config_file_builder(config_dict)
+
+        config_dict = read_config(config)
+        log_handler(
+            self,
+            response,
+            "Run Flux Convolution",
+            process_step="process",
+            level=loglevel,
+        )
+        convolution(config)
 
         log_handler(
             self,
