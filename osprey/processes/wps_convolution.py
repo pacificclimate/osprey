@@ -30,15 +30,15 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
 
 class Convolution(Process):
     def __init__(self):
-        self.config_dict={
-            "OPTIONS":{
+        self.config_dict = {
+            "OPTIONS": {
                 "LOG_LEVEL": "INFO",
                 "VERBOSE": True,
                 "CASE_DIR": None,
                 "CASEID": None,
                 "CASESTR": "historical",
                 "CALENDAR": "standard",
-                "RUN_TYPE": "drystart", # automatic run
+                "RUN_TYPE": "drystart",  # automatic run
                 "RUN_STARTDATE": None,
                 "STOP_OPTION": "date",
                 "STOP_N": -999,
@@ -48,7 +48,7 @@ class Convolution(Process):
                 "REST_DATE": None,
                 "REST_NCFORM": "NETCDF4",
             },
-            "HISTORY":{
+            "HISTORY": {
                 "RVICHIST_NTAPES": 1,
                 "RVICHIST_MFILT": 100000,
                 "RVICHIST_NDENS": 1,
@@ -58,21 +58,17 @@ class Convolution(Process):
                 "RVICHIST_NCFORM": "NETCDF4",
                 "RVICHIST_UNITS": "m3/s",
             },
-            "DOMAIN":{
+            "DOMAIN": {
                 "FILE_NAME": None,
-                "LONGITUDE_VAR": "lon", 
+                "LONGITUDE_VAR": "lon",
                 "LATITUDE_VAR": "lat",
                 "AREA_VAR": "area",
                 "LAND_MASK_VAR": "mask",
                 "FRACTION_VAR": "frac",
             },
-            "INITIAL_STATE":{
-                "FILE_NAME": None
-            },
-            "PARAM_FILE":{
-                "FILE_NAME": None
-            },
-            "INPUT_FORCINGS":{
+            "INITIAL_STATE": {"FILE_NAME": None},
+            "PARAM_FILE": {"FILE_NAME": None},
+            "INPUT_FORCINGS": {
                 "DATL_PATH": None,
                 "DATL_FILE": None,
                 "TIME_VAR": "time",
@@ -130,12 +126,18 @@ class Convolution(Process):
         try:
             for upper_key in input_dict.keys():
                 for lower_key in input_dict[upper_key].keys():
-                    self.config_dict[upper_key][lower_key]=input_dict[upper_key][lower_key]
+                    self.config_dict[upper_key][lower_key] = input_dict[upper_key][
+                        lower_key
+                    ]
 
             if self.config_dict["OPTIONS"]["CASE_DIR"] == None:
-                self.config_dict["OPTIONS"]["CASE_DIR"] = os.path.join(self.workdir, self.config_dict["OPTIONS"]["CASEID"])   
+                self.config_dict["OPTIONS"]["CASE_DIR"] = os.path.join(
+                    self.workdir, self.config_dict["OPTIONS"]["CASEID"]
+                )
             if self.config_dict["OPTIONS"]["REST_DATE"] == None:
-                self.config_dict["OPTIONS"]["REST_DATE"] = self.config_dict["OPTIONS"]["STOP_DATE"]
+                self.config_dict["OPTIONS"]["REST_DATE"] = self.config_dict["OPTIONS"][
+                    "STOP_DATE"
+                ]
 
         except KeyError as e:
             raise ProcessError(f"Invalid config key provided")
@@ -147,9 +149,8 @@ class Convolution(Process):
                 cfg_file.write(f"[{upper_key}]\n")
                 for k, v in self.config_dict[upper_key].items():
                     cfg_file.write(f"{k}: {str(v)}\n")
-        
-        return cfg_filepath
 
+        return cfg_filepath
 
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
