@@ -9,6 +9,7 @@ from osprey.processes.wps_convolution import Convolution
 
 @mark.slow
 @mark.online
+@mark.ignore    # The test will be ignored until RVIC's internal issues are resolved
 @mark.parametrize(
     ("config"), [f"{resource_filename(__name__, 'configs/convolve_opendap.cfg')}"],
 )
