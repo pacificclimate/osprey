@@ -6,11 +6,11 @@ from pkg_resources import resource_filename
 from .common import run_wps_process
 from osprey.processes.wps_convolution import Convolution
 
-#********************************************************************************
+# ********************************************************************************
 #   The test is disabled due to failues caused by RVIC's internal issues:
 #   https://github.com/UW-Hydro/RVIC/issues/96
 #   https://github.com/UW-Hydro/RVIC/issues/130
-#********************************************************************************
+# ********************************************************************************
 # @mark.slow
 # @mark.online
 # @mark.parametrize(
