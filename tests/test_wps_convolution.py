@@ -10,9 +10,10 @@ from osprey.processes.wps_convolution import Convolution
 @mark.slow
 @mark.online
 @mark.parametrize(
-    ("config"), [
+    ("config"),
+    [
         f"{resource_filename(__name__, 'configs/convolve_opendap.cfg')}",
-        '''{
+        """{
             "OPTIONS":{
                     "CASEID":"sample", 
                     "RUN_STARTDATE": "2012-12-01-00", 
@@ -28,7 +29,7 @@ from osprey.processes.wps_convolution import Convolution
                 "DATL_PATH": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/",
                 "DATL_FILE": "columbia_vicset2.nc"
             }
-        }'''
+        }""",
     ],
 )
 def test_wps_convolution(config):
