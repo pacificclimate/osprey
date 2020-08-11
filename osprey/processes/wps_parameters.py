@@ -21,6 +21,7 @@ from wps_tools.io import (
 import logging
 import os
 import json
+from datetime import datetime
 
 pywps_logger = logging.getLogger("PYWPS")
 
@@ -54,6 +55,7 @@ class Parameters(Process):
                 abstract="Return RVIC version string",
                 data_type="boolean",
             ),
+            log_level
         ]
         outputs = [
             nc_output,
@@ -78,7 +80,8 @@ class Parameters(Process):
     def collect_args(self, request):
         config = request.inputs["config"][0].data
         np = request.inputs["np"][0].data
-        return (config_file, np)
+        loglevel = request.inputs["loglevel"][0].data
+        return (config, np, loglevel)
 
     def get_outfile(self, config):
         if os.path.isfile(config):
@@ -86,7 +89,8 @@ class Parameters(Process):
         else:
             config_dict = json.loads(config)  # config is dictionary of inputs
         outdir = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "params")
-        (param_file,) = collect_output_files("rvic", outdir)
+        date = datetime.now().strftime("%Y%m%d")
+        (param_file,) = collect_output_files(date, outdir)
         return os.path.join(outdir, param_file)
 
     def _handler(self, request, response):
@@ -95,9 +99,9 @@ class Parameters(Process):
 
             pywps_logger.info(version.short_version)
 
-        (config, np) = self.collect_args(request)
+        (config, np, loglevel) = self.collect_args(request)
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self, response, "Starting Process", process_step="start", log_level=loglevel
         )
 
         log_handler(
@@ -105,7 +109,7 @@ class Parameters(Process):
             response,
             "Creating parameters",
             process_step="process",
-            level=loglevel,
+            log_level=loglevel,
         )
         parameters(config, np)
 
@@ -114,11 +118,11 @@ class Parameters(Process):
             response,
             "Building final output",
             process_step="build_output",
-            level=loglevel,
+            log_level=loglevel,
         )
         response.outputs["output"].file = self.get_outfile(config)
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel,
+            self, response, "Process Complete", process_step="complete", log_level=loglevel,
         )
         return response
