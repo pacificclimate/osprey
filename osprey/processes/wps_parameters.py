@@ -55,7 +55,7 @@ class Parameters(Process):
                 abstract="Return RVIC version string",
                 data_type="boolean",
             ),
-            log_level
+            log_level,
         ]
         outputs = [
             nc_output,
@@ -123,6 +123,10 @@ class Parameters(Process):
         response.outputs["output"].file = self.get_outfile(config)
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", log_level=loglevel,
+            self,
+            response,
+            "Process Complete",
+            process_step="complete",
+            log_level=loglevel,
         )
         return response
