@@ -31,6 +31,8 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
 class Convolution(Process):
     def __init__(self):
         self.config_dict = {
+            # configuration dictionary that is used for RVIC convolution
+            # required user inputs are defined as None value
             "OPTIONS": {
                 "LOG_LEVEL": "INFO",
                 "VERBOSE": True,
@@ -122,6 +124,11 @@ class Convolution(Process):
         )
 
     def config_dict_hander(self, config):
+        '''
+        This function enables users to provide dictionary-like string for Configuration input.
+        If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
+        CASEID and STOP_DATE by default.
+        '''
         input_dict = json.loads(config)
         try:
             for upper_key in input_dict.keys():
@@ -143,6 +150,10 @@ class Convolution(Process):
             raise ProcessError(f"Invalid config key provided")
 
     def config_file_builder(self, config_dict):
+        '''
+        This function is used for RVIC1.1.0.post1 only since the version requires config input
+        to be a cfg filepath. The function uses information from config_dict to create the file.
+        '''
         cfg_filepath = os.path.join(self.workdir, "convolve_file.cfg")
         with open(cfg_filepath, "w") as cfg_file:
             for upper_key in self.config_dict.keys():
@@ -163,7 +174,7 @@ class Convolution(Process):
             config_dict = read_config(config)
         else:
             config_dict = self.config_dict_hander(config)
-            if version == "1.1.0-1":
+            if version == "1.1.0-1":        #RVIC1.1.0.post1
                 config = self.config_file_builder(config_dict)
 
         config_dict = read_config(config)
