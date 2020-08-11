@@ -6,6 +6,7 @@ from pywps import (
 from pywps.app.Common import Metadata
 
 # Tool imports
+from rvic import version
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from wps_tools.utils import (
@@ -95,8 +96,6 @@ class Parameters(Process):
 
     def _handler(self, request, response):
         if request.inputs["version"][0].data:
-            from rvic import version
-
             pywps_logger.info(version.short_version)
 
         (config, np, loglevel) = self.collect_args(request)
