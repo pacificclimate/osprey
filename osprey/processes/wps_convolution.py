@@ -30,7 +30,7 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
 
 class Convolution(Process):
     def __init__(self):
-        self.config_dict = {
+        self.config = {
             # configuration dictionary used for RVIC convolution
             # required user inputs are defined as None value
             "OPTIONS": {
@@ -123,7 +123,7 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def config_dict_hander(self, config):
+    def config_hander(self, config):
         """
         This function enables users to provide dictionary-like string for Configuration input.
         If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
@@ -133,32 +133,30 @@ class Convolution(Process):
         try:
             for upper_key in input_dict.keys():
                 for lower_key in input_dict[upper_key].keys():
-                    self.config_dict[upper_key][lower_key] = input_dict[upper_key][
-                        lower_key
-                    ]
+                    self.config[upper_key][lower_key] = input_dict[upper_key][lower_key]
 
-            if self.config_dict["OPTIONS"]["CASE_DIR"] == None:
-                self.config_dict["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    self.workdir, self.config_dict["OPTIONS"]["CASEID"]
+            if self.config["OPTIONS"]["CASE_DIR"] == None:
+                self.config["OPTIONS"]["CASE_DIR"] = os.path.join(
+                    self.workdir, self.config["OPTIONS"]["CASEID"]
                 )
-            if self.config_dict["OPTIONS"]["REST_DATE"] == None:
-                self.config_dict["OPTIONS"]["REST_DATE"] = self.config_dict["OPTIONS"][
+            if self.config["OPTIONS"]["REST_DATE"] == None:
+                self.config["OPTIONS"]["REST_DATE"] = self.config["OPTIONS"][
                     "STOP_DATE"
                 ]
 
         except KeyError as e:
             raise ProcessError(f"Invalid config key provided")
 
-    def config_file_builder(self, config_dict):
+    def config_file_builder(self, config):
         """
         This function is used for RVIC1.1.0.post1 only since the version requires Configuration input
-        to be a .cfg filepath. The function uses information from config_dict to create the file.
+        to be a .cfg filepath. The function uses information from config to create the file.
         """
         cfg_filepath = os.path.join(self.workdir, "convolve_file.cfg")
         with open(cfg_filepath, "w") as cfg_file:
-            for upper_key in self.config_dict.keys():
+            for upper_key in self.config.keys():
                 cfg_file.write(f"[{upper_key}]\n")
-                for k, v in self.config_dict[upper_key].items():
+                for k, v in self.config[upper_key].items():
                     cfg_file.write(f"{k}: {str(v)}\n")
 
         return cfg_filepath
@@ -168,16 +166,7 @@ class Convolution(Process):
         log_handler(
             self, response, "Starting Process", process_step="start", level=loglevel
         )
-        config = request.inputs["config"][0].data
-
-        if os.path.isfile(config):
-            config_dict = read_config(config)
-        else:
-            config = config.replace("'", '"')
-            self.config_dict_hander(config)
-            config_dict = self.config_dict
-            if version == "1.1.0-1":  # RVIC1.1.0.post1
-                config = self.config_file_builder(config_dict)
+        unprocessed = request.inputs["config"][0].data
 
         log_handler(
             self,
@@ -186,7 +175,23 @@ class Convolution(Process):
             process_step="process",
             level=loglevel,
         )
-        convolution(config)
+
+        if os.path.isfile(unprocessed):
+            config = read_config(unprocessed)
+            if version == "1.1.0-1":  # RVIC1.1.0.post1
+                cfg_filepath = unprocessed
+                convolution(cfg_filepath)
+            elif version == "1.1.1":  # RVIC1.1.1
+                convolution(config)
+        else:
+            unprocessed = unprocessed.replace("'", '"')
+            self.config_hander(unprocessed)
+            config = self.config
+            if version == "1.1.0-1":  # RVIC1.1.0.post1
+                cfg_filepath = self.config_file_builder(config)
+                convolution(cfg_filepath)
+            elif version == "1.1.1":  # RVIC1.1.1
+                convolution(config)
 
         log_handler(
             self,
@@ -195,13 +200,13 @@ class Convolution(Process):
             process_step="build_output",
             level=loglevel,
         )
-        case_id = config_dict["OPTIONS"]["CASEID"]
-        stop_date = config_dict["OPTIONS"]["STOP_DATE"]
+        case_id = config["OPTIONS"]["CASEID"]
+        stop_date = config["OPTIONS"]["STOP_DATE"]
         end_date = str(
             datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1)
         )
 
-        directory = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "hist")
+        directory = os.path.join(config["OPTIONS"]["CASE_DIR"], "hist")
         filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
 
         response.outputs["output"].file = os.path.join(directory, filename)
