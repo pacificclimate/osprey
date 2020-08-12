@@ -40,7 +40,7 @@ class Convolution(Process):
                 "CASE_DIR": None,
                 "CASEID": None,
                 "CASESTR": "historical",
-                "CALENDAR": "standard",
+                "CALENDAR": None,
                 "RUN_TYPE": "drystart",  # automatic run
                 "RUN_STARTDATE": None,
                 "STOP_OPTION": "date",
