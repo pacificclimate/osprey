@@ -6,11 +6,12 @@ from rvic.convolution import convolution
 from rvic.core.config import read_config
 from rvic.version import version
 
+from osprey.utils import config_hander, config_file_builder
+
 from datetime import datetime, timedelta
 
 import os
 import logging
-import json
 
 pywps_logger = logging.getLogger("PYWPS")
 stderr_logger = logging.getLogger(__name__)
@@ -30,7 +31,7 @@ def log_handler(process, response, message, process_step=None, level="INFO"):
 
 class Convolution(Process):
     def __init__(self):
-        self.config = {
+        self.config_template = {
             # configuration dictionary used for RVIC convolution
             # required user inputs are defined as None value
             "OPTIONS": {
@@ -123,44 +124,6 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def config_hander(self, config):
-        """
-        This function enables users to provide dictionary-like string for Configuration input.
-        If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
-        CASEID and STOP_DATE by default.
-        """
-        input_dict = json.loads(config)
-        try:
-            for upper_key in input_dict.keys():
-                for lower_key in input_dict[upper_key].keys():
-                    self.config[upper_key][lower_key] = input_dict[upper_key][lower_key]
-
-            if self.config["OPTIONS"]["CASE_DIR"] == None:
-                self.config["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    self.workdir, self.config["OPTIONS"]["CASEID"]
-                )
-            if self.config["OPTIONS"]["REST_DATE"] == None:
-                self.config["OPTIONS"]["REST_DATE"] = self.config["OPTIONS"][
-                    "STOP_DATE"
-                ]
-
-        except KeyError as e:
-            raise ProcessError(f"Invalid config key provided")
-
-    def config_file_builder(self, config):
-        """
-        This function is used for RVIC1.1.0.post1 only since the version requires Configuration input
-        to be a .cfg filepath. The function uses information from config to create the file.
-        """
-        cfg_filepath = os.path.join(self.workdir, "convolve_file.cfg")
-        with open(cfg_filepath, "w") as cfg_file:
-            for upper_key in self.config.keys():
-                cfg_file.write(f"[{upper_key}]\n")
-                for k, v in self.config[upper_key].items():
-                    cfg_file.write(f"{k}: {str(v)}\n")
-
-        return cfg_filepath
-
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
@@ -185,10 +148,11 @@ class Convolution(Process):
                 convolution(config)
         else:
             unprocessed = unprocessed.replace("'", '"')
-            self.config_hander(unprocessed)
-            config = self.config
+            config = config_hander(self.workdir, unprocessed, self.config_template)
             if version == "1.1.0-1":  # RVIC1.1.0.post1
-                cfg_filepath = self.config_file_builder(config)
+                cfg_filepath = config_file_builder(
+                    self.workdir, config, self.config_template
+                )
                 convolution(cfg_filepath)
             elif version == "1.1.1":  # RVIC1.1.1
                 convolution(config)
