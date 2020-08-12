@@ -178,7 +178,6 @@ class Convolution(Process):
             if version == "1.1.0-1":  # RVIC1.1.0.post1
                 config = self.config_file_builder(config_dict)
 
-        config_dict = read_config(config)
         log_handler(
             self,
             response,
