@@ -174,7 +174,8 @@ class Convolution(Process):
             config_dict = read_config(config)
         else:
             config = config.replace("'", '"')
-            config_dict = self.config_dict_hander(config)
+            self.config_dict_hander(config)
+            config_dict = self.config_dict
             if version == "1.1.0-1":  # RVIC1.1.0.post1
                 config = self.config_file_builder(config_dict)
 
