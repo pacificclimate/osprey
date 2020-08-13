@@ -3,7 +3,7 @@ from pywps import Service
 from pywps.tests import client_for, assert_response_success
 from pkg_resources import resource_filename
 
-from .common import run_wps_process
+from wps_tools.testing import run_wps_process
 from osprey.processes.wps_convolution import Convolution
 
 # ********************************************************************************

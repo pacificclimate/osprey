@@ -1,7 +1,18 @@
 from pkg_resources import resource_filename
 from pywps.app.exceptions import ProcessError
+import logging
 import os
 import json
+
+logger = logging.getLogger("PYWPS")
+logger.setLevel(logging.NOTSET)
+
+formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s: osprey: %(message)s", "%Y-%m-%d %H:%M:%S"
+)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 def replace_filenames(config, temp_config):
