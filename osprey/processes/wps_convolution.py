@@ -6,7 +6,7 @@ from rvic.convolution import convolution
 from rvic.core.config import read_config
 from rvic.version import version
 
-from osprey.utils import config_hander, config_file_builder
+from osprey.utils import config_hander, config_file_builder, run_rvic
 
 from datetime import datetime, timedelta
 
@@ -141,21 +141,16 @@ class Convolution(Process):
 
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
-            if version == "1.1.0-1":  # RVIC1.1.0.post1
-                cfg_filepath = unprocessed
-                convolution(cfg_filepath)
-            elif version == "1.1.1":  # RVIC1.1.1
-                convolution(config)
+            run_rvic(convolution, version, config, unprocessed)
         else:
             unprocessed = unprocessed.replace("'", '"')
             config = config_hander(self.workdir, unprocessed, self.config_template)
-            if version == "1.1.0-1":  # RVIC1.1.0.post1
-                cfg_filepath = config_file_builder(
-                    self.workdir, config, self.config_template
-                )
-                convolution(cfg_filepath)
-            elif version == "1.1.1":  # RVIC1.1.1
-                convolution(config)
+            run_rvic(
+                convolution,
+                version,
+                config,
+                config_file_builder(self.workdir, config, self.config_template),
+            )
 
         log_handler(
             self,

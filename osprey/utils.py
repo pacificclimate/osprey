@@ -64,3 +64,11 @@ def config_file_builder(workdir, config, config_template):
                 cfg_file.write(f"{k}: {str(v)}\n")
 
     return cfg_filepath
+
+
+def run_rvic(rvic_module, version, config, config_file):
+    if version == "1.1.0-1":  # RVIC1.1.0.post1
+        cfg_filepath = config_file
+        rvic_module(cfg_filepath)
+    elif version == "1.1.1":  # RVIC1.1.1
+        rvic_module(config)
