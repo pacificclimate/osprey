@@ -36,10 +36,38 @@ https://osprey.readthedocs.io.
 Submit bug reports, questions and feature requests at
 https://github.com/nikola-rados/osprey/issues
 
+Installation
+------------
+
+Clone the repo onto the target machine. Python installation should be done in a python3 virtual environment created
+and activated as follows (second `venv` can be replaced with environment name of your choice):
+
+```bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt -r requirements_dev.txt
+(venv) $ pip install -e .
+```
+
 Contributing
 ------------
 
 You can find information about contributing in our `Developer Guide`_.
+
+Testing
+^^^^^^^
+
+Upon installation, the tests for each process will fail due to issues in `RVIC`. In order to fix them, two modules in the
+`rvic` site-package in your `venv` need to be modified as follows:
+
+1. In line 188 of `rvic/parameters.py`, change `pour_points.ix` to `pour_points.loc`.
+
+2. From lines 277 to 298 of `rvic/core/share.py`, change each instance of `max_range` to `range`.
+
+After these changes, the tests can be run by running `pytest` on the command line.
+
+Releasing
+^^^^^^^^^
 
 Please use bumpversion_ to release a new version.
 
