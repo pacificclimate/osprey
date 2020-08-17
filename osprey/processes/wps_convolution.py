@@ -6,27 +6,19 @@ from rvic.convolution import convolution
 from rvic.core.config import read_config
 from rvic.version import version
 
-from osprey.utils import config_hander, config_file_builder, run_rvic
+from wps_tools.utils import log_handler
+from wps_tools.io import nc_output, log_level
+from osprey.utils import (
+    logger,
+    config_hander,
+    config_file_builder,
+    build_output,
+    run_rvic,
+)
 
 from datetime import datetime, timedelta
 
 import os
-import logging
-
-pywps_logger = logging.getLogger("PYWPS")
-stderr_logger = logging.getLogger(__name__)
-
-
-def log_handler(process, response, message, process_step=None, level="INFO"):
-    if process_step:
-        status_percentage = process.status_percentage_steps[process_step]
-    else:
-        status_percentage = response.status_percentage
-
-    # Log to all sources
-    pywps_logger.log(getattr(logging, level), message)
-    stderr_logger.log(getattr(logging, level), message)
-    response.update_status(message, status_percentage=status_percentage)
 
 
 class Convolution(Process):
@@ -94,22 +86,10 @@ class Convolution(Process):
                 abstract="Path to input configuration file or input dictionary",
                 data_type="string",
             ),
-            LiteralInput(
-                "loglevel",
-                "Log Level",
-                default="INFO",
-                abstract="Logging level",
-                allowed_values=list(logging._levelToName.values()),
-            ),
+            log_level,
         ]
         outputs = [
-            ComplexOutput(
-                "output",
-                "Output",
-                as_reference=True,
-                abstract="Output Netcdf File",
-                supported_formats=[FORMATS.NETCDF],
-            )
+            nc_output,
         ]
 
         super(Convolution, self).__init__(
@@ -127,7 +107,12 @@ class Convolution(Process):
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
-            self, response, "Starting Process", process_step="start", level=loglevel
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
         )
         unprocessed = request.inputs["config"][0].data
 
@@ -135,8 +120,9 @@ class Convolution(Process):
             self,
             response,
             "Run Flux Convolution",
+            logger,
+            log_level=loglevel,
             process_step="process",
-            level=loglevel,
         )
 
         if os.path.isfile(unprocessed):
@@ -156,21 +142,18 @@ class Convolution(Process):
             self,
             response,
             "Building final flow data output",
+            logger,
+            log_level=loglevel,
             process_step="build_output",
-            level=loglevel,
         )
-        case_id = config["OPTIONS"]["CASEID"]
-        stop_date = config["OPTIONS"]["STOP_DATE"]
-        end_date = str(
-            datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1)
-        )
-
-        directory = os.path.join(config["OPTIONS"]["CASE_DIR"], "hist")
-        filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
-
-        response.outputs["output"].file = os.path.join(directory, filename)
+        response.outputs["output"].file = build_output(config)
 
         log_handler(
-            self, response, "Process Complete", process_step="complete", level=loglevel
+            self,
+            response,
+            "Process Complete",
+            logger,
+            log_level=loglevel,
+            process_step="complete",
         )
         return response

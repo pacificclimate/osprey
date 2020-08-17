@@ -1,7 +1,19 @@
 from pkg_resources import resource_filename
 from pywps.app.exceptions import ProcessError
+import logging
 import os
 import json
+from datetime import datetime, timedelta
+
+logger = logging.getLogger("PYWPS")
+logger.setLevel(logging.NOTSET)
+
+formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s: osprey: %(message)s", "%Y-%m-%d %H:%M:%S"
+)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 def replace_filenames(config, temp_config):
@@ -64,6 +76,16 @@ def config_file_builder(workdir, config, config_template):
                 cfg_file.write(f"{k}: {str(v)}\n")
 
     return cfg_filepath
+
+
+def build_output(config):
+    case_id = config["OPTIONS"]["CASEID"]
+    stop_date = config["OPTIONS"]["STOP_DATE"]
+    end_date = str(datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1))
+
+    directory = os.path.join(config["OPTIONS"]["CASE_DIR"], "hist")
+    filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
+    return os.path.join(directory, filename)
 
 
 def run_rvic(rvic_module, version, config, config_file):

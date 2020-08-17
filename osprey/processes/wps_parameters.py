@@ -17,14 +17,12 @@ from wps_tools.io import (
     log_level,
     nc_output,
 )
+from osprey.utils import logger
 
 # Library imports
-import logging
 import os
 import json
 from datetime import datetime
-
-pywps_logger = logging.getLogger("PYWPS")
 
 
 class Parameters(Process):
@@ -96,19 +94,25 @@ class Parameters(Process):
 
     def _handler(self, request, response):
         if request.inputs["version"][0].data:
-            pywps_logger.info(version.short_version)
+            logger.info(version.short_version)
 
         (config, np, loglevel) = self.collect_args(request)
         log_handler(
-            self, response, "Starting Process", process_step="start", log_level=loglevel
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
         )
 
         log_handler(
             self,
             response,
             "Creating parameters",
-            process_step="process",
+            logger,
             log_level=loglevel,
+            process_step="process",
         )
         parameters(config, np)
 
@@ -116,8 +120,9 @@ class Parameters(Process):
             self,
             response,
             "Building final output",
-            process_step="build_output",
+            logger,
             log_level=loglevel,
+            process_step="build_output",
         )
         response.outputs["output"].file = self.get_outfile(config)
 
@@ -125,7 +130,8 @@ class Parameters(Process):
             self,
             response,
             "Process Complete",
-            process_step="complete",
+            logger,
             log_level=loglevel,
+            process_step="complete",
         )
         return response
