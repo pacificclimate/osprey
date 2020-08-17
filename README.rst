@@ -46,8 +46,8 @@ and activated as follows (second `venv` can be replaced with environment name of
 
    $ python3 -m venv venv
    $ source venv/bin/activate
-   (venv) $ pip install -i https://pypi.pacificclimate.org/simple/ -r requirements.txt -r requirements_dev.txt
-   (venv) $ pip install -e .
+   (venv) $ pip install -r requirements.txt
+   (venv) $ pip install -e .[dev]
 
 Contributing
 ------------
@@ -60,9 +60,9 @@ Testing
 Upon installation, the tests for each process will fail due to issues in ``RVIC``. In order to fix them, two modules in the
 ``rvic`` site-package in your ``venv`` need to be modified as follows:
 
-1. In line 188 of ``rvic/parameters.py``, change ``pour_points.ix`` to ``pour_points.loc``.
+1. In line 188 of ``rvic/parameters.py``, change ``pour_points.ix`` to ``pour_points.loc`` (`parameters.py issue`_).
 
-2. From lines 277 to 298 of ``rvic/core/share.py``, change each instance of ``max_range`` to ``range``.
+2. From lines 277 to 298 of ``rvic/core/share.py``, change each instance of ``max_range`` to ``range`` (`share.py issue`_).
 
 After these changes, the tests can be run by running `pytest` on the command line.
 
@@ -85,3 +85,5 @@ This package was created with Cookiecutter_ and the `bird-house/cookiecutter-bir
 .. _`bird-house/cookiecutter-birdhouse`: https://github.com/bird-house/cookiecutter-birdhouse
 .. _`Developer Guide`: https://osprey.readthedocs.io/en/latest/dev_guide.html
 .. _bumpversion: https://osprey.readthedocs.io/en/latest/dev_guide.html#bump-a-new-version
+.. _`parameters.py issue`: https://github.com/UW-Hydro/RVIC/issues/130
+.. _`share.py issue`: https://github.com/UW-Hydro/RVIC/issues/96
