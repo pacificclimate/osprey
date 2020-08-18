@@ -129,17 +129,13 @@ class Parameters(Process):
         )
 
     def collect_args(self, request):
-        config = request.inputs["config"][0].data
+        unprocessed = request.inputs["config"][0].data
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
-        return (config, np, loglevel)
+        return (unprocessed, np, loglevel)
 
     def get_outfile(self, config):
-        if os.path.isfile(config):
-            config_dict = read_config(config)
-        else:
-            config_dict = json.loads(config)  # config is dictionary of inputs
-        outdir = os.path.join(config_dict["OPTIONS"]["CASE_DIR"], "params")
+        outdir = os.path.join(config["OPTIONS"]["CASE_DIR"], "params")
         date = datetime.now().strftime("%Y%m%d")
         (param_file,) = collect_output_files(date, outdir)
         return os.path.join(outdir, param_file)
@@ -148,7 +144,7 @@ class Parameters(Process):
         if request.inputs["version"][0].data:
             logger.info(version.short_version)
 
-        (config, np, loglevel) = self.collect_args(request)
+        (unprocessed, np, loglevel) = self.collect_args(request)
         log_handler(
             self,
             response,
@@ -166,7 +162,19 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="process",
         )
-        parameters(config, np)
+
+        if os.path.isfile(unprocessed):
+            config = read_config(unprocessed)
+            run_rvic(parameters, version, config, unprocessed)
+        else:
+            unprocessed = unprocessed.replace("'", '"')
+            config = config_hander(self.workdir, unprocessed, self.config_template)
+            run_rvic(
+                parameters,
+                version,
+                config,
+                config_file_builder(self.workdir, config, self.config_template),
+            )
 
         log_handler(
             self,
