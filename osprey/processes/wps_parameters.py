@@ -49,12 +49,8 @@ class Parameters(Process):
                 "CONSTRAIN_FRACTIONS": False,
                 "SEARCH_FOR_CHANNEL": False,
             },
-            "POUR_POINTS": {
-                "FILE_NAME": None,
-            },
-            "UH_BOX": {
-                "FILE_NAME": None,
-            },
+            "POUR_POINTS": {"FILE_NAME": None,},
+            "UH_BOX": {"FILE_NAME": None,},
             "ROUTING": {
                 "FILE_NAME": None,
                 "LONGITUDE_VAR": "lon",
@@ -72,11 +68,11 @@ class Parameters(Process):
             },
             "DOMAIN": {
                 "FILE_NAME": None,
-                "LONGITUDE_VAR": "lon"
-                "LATITUDE_VAR": "lat"
-                "LAND_MASK_VAR": "mask"
-                "FRACTION_VAR": "frac"
-                "AREA_VAR": "area"
+                "LONGITUDE_VAR": "lon",
+                "LATITUDE_VAR": "lat",
+                "LAND_MASK_VAR": "mask",
+                "FRACTION_VAR": "frac",
+                "AREA_VAR": "area",
             },
         }
         self.status_percentage_steps = {
