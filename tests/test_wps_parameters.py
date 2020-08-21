@@ -40,7 +40,7 @@ def test_parameters_https(config):
     with NamedTemporaryFile(
         suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t"
     ) as temp_config:  # Avoid permanent replacement of https URLs
-        add_mock_urls(config, temp_config)
+        read_config = open(config, "r")
         temp_config.writelines(read_config.read())
         temp_config.read()
         params = f"config={temp_config.name};"
