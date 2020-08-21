@@ -54,7 +54,6 @@ def replace_urls(config, outdir):
             url = url.rstrip()  # remove \n character at end
             r = requests.get(url)
             filename = url.split("/")[-1]
-            print(filename)
             prefix, suffix = filename.split(".")
             suffix = "." + suffix
             local_file = NamedTemporaryFile(

@@ -9,11 +9,19 @@ from osprey.processes.wps_parameters import Parameters
 from osprey.utils import replace_filenames
 
 
-# def add_mock_urls(config, temp_config):
-#   read_config = open(config, "r")
-#   config_data = read_config.read()
-#    m = requests_mock.Mocker()
-#    for line in config_data:
+def make_mock_urls(config, m):
+    read_config = open(config, "r")
+    config_data = read_config.readlines()
+    read_config.close()
+    for line in config_data:
+        if "https" in line:
+            url = line.split(" ")[-1]  # https url is last word in line
+            url = url.rstrip()  # remove \n character at end
+            filename = url.split("/")[-1]
+            f = open(resource_filename(__name__, f"data/samples/{filename}"), "rb")
+            filedata = f.read()
+            f.close()
+            m.get(url, content=filedata)
 
 
 @pytest.mark.parametrize(
@@ -35,7 +43,10 @@ def test_parameters_local(config):
 @pytest.mark.parametrize(
     ("config"), [resource_filename(__name__, "configs/parameter_https.cfg")],
 )
-def test_parameters_https(config):
+@requests_mock.Mocker(kw="mock")
+def test_parameters_https(config, **kwargs):
+    m = kwargs["mock"]
+    make_mock_urls(config, m)
     config_name = os.path.splitext(config)[0]  # Remove .cfg extension
     with NamedTemporaryFile(
         suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t"
