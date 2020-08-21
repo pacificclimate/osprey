@@ -3,7 +3,9 @@ from pywps.app.exceptions import ProcessError
 import logging
 import os
 import json
+import requests
 from datetime import datetime, timedelta
+from tempfile import NamedTemporaryFile
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -32,6 +34,37 @@ def replace_filenames(config, temp_config):
     abs_dir = os.path.abspath(resource_filename("tests", "data"))
     newdata = filedata.replace(rel_dir, abs_dir)
     temp_config.writelines(newdata)
+
+
+def replace_urls(config, outdir):
+    """
+    Copy https URLs to local storage and replace URLs
+    with local paths in config file.
+    Parameters:
+        config (str): Config file
+        outdir (str): Output directory
+    """
+    read_config = open(config, "r")
+    filedata = read_config.readlines()
+    read_config.close()
+
+    for i in range(len(filedata)):
+        if "https" in filedata[i]:
+            url = filedata[i].split(" ")[-1]  # https url is last word in line
+            url = url.rstrip() # remove \n character at end
+            r = requests.get(url)
+            filename = url.split("/")[-1]
+            print(filename)
+            prefix, suffix = filename.split(".")
+            suffix = "." + suffix 
+            local_file = NamedTemporaryFile(suffix=suffix, prefix=prefix, dir=outdir, delete=False)
+            local_file.write(r.content)
+            filedata[i] = filedata[i].replace(url, local_file.name)
+
+    write_config = open(config, "w")
+    for line in filedata:
+        write_config.write(f"{line}\n")
+    write_config.close()
 
 
 def config_hander(workdir, unprocessed, config_template):

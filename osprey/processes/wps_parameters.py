@@ -17,13 +17,13 @@ from wps_tools.io import (
     log_level,
     nc_output,
 )
-from osprey.utils import logger
+from osprey.utils import logger, replace_urls
 
 # Library imports
 import os
 import json
 from datetime import datetime
-
+from pkg_resources import resource_filename
 
 class Parameters(Process):
     def __init__(self):
@@ -97,6 +97,7 @@ class Parameters(Process):
             logger.info(version.short_version)
 
         (config, np, loglevel) = self.collect_args(request)
+        replace_urls(config, self.workdir)
         log_handler(
             self,
             response,
