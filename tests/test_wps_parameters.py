@@ -9,12 +9,11 @@ from osprey.processes.wps_parameters import Parameters
 from osprey.utils import replace_filenames
 
 
-def add_mock_urls(config, temp_config):
-    read_config = open(config, "r")
-    config_data = read_config.read()
-    m = requests_mock.Mocker()
-    for line in config_data:
-        
+# def add_mock_urls(config, temp_config):
+#   read_config = open(config, "r")
+#   config_data = read_config.read()
+#    m = requests_mock.Mocker()
+#    for line in config_data:
 
 
 @pytest.mark.parametrize(

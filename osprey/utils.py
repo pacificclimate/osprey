@@ -51,13 +51,15 @@ def replace_urls(config, outdir):
     for i in range(len(filedata)):
         if "https" in filedata[i]:
             url = filedata[i].split(" ")[-1]  # https url is last word in line
-            url = url.rstrip() # remove \n character at end
+            url = url.rstrip()  # remove \n character at end
             r = requests.get(url)
             filename = url.split("/")[-1]
             print(filename)
             prefix, suffix = filename.split(".")
-            suffix = "." + suffix 
-            local_file = NamedTemporaryFile(suffix=suffix, prefix=prefix, dir=outdir, delete=False)
+            suffix = "." + suffix
+            local_file = NamedTemporaryFile(
+                suffix=suffix, prefix=prefix, dir=outdir, delete=False
+            )
             local_file.write(r.content)
             filedata[i] = filedata[i].replace(url, local_file.name)
 

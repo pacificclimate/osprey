@@ -25,6 +25,7 @@ import json
 from datetime import datetime
 from pkg_resources import resource_filename
 
+
 class Parameters(Process):
     def __init__(self):
         self.status_percentage_steps = {
