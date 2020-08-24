@@ -1,5 +1,4 @@
 import pytest
-import requests_mock
 from pkg_resources import resource_filename
 
 
