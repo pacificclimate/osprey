@@ -64,7 +64,7 @@ def replace_urls(config, outdir):
 
     write_config = open(config, "w")
     for line in filedata:
-        write_config.write(f"{line}\n")
+        write_config.write(f"{line}")
     write_config.close()
 
 
