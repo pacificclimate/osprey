@@ -5,4 +5,3 @@ psutil
 rvic==1.1.0post1
 nchelpers==5.5.7
 wps-tools==0.1.2
-wget==3.2
