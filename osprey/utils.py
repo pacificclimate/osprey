@@ -52,10 +52,16 @@ def config_hander(workdir, unprocessed, config_template):
             config_template["OPTIONS"]["CASE_DIR"] = os.path.join(
                 workdir, config_template["OPTIONS"]["CASEID"]
             )
-        if config_template["OPTIONS"]["REST_DATE"] == None:
-            config_template["OPTIONS"]["REST_DATE"] = config_template["OPTIONS"][
-                "STOP_DATE"
-            ]
+        try:
+            if config_template["OPTIONS"]["REST_DATE"] == None:
+                config_template["OPTIONS"]["REST_DATE"] = config_template["OPTIONS"][
+                    "STOP_DATE"
+                ]
+        except KeyError:
+            if config_template["OPTIONS"]["TEMP_DIR"] == None:
+                config_template["OPTIONS"]["TEMP_DIR"] = (
+                    config_template["OPTIONS"]["CASEID"] + "/temp"
+                )
 
         return config_template
 
