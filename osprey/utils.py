@@ -4,6 +4,7 @@ import logging
 import os
 import json
 from datetime import datetime, timedelta
+from collections.abc import Iterable
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -79,7 +80,12 @@ def config_file_builder(workdir, config):
         for upper_key in config.keys():
             cfg_file.write(f"[{upper_key}]\n")
             for k, v in config[upper_key].items():
-                cfg_file.write(f"{k}: {str(v)}\n")
+                if isinstance(v, Iterable) and type(v) != str:
+                    v_string = ", ".join(v)
+                else:
+                    v_string = str(v)
+                cfg_file.write(f"{k}: {v_string}\n")
+
     return cfg_filepath
 
 

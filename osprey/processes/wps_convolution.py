@@ -129,7 +129,7 @@ class Convolution(Process):
             config = read_config(unprocessed)
         else:
             unprocessed = unprocessed.replace("'", '"')
-            config = config_hander(self.workdir, unprocessed, self.config_template)
+            config = config_hander(self.workdir, convolution.__name__, unprocessed, self.config_template)
 
         run_rvic(
             self.workdir, convolution, version, config,
