@@ -89,16 +89,6 @@ def config_file_builder(workdir, config):
     return cfg_filepath
 
 
-def build_output(config):
-    case_id = config["OPTIONS"]["CASEID"]
-    stop_date = config["OPTIONS"]["STOP_DATE"]
-    end_date = str(datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1))
-
-    directory = os.path.join(config["OPTIONS"]["CASE_DIR"], "hist")
-    filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
-    return os.path.join(directory, filename)
-
-
 def run_rvic(workdir, rvic_module, version, config):
     if version == "1.1.0-1":  # RVIC1.1.0.post1
         cfg_filepath = config_file_builder(workdir, config)
