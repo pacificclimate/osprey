@@ -166,16 +166,13 @@ class Parameters(Process):
 
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
-            run_rvic(parameters, version, config, unprocessed)
         else:
             unprocessed = unprocessed.replace("'", '"')
             config = config_hander(self.workdir, unprocessed, self.config_template)
-            run_rvic(
-                parameters,
-                version,
-                config,
-                config_file_builder(self.workdir, config, self.config_template),
-            )
+
+        run_rvic(
+            self.workdir, parameters, version, config,
+        )
 
         log_handler(
             self,

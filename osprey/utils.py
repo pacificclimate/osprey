@@ -69,18 +69,19 @@ def config_hander(workdir, unprocessed, config_template):
         raise ProcessError("Invalid config key provided")
 
 
-def config_file_builder(workdir, config, config_template):
+def config_file_builder(workdir, config):
     """
     This function is used for RVIC1.1.0.post1 only since the version requires Configuration input
     to be a .cfg filepath. The function uses information from config to create the file.
     """
     cfg_filepath = os.path.join(workdir, "convolve_file.cfg")
     with open(cfg_filepath, "w") as cfg_file:
-        for upper_key in config_template.keys():
+        for upper_key in config.keys():
             cfg_file.write(f"[{upper_key}]\n")
-            for k, v in config_template[upper_key].items():
+            for k, v in config[upper_key].items():
                 cfg_file.write(f"{k}: {str(v)}\n")
 
+    logger.critical(cfg_filepath)
     return cfg_filepath
 
 
@@ -94,9 +95,9 @@ def build_output(config):
     return os.path.join(directory, filename)
 
 
-def run_rvic(rvic_module, version, config, config_file):
+def run_rvic(workdir, rvic_module, version, config):
     if version == "1.1.0-1":  # RVIC1.1.0.post1
-        cfg_filepath = config_file
+        cfg_filepath = config_file_builder(workdir, config)
         rvic_module(cfg_filepath)
     elif version == "1.1.1":  # RVIC1.1.1
         rvic_module(config)

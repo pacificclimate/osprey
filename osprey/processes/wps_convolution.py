@@ -127,16 +127,13 @@ class Convolution(Process):
 
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
-            run_rvic(convolution, version, config, unprocessed)
         else:
             unprocessed = unprocessed.replace("'", '"')
             config = config_hander(self.workdir, unprocessed, self.config_template)
-            run_rvic(
-                convolution,
-                version,
-                config,
-                config_file_builder(self.workdir, config, self.config_template),
-            )
+
+        run_rvic(
+            self.workdir, convolution, version, config,
+        )
 
         log_handler(
             self,
