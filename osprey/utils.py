@@ -34,7 +34,7 @@ def replace_filenames(config, temp_config):
     temp_config.writelines(newdata)
 
 
-def config_hander(workdir, unprocessed, config_template):
+def config_hander(workdir, modulue_name, unprocessed, config_template):
     """
     This function enables users to provide dictionary-like string for Configuration input.
     If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
@@ -52,12 +52,12 @@ def config_hander(workdir, unprocessed, config_template):
             config_template["OPTIONS"]["CASE_DIR"] = os.path.join(
                 workdir, config_template["OPTIONS"]["CASEID"]
             )
-        try:
+        if modulue_name == "convolution":
             if config_template["OPTIONS"]["REST_DATE"] == None:
                 config_template["OPTIONS"]["REST_DATE"] = config_template["OPTIONS"][
                     "STOP_DATE"
                 ]
-        except KeyError:
+        elif modulue_name == "parameters":
             if config_template["OPTIONS"]["TEMP_DIR"] == None:
                 config_template["OPTIONS"]["TEMP_DIR"] = (
                     config_template["OPTIONS"]["CASEID"] + "/temp"
@@ -80,8 +80,6 @@ def config_file_builder(workdir, config):
             cfg_file.write(f"[{upper_key}]\n")
             for k, v in config[upper_key].items():
                 cfg_file.write(f"{k}: {str(v)}\n")
-
-    logger.critical(cfg_filepath)
     return cfg_filepath
 
 

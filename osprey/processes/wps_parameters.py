@@ -6,7 +6,7 @@ from pywps import (
 from pywps.app.Common import Metadata
 
 # Tool imports
-from rvic import version
+from rvic.version import version
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from wps_tools.utils import (
@@ -143,7 +143,7 @@ class Parameters(Process):
 
     def _handler(self, request, response):
         if request.inputs["version"][0].data:
-            logger.info(version.short_version)
+            logger.info(version)
 
         (unprocessed, np, loglevel) = self.collect_args(request)
         log_handler(
@@ -168,7 +168,9 @@ class Parameters(Process):
             config = read_config(unprocessed)
         else:
             unprocessed = unprocessed.replace("'", '"')
-            config = config_hander(self.workdir, unprocessed, self.config_template)
+            config = config_hander(
+                self.workdir, parameters.__name__, unprocessed, self.config_template
+            )
 
         run_rvic(
             self.workdir, parameters, version, config,
