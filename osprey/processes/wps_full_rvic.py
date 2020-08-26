@@ -80,44 +80,23 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        loglevel = request.inputs["loglevel"][0].data
-
-        log_handler(
-            self,
-            response,
-            "Starting Process",
-            logger,
-            log_level=loglevel,
-            process_step="start",
-        )
-
-        log_handler(
-            self,
-            response,
-            "Creating parameters",
-            logger,
-            log_level=loglevel,
-            process_step="process",
-        )
 
         params_output = Parameters()._handler(request, response).outputs["output"].file
 
-        log_handler(
-            self,
-            response,
-            "Building final output",
-            logger,
-            log_level=loglevel,
-            process_step="build_output",
-        )
+        unprocessed = request.inputs["convolve_config"][0].data
+        if os.path.isfile(unprocessed):
+            with open(unprocessed, "rt") as convolve_cfg:
+                data = ""
+                for line in convolve_cfg:
+                    if "PARAM_FILE" in line:
+                        paramfile = True
+                    elif line.startswith("FILE_NAME") and paramfile:
+                        data += f"FILE_NAME : {params_output}"
+                        paramfile = False
+                    else:
+                        data += line
 
-        log_handler(
-            self,
-            response,
-            "Process Complete",
-            logger,
-            log_level=loglevel,
-            process_step="complete",
-        )
+            with open("peace_convolve.config.cfg", "wt") as convolve_cfg:
+                convolve_cfg.write(data)
 
         return response
