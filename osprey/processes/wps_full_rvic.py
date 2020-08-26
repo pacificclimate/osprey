@@ -6,8 +6,10 @@ from pywps import (
 
 # Tool imports
 from rvic import version
+from rvic.convolution import convolution
+from rvic.parameters import parameters
+from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey import parameters, convolution
 from osprey.utils import logger
 from wps_tools.utils import (
     collect_output_files,
@@ -17,6 +19,7 @@ from wps_tools.io import (
     log_level,
     nc_output,
 )
+
 
 class FullRVIC(Process):
     def __init__(self):
@@ -38,6 +41,13 @@ class FullRVIC(Process):
                 "Convolution Configuration",
                 abstract="Path to convolution module's input configuration file or input dictionary",
                 data_type="string",
+            ),
+            LiteralInput(
+                "version",
+                "Version",
+                default=True,
+                abstract="Return RVIC version string",
+                data_type="boolean",
             ),
             LiteralInput(
                 "np",
@@ -69,7 +79,12 @@ class FullRVIC(Process):
 
     def _handler(self, request, response):
         if request.inputs["version"][0].data:
-            logger.info(version.short_version)
+            logger.info(version)
+
+        params_config = request.inputs["params_config"][0].data
+        convolve_config = request.inputs["convolve_config"][0].data
+        np = request.inputs["np"][0].data
+        loglevel = request.inputs["loglevel"][0].data
 
         log_handler(
             self,
@@ -80,11 +95,6 @@ class FullRVIC(Process):
             process_step="start",
         )
 
-        params_config = request.inputs["params_config"][0].data
-        convolve_config = request.inputs["convolve_config"][0].data
-        np = request.inputs["np"][0].data
-        loglevel = request.inputs["loglevel"][0].data
-
         log_handler(
             self,
             response,
@@ -93,7 +103,7 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="process",
         )
-        
+
         parameters(params_config, np)
 
         log_handler(
@@ -113,5 +123,5 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="complete",
         )
-        
+
         return response
