@@ -10,7 +10,8 @@ from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey.utils import logger
+from osprey.utils import logger, config_hander, get_outfile
+from osprey.processes.wps_parameters import Parameters
 from wps_tools.utils import (
     collect_output_files,
     log_handler,
@@ -19,6 +20,7 @@ from wps_tools.io import (
     log_level,
     nc_output,
 )
+import os
 
 
 class FullRVIC(Process):
@@ -104,7 +106,17 @@ class FullRVIC(Process):
             process_step="process",
         )
 
+        params_config_template = Parameters().config_template
+        if os.path.isfile(params_config):
+            config = read_config(params_config)
+        else:
+            params_config = params_config.replace("'", '"')
+            config = config_hander(
+                self.workdir, parameters.__name__, params_config, params_config_template
+            )
+
         parameters(params_config, np)
+        params_output = get_outfile(config, "params")
 
         log_handler(
             self,
