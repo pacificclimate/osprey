@@ -80,12 +80,6 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        if request.inputs["version"][0].data:
-            logger.info(version)
-
-        params_config = request.inputs["params_config"][0].data
-        convolve_config = request.inputs["convolve_config"][0].data
-        np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
 
         log_handler(
@@ -106,17 +100,7 @@ class FullRVIC(Process):
             process_step="process",
         )
 
-        params_config_template = Parameters().config_template
-        if os.path.isfile(params_config):
-            config = read_config(params_config)
-        else:
-            params_config = params_config.replace("'", '"')
-            config = config_hander(
-                self.workdir, parameters.__name__, params_config, params_config_template
-            )
-
-        parameters(params_config, np)
-        params_output = get_outfile(config, "params")
+        params_output = Parameters()._handler(request, response).outputs["output"].file
 
         log_handler(
             self,

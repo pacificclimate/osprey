@@ -86,8 +86,8 @@ class Parameters(Process):
         }
         inputs = [
             LiteralInput(
-                "config",
-                "Configuration",
+                "params_config",
+                "Parameters Configuration",
                 abstract="Path to input configuration file or input dictionary",
                 data_type="string",
             ),
@@ -128,12 +128,14 @@ class Parameters(Process):
         )
 
     def collect_args(self, request):
-        unprocessed = request.inputs["config"][0].data
+        unprocessed = request.inputs["params_config"][0].data
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
         return (unprocessed, np, loglevel)
 
     def _handler(self, request, response):
+        if self.workdir == None:
+            self.workdir = "/tmp"
         if request.inputs["version"][0].data:
             logger.info(version)
 
