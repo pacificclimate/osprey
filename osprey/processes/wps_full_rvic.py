@@ -7,8 +7,7 @@ from pywps import (
 # Tool imports
 from rvic import version
 from pywps.app.Common import Metadata
-from osprey.processes.wps_convolution import Convolution
-from osprey.processes.wps_parameters import Parameters
+from osprey import parameters, convolution
 from osprey.utils import logger
 from wps_tools.utils import (
     collect_output_files,
@@ -72,8 +71,6 @@ class FullRVIC(Process):
         if request.inputs["version"][0].data:
             logger.info(version.short_version)
 
-        loglevel = request.inputs["loglevel"][0].data
-
         log_handler(
             self,
             response,
@@ -83,6 +80,11 @@ class FullRVIC(Process):
             process_step="start",
         )
 
+        params_config = request.inputs["params_config"][0].data
+        convolve_config = request.inputs["convolve_config"][0].data
+        np = request.inputs["np"][0].data
+        loglevel = request.inputs["loglevel"][0].data
+
         log_handler(
             self,
             response,
@@ -91,6 +93,8 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="process",
         )
+        
+        parameters(params_config, np)
 
         log_handler(
             self,
