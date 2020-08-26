@@ -95,3 +95,24 @@ def run_rvic(workdir, rvic_module, version, config):
         rvic_module(cfg_filepath)
     elif version == "1.1.1":  # RVIC1.1.1
         rvic_module(config)
+
+
+def get_outfile(self, dir_name):
+    case_id = config["OPTIONS"]["CASEID"]
+    case_dir = config["OPTIONS"]["CASE_DIR"]
+    if dir_name == "params":
+        grid_id = config["OPTIONS"]["GRIDID"]
+        date = datetime.now().strftime("%Y%m%d")
+        filename = ".".join([case_id, "rvic", "prm", grid_id, date, "nc"])
+
+    elif dir_name == "hist":
+        stop_date = config["OPTIONS"]["STOP_DATE"]
+        end_date = str(
+            datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1)
+        )
+        filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
+
+    outdir = os.path.join(case_dir, dir_name)
+    (out_file,) = collect_output_files(filename, outdir)
+    
+    return os.path.join(outdir, out_file)
