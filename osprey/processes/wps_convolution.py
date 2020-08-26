@@ -6,13 +6,14 @@ from rvic.convolution import convolution
 from rvic.core.config import read_config
 from rvic.version import version
 
-from wps_tools.utils import log_handler, collect_output_files
+from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     config_hander,
     config_file_builder,
     run_rvic,
+    get_outfile,
 )
 
 from datetime import datetime, timedelta
@@ -103,19 +104,6 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def get_outfile(self, config):
-        case_id = config["OPTIONS"]["CASEID"]
-        stop_date = config["OPTIONS"]["STOP_DATE"]
-        end_date = str(
-            datetime.strptime(stop_date, "%Y-%m-%d").date() + timedelta(days=1)
-        )
-
-        outdir = os.path.join(config["OPTIONS"]["CASE_DIR"], "hist")
-        filename = ".".join([case_id, "rvic", "h0a", end_date, "nc"])
-        (param_file,) = collect_output_files(filename, outdir)
-
-        return os.path.join(outdir, param_file)
-
     def _handler(self, request, response):
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
@@ -157,7 +145,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-        response.outputs["output"].file = self.get_outfile(config)
+        response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(
             self,

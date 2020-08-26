@@ -9,10 +9,7 @@ from pywps.app.Common import Metadata
 from rvic.version import version
 from rvic.parameters import parameters
 from rvic.core.config import read_config
-from wps_tools.utils import (
-    collect_output_files,
-    log_handler,
-)
+from wps_tools.utils import log_handler
 from wps_tools.io import (
     log_level,
     nc_output,
@@ -22,6 +19,7 @@ from osprey.utils import (
     run_rvic,
     config_hander,
     config_file_builder,
+    get_outfile,
 )
 
 # Library imports
@@ -135,12 +133,6 @@ class Parameters(Process):
         loglevel = request.inputs["loglevel"][0].data
         return (unprocessed, np, loglevel)
 
-    def get_outfile(self, config):
-        outdir = os.path.join(config["OPTIONS"]["CASE_DIR"], "params")
-        date = datetime.now().strftime("%Y%m%d")
-        (param_file,) = collect_output_files(date, outdir)
-        return os.path.join(outdir, param_file)
-
     def _handler(self, request, response):
         if request.inputs["version"][0].data:
             logger.info(version)
@@ -184,7 +176,7 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-        response.outputs["output"].file = self.get_outfile(config)
+        response.outputs["output"].file = get_outfile(config, "params")
 
         log_handler(
             self,

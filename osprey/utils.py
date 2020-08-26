@@ -5,6 +5,7 @@ import os
 import json
 from datetime import datetime, timedelta
 from collections.abc import Iterable
+from wps_tools.utils import collect_output_files
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -97,7 +98,7 @@ def run_rvic(workdir, rvic_module, version, config):
         rvic_module(config)
 
 
-def get_outfile(self, dir_name):
+def get_outfile(config, dir_name):
     case_id = config["OPTIONS"]["CASEID"]
     case_dir = config["OPTIONS"]["CASE_DIR"]
     if dir_name == "params":
@@ -114,5 +115,5 @@ def get_outfile(self, dir_name):
 
     outdir = os.path.join(case_dir, dir_name)
     (out_file,) = collect_output_files(filename, outdir)
-    
+
     return os.path.join(outdir, out_file)
