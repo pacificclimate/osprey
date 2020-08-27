@@ -27,7 +27,7 @@ def test_parameters_local(config):
 @pytest.mark.parametrize(
     ("config"), [resource_filename(__name__, "configs/parameter_https.cfg")],
 )
-def test_parameters_https(config, make_mock_urls):
+def test_parameters_https(config, conftest_make_mock_urls):
     config_name = os.path.splitext(config)[0]  # Remove .cfg extension
     with NamedTemporaryFile(
         suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t"
