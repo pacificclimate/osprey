@@ -34,5 +34,5 @@ from osprey.processes.wps_convolution import Convolution
     ],
 )
 def test_wps_convolution(config):
-    params = ("config={0};").format(config)
+    params = ("convolve_config={0};").format(config)
     run_wps_process(Convolution(), params)
