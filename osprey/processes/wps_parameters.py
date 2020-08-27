@@ -136,6 +136,10 @@ class Parameters(Process):
     def _handler(self, request, response):
         if self.workdir == None:
             self.workdir = "/tmp"
+            full_rvic = True
+        else:
+            full_rvic = False
+
         if request.inputs["version"][0].data:
             logger.info(version)
 
@@ -178,6 +182,8 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="build_output",
         )
+        if full_rvic:
+            return get_outfile(config, "params")
         response.outputs["output"].file = get_outfile(config, "params")
 
         log_handler(
@@ -188,4 +194,5 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="complete",
         )
+
         return response

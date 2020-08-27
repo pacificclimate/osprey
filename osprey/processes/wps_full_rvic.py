@@ -65,13 +65,6 @@ class FullRVIC(Process):
         ]
         outputs = [
             nc_output,
-            ComplexOutput(
-                "rvic_output",
-                "RVIC Output",
-                as_reference=True,
-                abstract="Output Netcdf File",
-                supported_formats=[FORMATS.NETCDF],
-            ),
         ]
 
         super(FullRVIC, self).__init__(
@@ -91,7 +84,7 @@ class FullRVIC(Process):
 
     def _handler(self, request, response):
 
-        params_output = Parameters()._handler(request, response).outputs["output"].file
+        params_output = Parameters()._handler(request, response)
 
         unprocessed = request.inputs["convolve_config"][0].data
         if os.path.isfile(unprocessed):
@@ -110,9 +103,7 @@ class FullRVIC(Process):
         cfg_file = config_file_builder(self.workdir, config)
         request.inputs["convolve_config"][0].data = cfg_file
 
-        convolve_output = (
-            Convolution()._handler(request, response).outputs["output"].file
-        )
-        response.outputs["rvic_output"].file = convolve_output
+        convolve_output = Convolution()._handler(request, response)
+        response.outputs["output"].file = convolve_output
 
         return response
