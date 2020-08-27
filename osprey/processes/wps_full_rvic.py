@@ -2,6 +2,8 @@
 from pywps import (
     Process,
     LiteralInput,
+    ComplexOutput,
+    FORMATS,
 )
 
 # Tool imports
@@ -63,6 +65,13 @@ class FullRVIC(Process):
         ]
         outputs = [
             nc_output,
+            ComplexOutput(
+                "rvic_output",
+                "RVIC Output",
+                as_reference=True,
+                abstract="Output Netcdf File",
+                supported_formats=[FORMATS.NETCDF],
+            ),
         ]
 
         super(FullRVIC, self).__init__(
@@ -104,6 +113,6 @@ class FullRVIC(Process):
         convolve_output = (
             Convolution()._handler(request, response).outputs["output"].file
         )
-        response.outputs["output"].file = convolve_output
+        response.outputs["rvic_output"].file = convolve_output
 
         return response
