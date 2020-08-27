@@ -42,7 +42,8 @@ def config_hander(workdir, modulue_name, unprocessed, config_template):
     If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
     CASEID and STOP_DATE by default.
     """
-    unprocessed = json.loads(unprocessed)
+    if type(unprocessed) == str:
+        unprocessed = json.loads(unprocessed)
     try:
         for upper_key in unprocessed.keys():
             for lower_key in unprocessed[upper_key].keys():

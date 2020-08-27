@@ -81,7 +81,7 @@ class Convolution(Process):
         }
         inputs = [
             LiteralInput(
-                "config",
+                "convolve_config",
                 "Configuration",
                 abstract="Path to input configuration file or input dictionary",
                 data_type="string",
@@ -105,6 +105,8 @@ class Convolution(Process):
         )
 
     def _handler(self, request, response):
+        if self.workdir == None:
+            self.workdir = "/tmp"
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
             self,
@@ -114,7 +116,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="start",
         )
-        unprocessed = request.inputs["config"][0].data
+        unprocessed = request.inputs["convolve_config"][0].data
 
         log_handler(
             self,

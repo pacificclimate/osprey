@@ -10,8 +10,9 @@ from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey.utils import logger, config_hander, get_outfile
+from osprey.utils import logger, config_hander, get_outfile, config_file_builder
 from osprey.processes.wps_parameters import Parameters
+from osprey.processes.wps_convolution import Convolution
 from wps_tools.utils import (
     collect_output_files,
     log_handler,
@@ -85,18 +86,24 @@ class FullRVIC(Process):
 
         unprocessed = request.inputs["convolve_config"][0].data
         if os.path.isfile(unprocessed):
-            with open(unprocessed, "rt") as convolve_cfg:
-                data = ""
-                for line in convolve_cfg:
-                    if "PARAM_FILE" in line:
-                        paramfile = True
-                    elif line.startswith("FILE_NAME") and paramfile:
-                        data += f"FILE_NAME : {params_output}"
-                        paramfile = False
-                    else:
-                        data += line
+            config = read_config(unprocessed)
 
-            with open("peace_convolve.config.cfg", "wt") as convolve_cfg:
-                convolve_cfg.write(data)
+        else:
+            unprocessed = unprocessed.replace("'", '"')
+            config = config_hander(
+                self.workdir,
+                convolution.__name__,
+                unprocessed,
+                Convolution().config_template,
+            )
+
+        config["PARAM_FILE"]["FILE_NAME"] = params_output
+        cfg_file = config_file_builder(self.workdir, config)
+        request.inputs["convolve_config"][0].data = cfg_file
+
+        convolve_output = (
+            Convolution()._handler(request, response).outputs["output"].file
+        )
+        response.outputs["output"].file = convolve_output
 
         return response
