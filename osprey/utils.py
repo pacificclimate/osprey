@@ -43,7 +43,7 @@ def config_hander(workdir, modulue_name, unprocessed, config_template):
     CASEID and STOP_DATE by default.
     """
     if type(unprocessed) == str:
-        unprocessed = json.loads(unprocessed)
+        unprocessed = eval(unprocessed)
     try:
         for upper_key in unprocessed.keys():
             for lower_key in unprocessed[upper_key].keys():
