@@ -68,7 +68,7 @@ class Convolution(Process):
                 "DATL_FILE": None,
                 "TIME_VAR": "time",
                 "LATITUDE_VAR": "lat",
-                "DATL_LIQ_FLDS": "RUNOFF, BASEFLOW",
+                "DATL_LIQ_FLDS": ["RUNOFF", "BASEFLOW"],
                 "START": None,
                 "END": None,
             },
