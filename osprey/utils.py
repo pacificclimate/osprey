@@ -72,6 +72,16 @@ def config_hander(workdir, modulue_name, unprocessed, config_template):
 
 
 def get_outfile(config, dir_name):
+    """
+    This function returns the output filepath of RVIC processes.
+    Parameters
+        1. config (dict)h: Set of key-value pairs that contains the information of filename
+            parameters file: CASEID.rvic.prm.GRIDID.DATE.nc
+            convolution file: CASEID.rvic.h0a.ENDINGDATE.nc
+        2. dir_name (str): name of the directory that te output file will be stored.
+            parameters module   --->    dir_name == "params"
+            convoltion module   --->    dir_name == "hist"
+    """
     case_id = config["OPTIONS"]["CASEID"]
     case_dir = config["OPTIONS"]["CASE_DIR"]
     if dir_name == "params":
