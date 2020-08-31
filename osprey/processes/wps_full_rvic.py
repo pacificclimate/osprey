@@ -24,6 +24,7 @@ from wps_tools.io import (
     nc_output,
 )
 import os
+from json import loads, dumps
 
 
 class FullRVIC(Process):
@@ -88,7 +89,7 @@ class FullRVIC(Process):
 
         unprocessed = request.inputs["convolve_config"][0].data
         if os.path.isfile(unprocessed):
-            config = read_config(unprocessed)
+            config = loads(dumps(read_config(unprocessed)))
 
         else:
             unprocessed = unprocessed.replace("'", '"')
@@ -100,8 +101,7 @@ class FullRVIC(Process):
             )
 
         config["PARAM_FILE"]["FILE_NAME"] = params_output
-        cfg_file = config_file_builder(self.workdir, config)
-        request.inputs["convolve_config"][0].data = cfg_file
+        request.inputs["convolve_config"][0].data = config
 
         convolve_output = Convolution()._handler(request, response)
         response.outputs["output"].file = convolve_output

@@ -12,7 +12,6 @@ from osprey.utils import (
     logger,
     config_hander,
     config_file_builder,
-    run_rvic,
     get_outfile,
 )
 
@@ -68,7 +67,7 @@ class Convolution(Process):
                 "DATL_FILE": None,
                 "TIME_VAR": "time",
                 "LATITUDE_VAR": "lat",
-                "DATL_LIQ_FLDS": "RUNOFF, BASEFLOW",
+                "DATL_LIQ_FLDS": ["RUNOFF", "BASEFLOW"],
                 "START": None,
                 "END": None,
             },
@@ -141,9 +140,7 @@ class Convolution(Process):
                 self.workdir, convolution.__name__, unprocessed, self.config_template
             )
 
-        run_rvic(
-            self.workdir, convolution, version, config,
-        )
+        convolution(config)
 
         log_handler(
             self,
