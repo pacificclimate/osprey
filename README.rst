@@ -62,6 +62,8 @@ Upon installation, the tests for each process will fail due to issues in ``RVIC`
 
 1. In line 188 of ``rvic/parameters.py``, change ``pour_points.ix`` to ``pour_points.loc`` (`parameters.py issue`_).
 
+   - The RVIC's ``.ix`` deprecation error is resolved externally in ``osprey`` by downgrading ``pandas`` to <0.20.0, thus the modification is not required
+
 2. From lines 277 to 298 of ``rvic/core/share.py``, change each instance of ``valid_range`` to ``range`` (`share.py issue`_).
 
 After these changes, the tests can be run by running `pytest` on the command line.
