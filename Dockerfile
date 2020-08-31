@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3.6-slim
 
 MAINTAINER https://github.com/pacificclimate/osprey
 LABEL Description="osprey WPS" Vendor="pacificclimate" Version="0.1.0"
