@@ -26,9 +26,8 @@ def replace_filenames(config, temp_config):
         config (str): Original config file
         temp_config (TemporaryFile): New config file (to be passed into process)
     """
-    old_config = open(config, "r")
-    filedata = old_config.read()
-    old_config.close()
+    with open(config, "r") as old_config:
+        filedata = old_config.read()
 
     rel_dir = "tests/data"
     abs_dir = os.path.abspath(resource_filename("tests", "data"))
@@ -44,9 +43,8 @@ def replace_urls(config, outdir):
         config (str): Config file
         outdir (str): Output directory
     """
-    read_config = open(config, "r")
-    filedata = read_config.readlines()
-    read_config.close()
+    with open(config, "r") as read_config:
+        filedata = read_config.readlines()
 
     for i in range(len(filedata)):
         if "https" in filedata[i]:
@@ -62,10 +60,9 @@ def replace_urls(config, outdir):
             local_file.write(r.content)
             filedata[i] = filedata[i].replace(url, local_file.name)
 
-    write_config = open(config, "w")
-    for line in filedata:
-        write_config.write(f"{line}")
-    write_config.close()
+    with open(config, "w") as write_config:
+        for line in filedata:
+            write_config.write(f"{line}")
 
 
 def config_hander(workdir, unprocessed, config_template):

@@ -152,7 +152,7 @@ def stop():
 @click.option(
     "--parallelprocesses",
     metavar="INT",
-    default="20",
+    default="2",
     help="parallelprocesses in PyWPS configuration.",
 )
 @click.option(
