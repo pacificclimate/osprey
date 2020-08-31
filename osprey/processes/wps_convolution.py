@@ -11,8 +11,6 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     config_hander,
-    config_file_builder,
-    run_rvic,
     get_outfile,
 )
 
@@ -133,9 +131,7 @@ class Convolution(Process):
                 self.workdir, convolution.__name__, unprocessed, self.config_template
             )
 
-        run_rvic(
-            self.workdir, convolution, version, config,
-        )
+        convolution(config)
 
         log_handler(
             self,

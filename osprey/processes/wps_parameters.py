@@ -16,9 +16,7 @@ from wps_tools.io import (
 )
 from osprey.utils import (
     logger,
-    run_rvic,
     config_hander,
-    config_file_builder,
     get_outfile,
 )
 
@@ -164,9 +162,7 @@ class Parameters(Process):
                 self.workdir, parameters.__name__, unprocessed, self.config_template
             )
 
-        run_rvic(
-            self.workdir, parameters, version, config,
-        )
+        parameters(config, np)
 
         log_handler(
             self,
