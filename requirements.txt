@@ -5,5 +5,3 @@ psutil
 rvic==1.1.1
 nchelpers==5.5.7
 wps-tools==0.1.2
-pandas<0.20.0
-numpy<1.18.0

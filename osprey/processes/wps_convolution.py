@@ -11,7 +11,6 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     config_hander,
-    config_file_builder,
     get_outfile,
 )
 

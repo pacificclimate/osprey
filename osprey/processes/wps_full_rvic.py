@@ -12,7 +12,7 @@ from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey.utils import logger, config_hander, get_outfile, config_file_builder
+from osprey.utils import logger, config_hander, get_outfile
 from osprey.processes.wps_parameters import Parameters
 from osprey.processes.wps_convolution import Convolution
 from wps_tools.utils import (

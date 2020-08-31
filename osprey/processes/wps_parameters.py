@@ -17,7 +17,6 @@ from wps_tools.io import (
 from osprey.utils import (
     logger,
     config_hander,
-    config_file_builder,
     get_outfile,
 )
 
