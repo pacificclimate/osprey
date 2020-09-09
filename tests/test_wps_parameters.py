@@ -60,5 +60,5 @@ def test_parameters_https(config, conftest_make_mock_urls):
         read_config = open(config, "r")
         temp_config.writelines(read_config.read())
         temp_config.read()
-        params = f"config={temp_config.name};"
+        params = f"params_config={temp_config.name};"
         run_wps_process(Parameters(), params)
