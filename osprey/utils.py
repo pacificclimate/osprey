@@ -3,9 +3,11 @@ from pywps.app.exceptions import ProcessError
 import logging
 import os
 import json
+import requests
 from datetime import datetime, timedelta
 from collections.abc import Iterable
 from wps_tools.utils import collect_output_files
+from tempfile import NamedTemporaryFile
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -26,14 +28,43 @@ def replace_filenames(config, temp_config):
         config (str): Original config file
         temp_config (TemporaryFile): New config file (to be passed into process)
     """
-    old_config = open(config, "r")
-    filedata = old_config.read()
-    old_config.close()
+    with open(config, "r") as old_config:
+        filedata = old_config.read()
 
     rel_dir = "tests/data"
     abs_dir = os.path.abspath(resource_filename("tests", "data"))
     newdata = filedata.replace(rel_dir, abs_dir)
     temp_config.writelines(newdata)
+
+
+def replace_urls(config, outdir):
+    """
+    Copy https URLs to local storage and replace URLs
+    with local paths in config file.
+    Parameters:
+        config (str): Config file
+        outdir (str): Output directory
+    """
+    with open(config, "r") as read_config:
+        filedata = read_config.readlines()
+
+    for i in range(len(filedata)):
+        if "https" in filedata[i]:
+            url = filedata[i].split(" ")[-1]  # https url is last word in line
+            url = url.rstrip()  # remove \n character at end
+            r = requests.get(url)
+            filename = url.split("/")[-1]
+            prefix, suffix = filename.split(".")
+            suffix = "." + suffix
+            local_file = NamedTemporaryFile(
+                suffix=suffix, prefix=prefix, dir=outdir, delete=False
+            )
+            local_file.write(r.content)
+            filedata[i] = filedata[i].replace(url, local_file.name)
+
+    with open(config, "w") as write_config:
+        for line in filedata:
+            write_config.write(f"{line}")
 
 
 def config_hander(workdir, modulue_name, unprocessed, config_template):
