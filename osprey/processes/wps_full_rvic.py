@@ -89,7 +89,9 @@ class FullRVIC(Process):
 
         unprocessed = request.inputs["convolve_config"][0].data
         if os.path.isfile(unprocessed):
-            config = loads(dumps(read_config(unprocessed)))         # Convert OrderedDict to dict
+            config = loads(
+                dumps(read_config(unprocessed))
+            )  # Convert OrderedDict to dict
 
         else:
             config = config_hander(
