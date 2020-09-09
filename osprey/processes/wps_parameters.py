@@ -18,11 +18,13 @@ from osprey.utils import (
     logger,
     config_hander,
     get_outfile,
+    replace_urls,
 )
 
 # Library imports
 import os
 from datetime import datetime
+from pkg_resources import resource_filename
 
 
 class Parameters(Process):
@@ -141,6 +143,7 @@ class Parameters(Process):
             logger.info(version)
 
         (unprocessed, np, loglevel) = self.collect_args(request)
+
         log_handler(
             self,
             response,
@@ -160,9 +163,9 @@ class Parameters(Process):
         )
 
         if os.path.isfile(unprocessed):
+            replace_urls(unprocessed, self.workdir)
             config = read_config(unprocessed)
         else:
-            unprocessed = unprocessed.replace("'", '"')
             config = config_hander(
                 self.workdir, parameters.__name__, unprocessed, self.config_template
             )

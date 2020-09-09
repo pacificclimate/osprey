@@ -4,7 +4,6 @@ from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
 from rvic.core.config import read_config
-from rvic.version import version
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
@@ -134,7 +133,6 @@ class Convolution(Process):
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
         else:
-            unprocessed = unprocessed.replace("'", '"')
             config = config_hander(
                 self.workdir, convolution.__name__, unprocessed, self.config_template
             )
