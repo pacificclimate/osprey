@@ -89,10 +89,9 @@ class FullRVIC(Process):
 
         unprocessed = request.inputs["convolve_config"][0].data
         if os.path.isfile(unprocessed):
-            config = loads(dumps(read_config(unprocessed)))
+            config = loads(dumps(read_config(unprocessed)))         # Convert OrderedDict to dict
 
         else:
-            unprocessed = unprocessed.replace("'", '"')
             config = config_hander(
                 self.workdir,
                 convolution.__name__,

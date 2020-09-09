@@ -2,7 +2,6 @@ from pkg_resources import resource_filename
 from pywps.app.exceptions import ProcessError
 import logging
 import os
-import json
 import requests
 from datetime import datetime, timedelta
 from collections.abc import Iterable
