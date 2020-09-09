@@ -138,7 +138,7 @@ class Parameters(Process):
             logger.info(version)
 
         (unprocessed, np, loglevel) = self.collect_args(request)
-        
+
         log_handler(
             self,
             response,
