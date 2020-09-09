@@ -125,7 +125,6 @@ class Convolution(Process):
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
         else:
-            unprocessed = unprocessed.replace("'", '"')
             config = config_hander(
                 self.workdir, convolution.__name__, unprocessed, self.config_template
             )
