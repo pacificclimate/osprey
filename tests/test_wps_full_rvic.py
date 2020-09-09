@@ -16,6 +16,44 @@ from osprey.processes.wps_full_rvic import FullRVIC
             resource_filename(__name__, "data/samples/sample_parameter_config.cfg"),
             resource_filename(__name__, "configs/convolve_opendap.cfg"),
         ),
+        (
+            {
+                "OPTIONS": {"CASEID": "sample", "GRIDID": "COLUMBIA",},
+                "POUR_POINTS": {
+                    "FILE_NAME": resource_filename(
+                        __name__, "data/samples/sample_pour.txt"
+                    )
+                },
+                "UH_BOX": {
+                    "FILE_NAME": resource_filename(__name__, "data/samples/uhbox.csv")
+                },
+                "ROUTING": {
+                    "FILE_NAME": resource_filename(
+                        __name__, "data/samples/sample_flow_parameters.nc"
+                    )
+                },
+                "DOMAIN": {
+                    "FILE_NAME": resource_filename(
+                        __name__, "data/samples/sample_routing_domain.nc"
+                    )
+                },
+            },
+            {
+                "OPTIONS": {
+                    "CASEID": "sample",
+                    "RUN_STARTDATE": "2012-12-01-00",
+                    "STOP_DATE": "2012-12-31",
+                    "CALENDAR": "standard",
+                },
+                "DOMAIN": {
+                    "FILE_NAME": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample_routing_domain.nc"
+                },
+                "INPUT_FORCINGS": {
+                    "DATL_PATH": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/",
+                    "DATL_FILE": "columbia_vicset2.nc",
+                },
+            },
+        ),
     ],
 )
 def test_full_rvic(params_config, convolve_config):
