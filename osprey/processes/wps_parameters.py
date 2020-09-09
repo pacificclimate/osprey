@@ -138,7 +138,7 @@ class Parameters(Process):
             logger.info(version)
 
         (unprocessed, np, loglevel) = self.collect_args(request)
-        replace_urls(config, self.workdir)
+        
         log_handler(
             self,
             response,
@@ -158,6 +158,7 @@ class Parameters(Process):
         )
 
         if os.path.isfile(unprocessed):
+            replace_urls(unprocessed, self.workdir)
             config = read_config(unprocessed)
         else:
             config = config_hander(
