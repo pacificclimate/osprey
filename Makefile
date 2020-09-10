@@ -22,7 +22,7 @@ help:
 	@echo "Please use 'make <target>' where <target> is one of:"
 	@echo "  help              		to print this help message. (Default)"
 	@echo "  install           		to install app by running 'pip install -e .'"
-	@echo "  resolve-rvic-issues    to install app by running 'pip install -e .'"
+	@echo "  resolve-rvic-issues    to resolve rvic issues"
 	# @echo "  develop           	to install with additional development requirements."
 	# @echo "  start             	to start $(APP_NAME) service as daemon (background process)."
 	# @echo "  stop              	to stop $(APP_NAME) service."
@@ -48,7 +48,7 @@ install: venv
 
 .PHONY: resolve-rvic-issues
 resolve-rvic-issues: venv
-	@echo "Resolving RVIC's internal issues"
+	@echo "Resolving RVIC's internal issues ..."
 	@bash -c '${PYTHON} resolve_rvic_issues'
 
 .PHONY: develop
