@@ -23,7 +23,8 @@ jobs:
         pip install -U pip pytest
         pip install -r requirements.txt
         pip install -e .[dev]
-        resolve_rvic_issues
+        chmod +x resolve_rvic_issues
+        ./resolve_rvic_issues
         - name: Test with pytest (full)
         if: github.ref == 'refs/heads/master'
         run: |
