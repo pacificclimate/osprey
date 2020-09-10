@@ -49,7 +49,7 @@ install: venv
 .PHONY: resolve-rvic-issues
 resolve-rvic-issues: venv
 	@echo "Resolving RVIC's internal issues ..."
-	@bash -c '${PYTHON} resolve_rvic_issues'
+	@bash -c '${PYTHON} resolve_rvic_issues.py'
 
 .PHONY: develop
 develop: venv

@@ -20,13 +20,10 @@ jobs:
       env:
         PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
       run: |
-        python3 -m venv venv
-        source venv/bin/activate
         pip install -U pip pytest
         pip install -r requirements.txt
         pip install -e .[dev]
-        chmod +x resolve_rvic_issues
-        ./resolve_rvic_issues
+        python3 resolve_rvic_issues.py
         - name: Test with pytest (full)
         if: github.ref == 'refs/heads/master'
         run: |

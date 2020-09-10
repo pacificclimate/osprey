@@ -67,7 +67,7 @@ Upon installation, the tests for each process will fail due to issues in ``RVIC`
 The modification can be done by running the following command:
 .. code:: bash
 
-   $ python3 resolve_rvic_issues
+   $ python3 resolve_rvic_issues.py
 
 After these changes, the tests can be run by running `pytest` on the command line.
 
