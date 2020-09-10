@@ -4,16 +4,13 @@ from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
 from rvic.core.config import read_config
-from rvic.version import version
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     config_hander,
-    config_file_builder,
-    build_output,
-    run_rvic,
+    get_outfile,
 )
 
 from datetime import datetime, timedelta
@@ -127,16 +124,12 @@ class Convolution(Process):
 
         if os.path.isfile(unprocessed):
             config = read_config(unprocessed)
-            run_rvic(convolution, version, config, unprocessed)
         else:
-            unprocessed = unprocessed.replace("'", '"')
-            config = config_hander(self.workdir, unprocessed, self.config_template)
-            run_rvic(
-                convolution,
-                version,
-                config,
-                config_file_builder(self.workdir, config, self.config_template),
+            config = config_hander(
+                self.workdir, convolution.__name__, unprocessed, self.config_template
             )
+
+        convolution(config)
 
         log_handler(
             self,
@@ -146,7 +139,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-        response.outputs["output"].file = build_output(config)
+        response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(
             self,

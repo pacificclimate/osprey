@@ -1,6 +1,7 @@
 pytest
 flake8
 pytest-flake8
+requests-mock
 ipython
 pytest-notebook
 nbsphinx
