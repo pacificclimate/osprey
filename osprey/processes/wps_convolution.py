@@ -102,14 +102,6 @@ class Convolution(Process):
         )
 
     def _handler(self, request, response):
-        if self.workdir == None:
-            self.workdir = "/tmp"
-            full_rvic = True
-        else:
-            full_rvic = False
-
-        if self.workdir == None:
-            self.workdir = "/tmp"
         loglevel = request.inputs["loglevel"][0].data
         log_handler(
             self,
@@ -147,8 +139,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-        if full_rvic:
-            return get_outfile(config, "hist")
+
         response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(

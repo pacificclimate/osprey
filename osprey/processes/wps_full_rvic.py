@@ -24,7 +24,6 @@ from wps_tools.io import (
     nc_output,
 )
 import os
-from json import loads, dumps
 
 
 class FullRVIC(Process):
