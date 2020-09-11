@@ -49,22 +49,15 @@ and activated as follows (second `venv` can be replaced with environment name of
    (venv) $ pip install -r requirements.txt
    (venv) $ pip install -e .[dev]
 
+Testing
+^^^^^^^
+
+The tests can be run by simply running ``pytest`` on the command line.
+
 Contributing
 ------------
 
 You can find information about contributing in our `Developer Guide`_.
-
-Testing
-^^^^^^^
-
-Upon installation, the tests for each process will fail due to issues in ``RVIC``. In order to fix them, two modules in the
-``rvic`` site-package in your ``venv`` need to be modified as follows:
-
-1. In line 188 of ``rvic/parameters.py``, change ``pour_points.ix`` to ``pour_points.loc`` (`parameters.py issue`_).
-
-2. From lines 277 to 298 of ``rvic/core/share.py``, change each instance of ``valid_range`` to ``range`` (`share.py issue`_).
-
-After these changes, the tests can be run by running `pytest` on the command line.
 
 Releasing
 ^^^^^^^^^
