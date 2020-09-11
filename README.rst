@@ -49,15 +49,7 @@ and activated as follows (second `venv` can be replaced with environment name of
    (venv) $ pip install -r requirements.txt
    (venv) $ pip install -e .[dev]
 
-Contributing
-------------
-
-You can find information about contributing in our `Developer Guide`_.
-
-Testing
-^^^^^^^
-
-Upon installation, the tests for each process will fail due to issues in ``RVIC``. In order to fix them, two modules in the
+Upon installation, ``RVIC``'s internal issues that are not resolved in its last update (Feb 6, 2017) remain. In order to fix them, two modules in the
 ``rvic`` site-package in your ``venv`` need to be modified as follows:
 
 1. In line 188 of ``rvic/parameters.py``, change ``pour_points.ix`` to ``pour_points.loc`` (`parameters.py issue`_).
@@ -70,7 +62,16 @@ The modification can be done by running the following command:
 
    $ python3 resolve_rvic_issues.py
 
+Testing
+^^^^^^^
+
 After these changes, the tests can be run by running `pytest` on the command line.
+
+Contributing
+------------
+
+You can find information about contributing in our `Developer Guide`_.
+
 
 Releasing
 ^^^^^^^^^
