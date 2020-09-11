@@ -30,7 +30,8 @@ class FullRVIC(Process):
     def __init__(self):
         self.status_percentage_steps = {
             "start": 0,
-            "process": 10,
+            "parameters_process": 10,
+            "convolution_process": 20,
             "build_output": 95,
             "complete": 100,
         }
@@ -87,6 +88,15 @@ class FullRVIC(Process):
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
 
+        log_handler(
+            self,
+            response,
+            "Starting Process",
+            logger,
+            log_level=loglevel,
+            process_step="start",
+        )
+
         if os.path.isfile(params_unprocessed):
             replace_urls(params_unprocessed, self.workdir)
             params_config = read_config(params_unprocessed)
@@ -97,6 +107,15 @@ class FullRVIC(Process):
                 params_unprocessed,
                 Parameters().config_template,
             )
+
+        log_handler(
+            self,
+            response,
+            "Creating parameters",
+            logger,
+            log_level=loglevel,
+            process_step="parameters_process",
+        )
 
         parameters(params_config, np)
         params_output = get_outfile(params_config, "params")
@@ -112,9 +131,36 @@ class FullRVIC(Process):
                 Convolution().config_template,
             )
 
+        log_handler(
+            self,
+            response,
+            "Run Flux Convolution",
+            logger,
+            log_level=loglevel,
+            process_step="convolution_process",
+        )
+
         convolve_config["PARAM_FILE"]["FILE_NAME"] = params_output
         convolution(convolve_config)
 
+        log_handler(
+            self,
+            response,
+            "Building final flow data output",
+            logger,
+            log_level=loglevel,
+            process_step="build_output",
+        )
+
         response.outputs["output"].file = get_outfile(convolve_config, "hist")
+
+        log_handler(
+            self,
+            response,
+            "Process Complete",
+            logger,
+            log_level=loglevel,
+            process_step="complete",
+        )
 
         return response
