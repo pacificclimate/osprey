@@ -12,7 +12,7 @@ from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey.utils import logger, config_hander, get_outfile
+from osprey.utils import logger, config_hander, get_outfile, replace_urls
 from osprey.processes.wps_parameters import Parameters
 from osprey.processes.wps_convolution import Convolution
 from wps_tools.utils import (
@@ -84,27 +84,38 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
+        params_unprocessed = request.inputs["params_config"][0].data
+        np = request.inputs["np"][0].data
+        loglevel = request.inputs["loglevel"][0].data
 
-        params_output = Parameters()._handler(request, response)
-
-        unprocessed = request.inputs["convolve_config"][0].data
-        if os.path.isfile(unprocessed):
-            config = loads(
-                dumps(read_config(unprocessed))
-            )  # Convert OrderedDict to dict
-
+        if os.path.isfile(params_unprocessed):
+            replace_urls(params_unprocessed, self.workdir)
+            params_config = read_config(params_unprocessed)
         else:
-            config = config_hander(
+            params_config = config_hander(
+                self.workdir,
+                parameters.__name__,
+                params_unprocessed,
+                Parameters().config_template,
+            )
+
+        parameters(params_config, np)
+        params_output = get_outfile(params_config, "params")
+
+        convolve_unprocessed = request.inputs["convolve_config"][0].data
+        if os.path.isfile(convolve_unprocessed):
+            convolve_config = read_config(convolve_unprocessed)
+        else:
+            convolve_config = config_hander(
                 self.workdir,
                 convolution.__name__,
-                unprocessed,
+                convolve_unprocessed,
                 Convolution().config_template,
             )
 
-        config["PARAM_FILE"]["FILE_NAME"] = params_output
-        request.inputs["convolve_config"][0].data = config
+        convolve_config["PARAM_FILE"]["FILE_NAME"] = params_output
+        convolution(convolve_config)
 
-        convolve_output = Convolution()._handler(request, response)
-        response.outputs["output"].file = convolve_output
+        response.outputs["output"].file = get_outfile(convolve_config, "hist")
 
         return response
