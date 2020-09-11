@@ -65,6 +65,7 @@ Upon installation, the tests for each process will fail due to issues in ``RVIC`
 2. From lines 277 to 298 of ``rvic/core/share.py``, change each instance of ``valid_range`` to ``range`` (`share.py issue`_).
 
 The modification can be done by running the following command:
+
 .. code:: bash
 
    $ python3 resolve_rvic_issues.py
