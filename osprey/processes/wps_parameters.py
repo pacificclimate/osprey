@@ -23,8 +23,6 @@ from osprey.utils import (
 
 # Library imports
 import os
-from datetime import datetime
-from pkg_resources import resource_filename
 
 
 class Parameters(Process):

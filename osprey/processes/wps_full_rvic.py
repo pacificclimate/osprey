@@ -7,7 +7,6 @@ from pywps import (
 )
 
 # Tool imports
-from rvic import version
 from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
