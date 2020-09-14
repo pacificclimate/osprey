@@ -12,7 +12,8 @@ from osprey.processes.wps_convolution import Convolution
 @mark.parametrize(
     ("config"),
     [
-        f"{resource_filename(__name__, 'configs/convolve_opendap.cfg')}",
+        f"{resource_filename(__name__, 'data/configs/convolve_mixed.cfg')}",
+        f"{resource_filename(__name__, 'data/configs/convolve_opendap.cfg')}",
         {
             "OPTIONS": {
                 "CASEID": "sample",
