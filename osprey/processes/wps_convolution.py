@@ -13,8 +13,6 @@ from osprey.utils import (
     get_outfile,
 )
 
-from datetime import datetime, timedelta
-
 import os
 
 
@@ -78,7 +76,7 @@ class Convolution(Process):
         }
         inputs = [
             LiteralInput(
-                "config",
+                "convolve_config",
                 "Configuration",
                 abstract="Path to input configuration file or input dictionary",
                 data_type="string",
@@ -111,7 +109,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="start",
         )
-        unprocessed = request.inputs["config"][0].data
+        unprocessed = request.inputs["convolve_config"][0].data
 
         log_handler(
             self,
@@ -139,6 +137,7 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
+
         response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(

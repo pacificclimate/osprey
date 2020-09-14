@@ -35,7 +35,7 @@ from osprey.utils import replace_filenames
 )
 def test_parameters_local(config):
     if type(config) == dict:
-        params = ("config={0};").format(config)
+        params = ("params_config={0};").format(config)
         run_wps_process(Parameters(), params)
     else:
         config_name = os.path.splitext(config)[0]  # Remove .cfg extension
@@ -44,7 +44,7 @@ def test_parameters_local(config):
         ) as temp_config:
             replace_filenames(config, temp_config)
             temp_config.read()
-            params = f"config={temp_config.name};"
+            params = f"params_config={temp_config.name};"
             run_wps_process(Parameters(), params)
 
 
@@ -60,5 +60,5 @@ def test_parameters_https(config, conftest_make_mock_urls):
         read_config = open(config, "r")
         temp_config.writelines(read_config.read())
         temp_config.read()
-        params = f"config={temp_config.name};"
+        params = f"params_config={temp_config.name};"
         run_wps_process(Parameters(), params)

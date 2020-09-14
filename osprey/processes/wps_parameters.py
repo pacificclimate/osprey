@@ -23,9 +23,6 @@ from osprey.utils import (
 
 # Library imports
 import os
-import json
-from datetime import datetime
-from pkg_resources import resource_filename
 
 
 class Parameters(Process):
@@ -86,8 +83,8 @@ class Parameters(Process):
         }
         inputs = [
             LiteralInput(
-                "config",
-                "Configuration",
+                "params_config",
+                "Parameters Configuration",
                 abstract="Path to input configuration file or input dictionary",
                 data_type="string",
             ),
@@ -128,7 +125,7 @@ class Parameters(Process):
         )
 
     def collect_args(self, request):
-        unprocessed = request.inputs["config"][0].data
+        unprocessed = request.inputs["params_config"][0].data
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
         return (unprocessed, np, loglevel)
@@ -175,6 +172,7 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="build_output",
         )
+
         response.outputs["output"].file = get_outfile(config, "params")
 
         log_handler(
@@ -185,4 +183,5 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="complete",
         )
+
         return response
