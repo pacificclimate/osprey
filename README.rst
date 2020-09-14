@@ -49,10 +49,6 @@ and activated as follows (second `venv` can be replaced with environment name of
    (venv) $ pip install -r requirements.txt
    (venv) $ pip install -e .[dev]
 
-Testing
-^^^^^^^
-
-The tests can be run by simply running ``pytest`` on the command line.
 
 Contributing
 ------------
