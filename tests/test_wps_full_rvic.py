@@ -13,8 +13,8 @@ from osprey.processes.wps_full_rvic import FullRVIC
     ("params_config", "convolve_config"),
     [
         (
-            resource_filename(__name__, "data/samples/sample_parameter_config.cfg"),
-            resource_filename(__name__, "configs/convolve_opendap.cfg"),
+            resource_filename(__name__, "data/configs/parameters_local.cfg"),
+            resource_filename(__name__, "data/configs/convolve_opendap.cfg"),
         ),
         (
             {
