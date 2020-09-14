@@ -11,7 +11,7 @@ from osprey.utils import replace_filenames
 @pytest.mark.parametrize(
     ("config"),
     [
-        resource_filename(__name__, "data/samples/sample_parameter_config.cfg"),
+        resource_filename(__name__, "data/configs/sample_parameter_config.cfg"),
         {
             "OPTIONS": {"CASEID": "sample", "GRIDID": "COLUMBIA",},
             "POUR_POINTS": {
@@ -50,7 +50,7 @@ def test_parameters_local(config):
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("config"), [resource_filename(__name__, "configs/parameter_https.cfg")],
+    ("config"), [resource_filename(__name__, "data/configs/parameter_https.cfg")],
 )
 def test_parameters_https(config, conftest_make_mock_urls):
     config_name = os.path.splitext(config)[0]  # Remove .cfg extension
