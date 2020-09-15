@@ -10,7 +10,7 @@ def test_wps_caps():
         "/wps:Capabilities" "/wps:ProcessOfferings" "/wps:Process" "/ows:Identifier"
     )
     assert sorted(names.split()) == [
-	"convert",
+        "convert",
         "convolution",
         "full_rvic",
         "parameters",
