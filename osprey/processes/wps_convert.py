@@ -9,7 +9,6 @@ from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
-    config_hander,
     get_outfile,
 )
 import os
@@ -17,30 +16,6 @@ import os
 
 class Convert(Process):
     def __init__(self):
-        self.config_template = {
-            # configuration dictionary used for RVIC convert
-            # required user inputs are defined as None value
-            "OPTIONS": {
-                "LOG_LEVEL": "INFO",
-                "VERBOSE": True,
-                "CASEID": None,
-                "GRIDID": None,
-                "CASE_DIR": None,
-                "NETCDF_FORMAT": "NETCDF4",
-                "SUBSET_DAYS": None,
-                "CONSTRAIN_FRACTIONS": False,
-            },
-            "UHS_FILES": {"ROUT_PROGRAM": "C", "ROUT_DIR": None, "STATION_FILE": None,},
-            "ROUTING": {"OUTPUT_INTERVAL": 86400,},
-            "DOMAIN": {
-                "FILE_NAME": None,
-                "LONGITUDE_VAR": "lon",
-                "LATITUDE_VAR": "lat",
-                "LAND_MASK_VAR": "mask",
-                "FRACTION_VAR": "frac",
-                "AREA_VAR": "area",
-            },
-        }
         self.status_percentage_steps = {
             "start": 0,
             "process": 10,
@@ -92,13 +67,7 @@ class Convert(Process):
             process_step="process",
         )
 
-        if os.path.isfile(unprocessed):
-            config = read_config(unprocessed)
-        else:
-            config = config_hander(
-                self.workdir, convert.__name__, unprocessed, self.config_template
-            )
-
+        config = read_config(unprocessed)
         convert(config)
 
         log_handler(
