@@ -36,15 +36,15 @@ def replace_filenames(config, temp_config):
     temp_config.writelines(newdata)
 
 
-def replace_urls(config, outdir):
+def replace_urls(config_file, outdir):
     """
     Copy https URLs to local storage and replace URLs
     with local paths in config file.
     Parameters:
-        config (str): Config file
+        config_file (str): Config file
         outdir (str): Output directory
     """
-    with open(config, "r") as read_config:
+    with open(config_file, "r") as read_config:
         filedata = read_config.readlines()
 
     for i in range(len(filedata)):
@@ -61,9 +61,11 @@ def replace_urls(config, outdir):
             local_file.write(r.content)
             filedata[i] = filedata[i].replace(url, local_file.name)
 
-    with open(config, "w") as write_config:
-        for line in filedata:
-            write_config.write(f"{line}")
+    config_name = os.path.splitext(config_file)[0]  # Remove .cfg extension
+    with NamedTemporaryFile(suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t") as temp_config:  # Avoid permanent replacement of https URLs
+        temp_config.writelines(filedata)
+    
+    return temp_config.name
 
 
 def config_hander(workdir, modulue_name, unprocessed, config_template):
