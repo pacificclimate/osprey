@@ -56,7 +56,7 @@ class Convert(Process):
             log_level=loglevel,
             process_step="start",
         )
-        unprocessed = request.inputs["convert_config"][0].data
+        config_file = request.inputs["convert_config"][0].data
 
         log_handler(
             self,
@@ -67,8 +67,8 @@ class Convert(Process):
             process_step="process",
         )
 
-        config = read_config(unprocessed)
-        convert(config)
+        config = read_config(config_file)
+        convert(config_file)
 
         log_handler(
             self,
