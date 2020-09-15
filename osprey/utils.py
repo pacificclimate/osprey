@@ -61,11 +61,13 @@ def replace_urls(config_file, outdir):
             local_file.write(r.content)
             filedata[i] = filedata[i].replace(url, local_file.name)
 
-    config_name = os.path.splitext(config_file)[0]  # Remove .cfg extension
-    with NamedTemporaryFile(suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t") as temp_config:  # Avoid permanent replacement of https URLs
-        temp_config.writelines(filedata)
-    
-    return temp_config.name
+    config_filename = config_file.split("/")[-1]
+    tmp_config_file = os.path.join(outdir, config_filename)
+    with open(tmp_config_file, "w") as write_config:
+        for line in filedata:
+            write_config.write(f"{line}")
+
+    return tmp_config_file
 
 
 def config_hander(workdir, modulue_name, unprocessed, config_template):
