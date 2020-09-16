@@ -5,7 +5,6 @@ from tempfile import NamedTemporaryFile
 
 from wps_tools.testing import run_wps_process
 from osprey.processes.wps_parameters import Parameters
-from osprey.utils import replace_filenames
 
 
 @pytest.mark.parametrize(
