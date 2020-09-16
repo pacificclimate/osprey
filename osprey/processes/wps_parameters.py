@@ -155,8 +155,8 @@ class Parameters(Process):
         )
 
         if os.path.isfile(unprocessed):
-            replace_urls(unprocessed, self.workdir)
-            config = read_config(unprocessed)
+            tmp_config_file = replace_urls(unprocessed, self.workdir)
+            config = read_config(tmp_config_file)
         else:
             config = config_hander(
                 self.workdir, parameters.__name__, unprocessed, self.config_template

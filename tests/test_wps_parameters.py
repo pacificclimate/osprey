@@ -34,18 +34,8 @@ from osprey.utils import replace_filenames
     ],
 )
 def test_parameters_local(config):
-    if type(config) == dict:
-        params = ("params_config={0};").format(config)
-        run_wps_process(Parameters(), params)
-    else:
-        config_name = os.path.splitext(config)[0]  # Remove .cfg extension
-        with NamedTemporaryFile(
-            suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t"
-        ) as temp_config:
-            replace_filenames(config, temp_config)
-            temp_config.read()
-            params = f"params_config={temp_config.name};"
-            run_wps_process(Parameters(), params)
+    params = ("params_config={0};").format(config)
+    run_wps_process(Parameters(), params)
 
 
 @pytest.mark.online
@@ -53,12 +43,5 @@ def test_parameters_local(config):
     ("config"), [resource_filename(__name__, "data/configs/parameters_https.cfg")],
 )
 def test_parameters_https(config, conftest_make_mock_urls):
-    config_name = os.path.splitext(config)[0]  # Remove .cfg extension
-    with NamedTemporaryFile(
-        suffix=".cfg", prefix=os.path.basename(config_name), mode="w+t"
-    ) as temp_config:  # Avoid permanent replacement of https URLs
-        read_config = open(config, "r")
-        temp_config.writelines(read_config.read())
-        temp_config.read()
-        params = f"params_config={temp_config.name};"
-        run_wps_process(Parameters(), params)
+    params = ("params_config={0};").format(config)
+    run_wps_process(Parameters(), params)
