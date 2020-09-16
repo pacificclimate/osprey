@@ -10,6 +10,7 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
+    replace_urls,
 )
 import os
 
@@ -67,8 +68,8 @@ class Convert(Process):
             process_step="process",
         )
 
-        config = read_config(config_file)
-        convert(config_file)
+        tmp_config_file = replace_urls(config_file, self.workdir)
+        convert(tmp_config_file)
 
         log_handler(
             self,
@@ -79,6 +80,7 @@ class Convert(Process):
             process_step="build_output",
         )
 
+        config = read_config(config_file)
         response.outputs["output"].file = get_outfile(config, "params")
 
         log_handler(
