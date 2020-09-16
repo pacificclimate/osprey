@@ -19,23 +19,6 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-def replace_filenames(config, temp_config):
-    """
-    Replace relative filepaths in config file with
-    absolute paths.
-    Parameters:
-        config (str): Original config file
-        temp_config (TemporaryFile): New config file (to be passed into process)
-    """
-    with open(config, "r") as old_config:
-        filedata = old_config.read()
-
-    rel_dir = "tests/data"
-    abs_dir = os.path.abspath(resource_filename("tests", "data"))
-    newdata = filedata.replace(rel_dir, abs_dir)
-    temp_config.writelines(newdata)
-
-
 def replace_urls(config_file, outdir):
     """
     Copy https URLs to local storage and replace URLs
