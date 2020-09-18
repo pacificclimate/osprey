@@ -1,6 +1,4 @@
 from pytest import mark
-from pywps import Service
-from pywps.tests import client_for, assert_response_success
 from pkg_resources import resource_filename
 
 from wps_tools.testing import run_wps_process
@@ -35,5 +33,5 @@ from osprey.processes.wps_convolution import Convolution
     ],
 )
 def test_wps_convolution(config):
-    params = ("convolve_config={0};").format(config)
+    params = f"convolve_config={config};"
     run_wps_process(Convolution(), params)

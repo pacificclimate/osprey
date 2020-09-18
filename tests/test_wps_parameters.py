@@ -5,7 +5,6 @@ from tempfile import NamedTemporaryFile
 
 from wps_tools.testing import run_wps_process
 from osprey.processes.wps_parameters import Parameters
-from osprey.utils import replace_filenames
 
 
 @pytest.mark.parametrize(
@@ -34,7 +33,7 @@ from osprey.utils import replace_filenames
     ],
 )
 def test_parameters_local(config):
-    params = ("params_config={0};").format(config)
+    params = f"params_config={config};"
     run_wps_process(Parameters(), params)
 
 
@@ -43,5 +42,5 @@ def test_parameters_local(config):
     ("config"), [resource_filename(__name__, "data/configs/parameters_https.cfg")],
 )
 def test_parameters_https(config, conftest_make_mock_urls):
-    params = ("params_config={0};").format(config)
+    params = f"params_config={config};"
     run_wps_process(Parameters(), params)
