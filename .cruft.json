@@ -1,0 +1,24 @@
+{
+    "template": "https://github.com/bird-house/cookiecutter-birdhouse",
+    "commit": "5351c2fc8649454ec9986a01cd78d0c233c0d1ba",
+    "context": {
+        "cookiecutter": {
+            "full_name": "Nikola Rados",
+            "email": "nrados@uvic.ca",
+            "github_username": "nikola-rados",
+            "project_name": "osprey",
+            "project_slug": "osprey",
+            "project_repo_name": "osprey",
+            "project_readthedocs_name": "osprey",
+            "project_short_description": "A Web Processing Service for RVIC streamflow routing model",
+            "version": "0.1.0",
+            "open_source_license": "GNU General Public License v3",
+            "http_port": "5003",
+            "_copy_without_render": [
+                "{{cookiecutter.project_slug}}/templates/*.cfg"
+            ],
+            "_template": "https://github.com/bird-house/cookiecutter-birdhouse"
+        }
+    },
+    "directory": null
+}
