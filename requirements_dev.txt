@@ -1,11 +1,11 @@
-pytest
+pytest>=6.0
 flake8
 pytest-flake8
 requests-mock
 ipython
 pytest-notebook
 nbsphinx
-nbval
+nbval>=0.9.6
 nbconvert
 sphinx>=1.7
 bumpversion

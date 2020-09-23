@@ -1,6 +1,6 @@
 {
     "template": "https://github.com/bird-house/cookiecutter-birdhouse",
-    "commit": "5351c2fc8649454ec9986a01cd78d0c233c0d1ba",
+    "commit": "f157ea8419fd4e32a9e4d52e613c90c807190e7e",
     "context": {
         "cookiecutter": {
             "full_name": "Nikola Rados",
