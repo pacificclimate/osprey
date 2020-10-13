@@ -1,9 +1,10 @@
 # Processor imports
 from pywps import (
     Process,
+    ComplexInput,
     LiteralInput,
     ComplexOutput,
-    FORMATS,
+    Format,
 )
 
 # Tool imports
@@ -11,6 +12,7 @@ from rvic.convolution import convolution
 from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 from osprey.utils import logger, config_hander, get_outfile, replace_urls
 from osprey.processes.wps_parameters import Parameters
 from osprey.processes.wps_convolution import Convolution
@@ -35,16 +37,36 @@ class FullRVIC(Process):
             "complete": 100,
         }
         inputs = [
-            LiteralInput(
-                "params_config",
+            ComplexInput(
+                "params_config_file",
                 "Parameters Configuration",
-                abstract="Path to parameters module's input configuration file or input dictionary",
-                data_type="string",
+                abstract="Path to input configuration file or input dictionary",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
             ),
             LiteralInput(
-                "convolve_config",
-                "Convolution Configuration",
-                abstract="Path to convolution module's input configuration file or input dictionary",
+                "params_config_dict",
+                "Parameters Configuration",
+                abstract="Dictionary containing input configuration for Parameters process",
+                min_occurs=0,
+                max_occurs=1,
+                data_type="string",
+            ),
+            ComplexInput(
+                "convolve_config_file",
+                "Convolution Configuration File",
+                abstract="Path to input configuration file for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+            ),
+            LiteralInput(
+                "convolve_config_dict",
+                "Convolution Configuration Dictionary",
+                abstract="Dictionary containing input configuration for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
                 data_type="string",
             ),
             LiteralInput(
@@ -83,7 +105,15 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        params_unprocessed = request.inputs["params_config"][0].data
+        if "params_config_file" in request.inputs.keys():
+            params_unprocessed = request.inputs["params_config_file"][0].file
+        elif "params_config_dict" in request.inputs.keys():
+            params_unprocessed = request.inputs["params_config_dict"][0].data
+        else:
+            raise ProcessError(
+                f"Parameters configuration input (params_config_file/params_config_dict) not provided"
+            )
+
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
 
@@ -119,7 +149,15 @@ class FullRVIC(Process):
         parameters(params_config, np)
         params_output = get_outfile(params_config, "params")
 
-        convolve_unprocessed = request.inputs["convolve_config"][0].data
+        if "convolve_config_file" in request.inputs.keys():
+            convolve_unprocessed = request.inputs["convolve_config_file"][0].file
+        elif "convolve_config_dict" in request.inputs.keys():
+            convolve_unprocessed = request.inputs["convolve_config_dict"][0].data
+        else:
+            raise ProcessError(
+                f"Convolution configuration input (convolve_config_file/convolve_config_dict) not provided"
+            )
+
         if os.path.isfile(convolve_unprocessed):
             convolve_config = read_config(convolve_unprocessed)
         else:

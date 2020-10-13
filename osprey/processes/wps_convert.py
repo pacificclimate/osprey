@@ -1,4 +1,4 @@
-from pywps import Process, LiteralInput, ComplexOutput, FORMATS
+from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 
@@ -24,11 +24,13 @@ class Convert(Process):
             "complete": 100,
         }
         inputs = [
-            LiteralInput(
-                "convert_config",
-                "Configuration",
-                abstract="Path to input configuration file or input dictionary",
-                data_type="string",
+            ComplexInput(
+                "config_file",
+                "Convert Configuration",
+                abstract="Path to input configuration file for Convert process",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
             ),
             log_level,
         ]
@@ -57,7 +59,7 @@ class Convert(Process):
             log_level=loglevel,
             process_step="start",
         )
-        config_file = request.inputs["convert_config"][0].data
+        config_file = request.inputs["config_file"][0].file
 
         log_handler(
             self,

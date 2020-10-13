@@ -78,7 +78,7 @@ class Convolution(Process):
             ComplexInput(
                 "config_file",
                 "Convolution Configuration File",
-                abstract="Path to input configuration file dictionary",
+                abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
@@ -86,7 +86,7 @@ class Convolution(Process):
             LiteralInput(
                 "config_dict",
                 "Convolution Configuration Dictionary",
-                abstract="Path to input configuration dictionary",
+                abstract="Dictionary containing input configuration for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",

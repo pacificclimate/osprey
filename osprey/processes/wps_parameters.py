@@ -1,7 +1,9 @@
 # Processor imports
 from pywps import (
     Process,
+    ComplexInput,
     LiteralInput,
+    Format,
 )
 from pywps.app.Common import Metadata
 
@@ -82,10 +84,20 @@ class Parameters(Process):
             "complete": 100,
         }
         inputs = [
-            LiteralInput(
-                "params_config",
+            ComplexInput(
+                "config_file",
                 "Parameters Configuration",
-                abstract="Path to input configuration file or input dictionary",
+                abstract="Path to input configuration file for Parameters process",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+            ),
+            LiteralInput(
+                "config_dict",
+                "Parameters Configuration Dictionary",
+                abstract="Dictionary containing input configuration for Parameters process",
+                min_occurs=0,
+                max_occurs=1,
                 data_type="string",
             ),
             LiteralInput(
@@ -125,7 +137,10 @@ class Parameters(Process):
         )
 
     def collect_args(self, request):
-        unprocessed = request.inputs["params_config"][0].data
+        if "config_file" in request.inputs.keys():
+            unprocessed = request.inputs["config_file"][0].file
+        elif "config_dict" in request.inputs.keys():
+            unprocessed = request.inputs["config_dict"][0].data
         np = request.inputs["np"][0].data
         loglevel = request.inputs["loglevel"][0].data
         return (unprocessed, np, loglevel)
