@@ -30,7 +30,9 @@ class Convert(Process):
                 abstract="Path to input configuration file for Convert process",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[Format('text/cfg', extension='.cfg', encoding='base64')],
+                supported_formats=[
+                    Format("text/cfg", extension=".cfg", encoding="base64")
+                ],
             ),
             log_level,
         ]
@@ -59,11 +61,6 @@ class Convert(Process):
             log_level=loglevel,
             process_step="start",
         )
-        logger.critical(vars(request.inputs["config_file"][0]))
-        logger.critical(request.inputs["config_file"][0].file)
-        with open(request.inputs["config_file"][0].file) as input_file:
-            logger.critical(input_file.read())
-
         config_file = request.inputs["config_file"][0].file
 
         log_handler(
