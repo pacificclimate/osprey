@@ -30,7 +30,7 @@ class Convert(Process):
                 abstract="Path to input configuration file for Convert process",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.TEXT],
+                supported_formats=[Format('text/cfg', extension='.cfg', encoding='base64')],
             ),
             log_level,
         ]
