@@ -60,6 +60,10 @@ class Convert(Process):
             process_step="start",
         )
         logger.critical(vars(request.inputs["config_file"][0]))
+        logger.critical(request.inputs["config_file"][0].file)
+        with open(request.inputs["config_file"][0].file) as input_file:
+            logger.critical(input_file.read())
+
         config_file = request.inputs["config_file"][0].file
 
         log_handler(

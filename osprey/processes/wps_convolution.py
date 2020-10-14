@@ -122,6 +122,10 @@ class Convolution(Process):
 
         if "config_file" in request.inputs.keys():
             logger.critical(vars(request.inputs["config_file"][0]))
+            logger.critical(request.inputs["config_file"][0].file)
+            with open(request.inputs["config_file"][0].file) as input_file:
+                logger.critical(input_file.read())
+
             unprocessed = request.inputs["config_file"][0].file
         elif "config_dict" in request.inputs.keys():
             unprocessed = request.inputs["config_dict"][0].data
