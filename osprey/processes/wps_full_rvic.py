@@ -107,6 +107,7 @@ class FullRVIC(Process):
 
     def _handler(self, request, response):
         if "params_config_file" in request.inputs.keys():
+            logger.critical(request.inputs["params_config_file"][0].file)
             params_unprocessed = request.inputs["params_config_file"][0].file
         elif "params_config_dict" in request.inputs.keys():
             params_unprocessed = request.inputs["params_config_dict"][0].data
@@ -151,6 +152,7 @@ class FullRVIC(Process):
         params_output = get_outfile(params_config, "params")
 
         if "convolve_config_file" in request.inputs.keys():
+            logger.critical(request.inputs["convolve_config_file"][0].file)
             convolve_unprocessed = request.inputs["convolve_config_file"][0].file
         elif "convolve_config_dict" in request.inputs.keys():
             convolve_unprocessed = request.inputs["convolve_config_dict"][0].data
