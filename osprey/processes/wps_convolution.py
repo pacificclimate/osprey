@@ -1,4 +1,4 @@
-from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format
+from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 
@@ -81,7 +81,7 @@ class Convolution(Process):
                 abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+                supported_formats=[FORMATS.TEXT],
             ),
             LiteralInput(
                 "config_dict",

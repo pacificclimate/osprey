@@ -4,6 +4,7 @@ from pywps import (
     ComplexInput,
     LiteralInput,
     Format,
+    FORMATS,
 )
 from pywps.app.Common import Metadata
 
@@ -90,7 +91,7 @@ class Parameters(Process):
                 abstract="Path to input configuration file for Parameters process",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+                supported_formats=[FORMATS.TEXT],
             ),
             LiteralInput(
                 "config_dict",

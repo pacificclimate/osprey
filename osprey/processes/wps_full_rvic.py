@@ -5,6 +5,7 @@ from pywps import (
     LiteralInput,
     ComplexOutput,
     Format,
+    FORMATS,
 )
 
 # Tool imports
@@ -43,7 +44,7 @@ class FullRVIC(Process):
                 abstract="Path to input configuration file or input dictionary",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+                supported_formats=[FORMATS.TEXT],
             ),
             LiteralInput(
                 "params_config_dict",
@@ -59,7 +60,7 @@ class FullRVIC(Process):
                 abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[Format(mime_type="text/x-cfg", extension=".cfg",)],
+                supported_formats=[FORMATS.TEXT],
             ),
             LiteralInput(
                 "convolve_config_dict",
