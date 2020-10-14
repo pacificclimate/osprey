@@ -107,7 +107,7 @@ class FullRVIC(Process):
 
     def _handler(self, request, response):
         if "params_config_file" in request.inputs.keys():
-            logger.critical(vars(request.inputs["params_config_file"][0].file))
+            logger.critical(vars(request.inputs["params_config_file"][0]))
             params_unprocessed = request.inputs["params_config_file"][0].file
         elif "params_config_dict" in request.inputs.keys():
             params_unprocessed = request.inputs["params_config_dict"][0].data

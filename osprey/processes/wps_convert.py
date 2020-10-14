@@ -59,7 +59,7 @@ class Convert(Process):
             log_level=loglevel,
             process_step="start",
         )
-        logger.critical(vars(request.inputs["config_file"][0].file))
+        logger.critical(vars(request.inputs["config_file"][0]))
         config_file = request.inputs["config_file"][0].file
 
         log_handler(
