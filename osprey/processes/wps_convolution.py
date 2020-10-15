@@ -11,6 +11,7 @@ from osprey.utils import (
     logger,
     config_hander,
     get_outfile,
+    collect_args,
 )
 
 import os
@@ -157,39 +158,20 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def collect_args(self, request):
-        inputs = [request.inputs[k][0] for k in request.inputs.keys()]
+    def config_hander(self, args):
+        if "config_file" in args:
+            unprocessed = read_config(args["config_file"])
+        elif "config_dict" in args:
+            unprocessed = args["config_dict"]
+        else:
+            unprocessed = self.config_template
 
-        args = {}
-        for i in inputs:
-            if vars(i)["_file"] != None:
-                args[i.identifier] = i.file
-            elif vars(i)["_url"] != None:
-                args[i.identifier] = i.url
-            else:
-                args[i.identifier] = i.data
-
-        return args
-
-    def config_hander(self, unprocessed, args):
-        """
-        This function enables users to provide dictionary-like string for Configuration input.
-        If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
-        CASEID and STOP_DATE by default.
-        """
         processed = self.config_template
+
         try:
             processed["OPTIONS"]["CASEID"] = args["case_id"]
             processed["OPTIONS"]["RUN_STARTDATE"] = args["start_date"]
             processed["OPTIONS"]["STOP_DATE"] = args["stop_date"]
-            processed["DOMAIN"]["FILE_NAME"] = args["domain"]
-            processed["PARAM_FILE"]["FILE_NAME"] = args["param_file"]
-            processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
-                args["input_forcings"].split("/")[0:-1]
-            )
-            processed["INPUT_FORCINGS"]["DATL_FILE"] = args["input_forcings"].split(
-                "/"
-            )[-1]
 
             for upper_key in unprocessed.keys():
                 for lower_key in unprocessed[upper_key].keys():
@@ -202,13 +184,22 @@ class Convolution(Process):
             if processed["OPTIONS"]["REST_DATE"] == None:
                 processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
 
+            processed["DOMAIN"]["FILE_NAME"] = args["domain"]
+            processed["PARAM_FILE"]["FILE_NAME"] = args["param_file"]
+            processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
+                args["input_forcings"].split("/")[0:-1]
+            )
+            processed["INPUT_FORCINGS"]["DATL_FILE"] = args["input_forcings"].split(
+                "/"
+            )[-1]
+
             return processed
 
         except KeyError:
             raise ProcessError("Invalid config key provided")
 
     def _handler(self, request, response):
-        args = self.collect_args(request)
+        args = collect_args(request)
         loglevel = args["loglevel"]
         log_handler(
             self,
@@ -219,14 +210,7 @@ class Convolution(Process):
             process_step="start",
         )
 
-        if "config_file" in request.inputs.keys():
-            unprocessed = read_config(args["config_file"])
-        elif "config_dict" in request.inputs.keys():
-            unprocessed = eval(args["config_dict"])
-        else:
-            unprocessed = self.config_template
-
-        config = self.config_hander(unprocessed, args)
+        config = self.config_hander(args)
 
         log_handler(
             self,

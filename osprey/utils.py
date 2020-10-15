@@ -117,3 +117,16 @@ def get_outfile(config, dir_name):
     (out_file,) = collect_output_files(filename, outdir)
 
     return os.path.join(outdir, out_file)
+
+
+def collect_args(request):
+    args = {}
+    for k in request.inputs.keys():
+        if vars(request.inputs[k][0])["_file"] != None:
+            args[request.inputs[k][0].identifier] = request.inputs[k][0].file
+        elif vars(request.inputs[k][0])["_url"] != None:
+            args[request.inputs[k][0].identifier] = request.inputs[k][0].url
+        else:
+            args[request.inputs[k][0].identifier] = request.inputs[k][0].data
+
+    return args
