@@ -177,20 +177,8 @@ class Convolution(Process):
         If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
         CASEID and STOP_DATE by default.
         """
-        unprocessed = eval(unprocessed)
         processed = self.config_template
         try:
-            for upper_key in unprocessed.keys():
-                for lower_key in unprocessed[upper_key].keys():
-                    processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
-
-            if processed["OPTIONS"]["CASE_DIR"] == None:
-                processed["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    self.workdir, processed["OPTIONS"]["CASEID"]
-                )
-            if processed["OPTIONS"]["REST_DATE"] == None:
-                processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
-
             processed["OPTIONS"]["CASEID"] = args["case_id"]
             processed["OPTIONS"]["RUN_STARTDATE"] = args["start_date"]
             processed["OPTIONS"]["STOP_DATE"] = args["stop_date"]
@@ -202,6 +190,17 @@ class Convolution(Process):
             processed["INPUT_FORCINGS"]["DATL_FILE"] = args["input_forcings"].split(
                 "/"
             )[-1]
+
+            for upper_key in unprocessed.keys():
+                for lower_key in unprocessed[upper_key].keys():
+                    processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
+
+            if processed["OPTIONS"]["CASE_DIR"] == None:
+                processed["OPTIONS"]["CASE_DIR"] = os.path.join(
+                    self.workdir, processed["OPTIONS"]["CASEID"]
+                )
+            if processed["OPTIONS"]["REST_DATE"] == None:
+                processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
 
             return processed
 
@@ -221,9 +220,9 @@ class Convolution(Process):
         )
 
         if "config_file" in request.inputs.keys():
-            unprocessed = read_config(args["config_file"].file)
+            unprocessed = read_config(args["config_file"])
         elif "config_dict" in request.inputs.keys():
-            unprocessed = args["config_dict"].data
+            unprocessed = eval(args["config_dict"])
         else:
             unprocessed = self.config_template
 
