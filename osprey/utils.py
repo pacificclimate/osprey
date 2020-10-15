@@ -53,7 +53,7 @@ def replace_urls(config_file, outdir):
     return tmp_config_file
 
 
-def config_hander(workdir, modulue_name, unprocessed, config_template):
+def config_handler(workdir, modulue_name, unprocessed, config_template):
     """
     This function enables users to provide dictionary-like string for Configuration input.
     If CASE_DIR and REST_DATE are not provided from a user, their values are derived from

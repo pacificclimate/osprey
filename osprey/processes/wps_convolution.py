@@ -9,7 +9,7 @@ from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
-    config_hander,
+    config_handler,
     get_outfile,
     collect_args,
 )
@@ -85,8 +85,8 @@ class Convolution(Process):
                 data_type="string",
             ),
             LiteralInput(
-                "start_date",
-                "Start Date",
+                "run_startdate",
+                "Run Start Date",
                 abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
                 min_occurs=1,
                 max_occurs=1,
@@ -125,7 +125,7 @@ class Convolution(Process):
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             ComplexInput(
-                "config_file",
+                "convolve_config_file",
                 "Convolution Configuration File",
                 abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
@@ -133,7 +133,7 @@ class Convolution(Process):
                 supported_formats=[Format("text/cfg", extension=".cfg")],
             ),
             LiteralInput(
-                "config_dict",
+                "convolve_config_dict",
                 "Convolution Configuration Dictionary",
                 abstract="Dictionary containing input configuration for Convolution process",
                 min_occurs=0,
@@ -158,11 +158,11 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def config_hander(self, args):
-        if "config_file" in args:
-            unprocessed = read_config(args["config_file"])
-        elif "config_dict" in args:
-            unprocessed = args["config_dict"]
+    def config_handler(self, args):
+        if "convolve_config_file" in args:
+            unprocessed = read_config(args["convolve_config_file"])
+        elif "convolve_config_dict" in args:
+            unprocessed = args["convolve_config_dict"]
         else:
             unprocessed = self.config_template
 
@@ -170,7 +170,7 @@ class Convolution(Process):
 
         try:
             processed["OPTIONS"]["CASEID"] = args["case_id"]
-            processed["OPTIONS"]["RUN_STARTDATE"] = args["start_date"]
+            processed["OPTIONS"]["RUN_STARTDATE"] = args["run_startdate"]
             processed["OPTIONS"]["STOP_DATE"] = args["stop_date"]
 
             for upper_key in unprocessed.keys():
@@ -201,6 +201,7 @@ class Convolution(Process):
     def _handler(self, request, response):
         args = collect_args(request)
         loglevel = args["loglevel"]
+
         log_handler(
             self,
             response,
@@ -210,7 +211,7 @@ class Convolution(Process):
             process_step="start",
         )
 
-        config = self.config_hander(args)
+        config = self.config_handler(args)
 
         log_handler(
             self,

@@ -20,7 +20,7 @@ from wps_tools.io import (
 )
 from osprey.utils import (
     logger,
-    config_hander,
+    config_handler,
     get_outfile,
     replace_urls,
     collect_args,
@@ -136,7 +136,7 @@ class Parameters(Process):
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
             ComplexInput(
-                "config_file",
+                "params_config_file",
                 "Parameters Configuration",
                 abstract="Path to input configuration file for Parameters process",
                 min_occurs=0,
@@ -144,7 +144,7 @@ class Parameters(Process):
                 supported_formats=[Format("text/cfg", extension=".cfg")],
             ),
             LiteralInput(
-                "config_dict",
+                "params_config_dict",
                 "Parameters Configuration Dictionary",
                 abstract="Dictionary containing input configuration for Parameters process",
                 min_occurs=0,
@@ -187,11 +187,11 @@ class Parameters(Process):
             status_supported=True,
         )
 
-    def config_hander(self, args):
-        if "config_file" in args:
-            unprocessed = read_config(args["config_file"])
-        elif "config_dict" in args:
-            unprocessed = args["config_dict"]
+    def config_handler(self, args):
+        if "params_config_file" in args:
+            unprocessed = read_config(args["params_config_file"])
+        elif "params_config_dict" in args:
+            unprocessed = args["params_config_dict"]
         else:
             unprocessed = self.config_template
 
@@ -240,7 +240,7 @@ class Parameters(Process):
             process_step="start",
         )
 
-        config = self.config_hander(args)
+        config = self.config_handler(args)
 
         log_handler(
             self,
