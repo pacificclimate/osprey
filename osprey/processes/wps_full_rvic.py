@@ -134,9 +134,7 @@ class FullRVIC(Process):
                 abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[
-                    Format("text/cfg", extension=".cfg", encoding="base64")
-                ],
+                supported_formats=[Format("text/cfg", extension=".cfg")],
             ),
             LiteralInput(
                 "convolve_config_dict",

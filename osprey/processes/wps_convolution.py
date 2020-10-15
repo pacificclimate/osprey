@@ -187,7 +187,7 @@ class Convolution(Process):
             processed["DOMAIN"]["FILE_NAME"] = args["domain"]
             processed["PARAM_FILE"]["FILE_NAME"] = args["param_file"]
             processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
-                args["input_forcings"].split("/")[0:-1]
+                args["input_forcings"].split("/")[:-1]
             )
             processed["INPUT_FORCINGS"]["DATL_FILE"] = args["input_forcings"].split(
                 "/"
