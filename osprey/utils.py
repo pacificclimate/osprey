@@ -53,41 +53,6 @@ def replace_urls(config_file, outdir):
     return tmp_config_file
 
 
-def config_handler(workdir, modulue_name, unprocessed, config_template):
-    """
-    This function enables users to provide dictionary-like string for Configuration input.
-    If CASE_DIR and REST_DATE are not provided from a user, their values are derived from
-    CASEID and STOP_DATE by default.
-    """
-    unprocessed = eval(unprocessed)
-    try:
-        for upper_key in unprocessed.keys():
-            for lower_key in unprocessed[upper_key].keys():
-                config_template[upper_key][lower_key] = unprocessed[upper_key][
-                    lower_key
-                ]
-
-        if config_template["OPTIONS"]["CASE_DIR"] == None:
-            config_template["OPTIONS"]["CASE_DIR"] = os.path.join(
-                workdir, config_template["OPTIONS"]["CASEID"]
-            )
-        if modulue_name == "convolution":
-            if config_template["OPTIONS"]["REST_DATE"] == None:
-                config_template["OPTIONS"]["REST_DATE"] = config_template["OPTIONS"][
-                    "STOP_DATE"
-                ]
-        elif modulue_name == "parameters":
-            if config_template["OPTIONS"]["TEMP_DIR"] == None:
-                config_template["OPTIONS"]["TEMP_DIR"] = (
-                    config_template["OPTIONS"]["CASEID"] + "/temp"
-                )
-
-        return config_template
-
-    except KeyError as e:
-        raise ProcessError("Invalid config key provided")
-
-
 def get_outfile(config, dir_name):
     """
     This function returns the output filepath of RVIC processes.

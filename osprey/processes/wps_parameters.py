@@ -20,7 +20,6 @@ from wps_tools.io import (
 )
 from osprey.utils import (
     logger,
-    config_handler,
     get_outfile,
     replace_urls,
     collect_args,
@@ -87,10 +86,11 @@ class Parameters(Process):
             "complete": 100,
         }
         inputs = [
+            log_level,
             LiteralInput(
                 "case_id",
                 "Case ID",
-                abstract="Case ID for the RVIC process",
+                abstract="Case ID for the RVIC process (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -98,7 +98,7 @@ class Parameters(Process):
             LiteralInput(
                 "grid_id",
                 "GRID ID",
-                abstract="Routing domain grid shortname",
+                abstract="Routing domain grid shortname (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -106,7 +106,7 @@ class Parameters(Process):
             ComplexInput(
                 "pour_points",
                 "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
+                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats] (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -114,7 +114,7 @@ class Parameters(Process):
             ComplexInput(
                 "uh_box",
                 "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
+                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell. (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -122,7 +122,7 @@ class Parameters(Process):
             ComplexInput(
                 "routing",
                 "ROUTING",
-                abstract="Path to routing inputs netCDF.",
+                abstract="Path to routing inputs netCDF. (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -130,7 +130,7 @@ class Parameters(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file",
+                abstract="Path to CESM complaint domain file (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -138,7 +138,7 @@ class Parameters(Process):
             ComplexInput(
                 "params_config_file",
                 "Parameters Configuration",
-                abstract="Path to input configuration file for Parameters process",
+                abstract="Path to input configuration file for Parameters process (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
@@ -146,7 +146,7 @@ class Parameters(Process):
             LiteralInput(
                 "params_config_dict",
                 "Parameters Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Parameters process",
+                abstract="Dictionary containing input configuration for Parameters process (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",
@@ -155,17 +155,16 @@ class Parameters(Process):
                 "np",
                 "numofproc",
                 default=1,
-                abstract="Number of processors used to run job",
+                abstract="Number of processors used to run job (optional)",
                 data_type="integer",
             ),
             LiteralInput(
                 "version",
                 "Version",
                 default=True,
-                abstract="Return RVIC version string",
+                abstract="Return RVIC version string (optional)",
                 data_type="boolean",
             ),
-            log_level,
         ]
         outputs = [
             nc_output,
@@ -187,11 +186,11 @@ class Parameters(Process):
             status_supported=True,
         )
 
-    def config_handler(self, args):
+    def config_handler(self, workdir, args):
         if "params_config_file" in args:
             unprocessed = read_config(args["params_config_file"])
         elif "params_config_dict" in args:
-            unprocessed = args["params_config_dict"]
+            unprocessed = eval(args["params_config_dict"])
         else:
             unprocessed = self.config_template
 
@@ -207,7 +206,7 @@ class Parameters(Process):
 
             if processed["OPTIONS"]["CASE_DIR"] == None:
                 processed["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    self.workdir, processed["OPTIONS"]["CASEID"]
+                    workdir, processed["OPTIONS"]["CASEID"]
                 )
             if processed["OPTIONS"]["TEMP_DIR"] == None:
                 processed["OPTIONS"]["TEMP_DIR"] = (
@@ -240,7 +239,7 @@ class Parameters(Process):
             process_step="start",
         )
 
-        config = self.config_handler(args)
+        config = self.config_handler(self.workdir, args)
 
         log_handler(
             self,

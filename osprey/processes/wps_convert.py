@@ -25,17 +25,18 @@ class Convert(Process):
             "complete": 100,
         }
         inputs = [
+            log_level,
             ComplexInput(
                 "uhs_files",
                 "UHS_Files",
-                abstract="Path to UHS file",
+                abstract="Path to UHS file (required)",
                 min_occurs=1,
                 supported_formats=[FORMATS.TEXT],
             ),
             ComplexInput(
                 "station_file",
                 "Station_FILE",
-                abstract="Path to stations file",
+                abstract="Path to stations file (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT],
@@ -43,7 +44,7 @@ class Convert(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file",
+                abstract="Path to CESM complaint domain file (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -51,12 +52,11 @@ class Convert(Process):
             ComplexInput(
                 "config_file",
                 "Convert Configuration",
-                abstract="Path to input configuration file for Convert process",
+                abstract="Path to input configuration file for Convert process (optional)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
             ),
-            log_level,
         ]
         outputs = [
             nc_output,

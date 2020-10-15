@@ -14,7 +14,7 @@ from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
-from osprey.utils import logger, config_handler, get_outfile, replace_urls, collect_args
+from osprey.utils import logger, get_outfile, replace_urls, collect_args
 from osprey.processes.wps_parameters import Parameters
 from osprey.processes.wps_convolution import Convolution
 from wps_tools.utils import (
@@ -38,10 +38,11 @@ class FullRVIC(Process):
             "complete": 100,
         }
         inputs = [
+            log_level,
             LiteralInput(
                 "case_id",
                 "Case ID",
-                abstract="Case ID for the RVIC process",
+                abstract="Case ID for the RVIC process (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -49,7 +50,7 @@ class FullRVIC(Process):
             LiteralInput(
                 "grid_id",
                 "GRID ID",
-                abstract="Routing domain grid shortname",
+                abstract="Routing domain grid shortname (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -57,7 +58,7 @@ class FullRVIC(Process):
             LiteralInput(
                 "run_startdate",
                 "Run Start Date",
-                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
+                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs. (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -65,7 +66,7 @@ class FullRVIC(Process):
             LiteralInput(
                 "stop_date",
                 "Stop Date",
-                abstract="Run stop date based on STOP_OPTION",
+                abstract="Run stop date based on STOP_OPTION (required)",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -73,7 +74,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "pour_points",
                 "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
+                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats] (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -81,7 +82,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "uh_box",
                 "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
+                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell. (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -89,7 +90,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "routing",
                 "ROUTING",
-                abstract="Path to routing inputs netCDF.",
+                abstract="Path to routing inputs netCDF. (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -97,7 +98,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file",
+                abstract="Path to CESM complaint domain file (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -105,7 +106,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "input_forcings",
                 "Input Forcings",
-                abstract="Path to land data netCDF forcings",
+                abstract="Path to land data netCDF forcings (required)",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -113,7 +114,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "params_config_file",
                 "Parameters Configuration",
-                abstract="Path to input configuration file or input dictionary",
+                abstract="Path to input configuration file or input dictionary (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[
@@ -123,7 +124,7 @@ class FullRVIC(Process):
             LiteralInput(
                 "params_config_dict",
                 "Parameters Configuration",
-                abstract="Dictionary containing input configuration for Parameters process",
+                abstract="Dictionary containing input configuration for Parameters process (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",
@@ -131,7 +132,7 @@ class FullRVIC(Process):
             ComplexInput(
                 "convolve_config_file",
                 "Convolution Configuration File",
-                abstract="Path to input configuration file for Convolution process",
+                abstract="Path to input configuration file for Convolution process (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
@@ -139,7 +140,7 @@ class FullRVIC(Process):
             LiteralInput(
                 "convolve_config_dict",
                 "Convolution Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Convolution process",
+                abstract="Dictionary containing input configuration for Convolution process (optional)",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",
@@ -148,17 +149,16 @@ class FullRVIC(Process):
                 "version",
                 "Version",
                 default=True,
-                abstract="Return RVIC version string",
+                abstract="Return RVIC version string (optional)",
                 data_type="boolean",
             ),
             LiteralInput(
                 "np",
                 "numofproc",
                 default=1,
-                abstract="Number of processors used to run job",
+                abstract="Number of processors used to run job (optional)",
                 data_type="integer",
             ),
-            log_level,
         ]
         outputs = [
             nc_output,
@@ -192,7 +192,7 @@ class FullRVIC(Process):
             process_step="start",
         )
 
-        params_config = Parameters().config_handler(args)
+        params_config = Parameters().config_handler(self.workdir, args)
 
         log_handler(
             self,
@@ -216,7 +216,7 @@ class FullRVIC(Process):
             process_step="convolution_process",
         )
 
-        convolve_config = Convolution().config_handler(args)
+        convolve_config = Convolution().config_handler(self.workdir, args)
         convolution(convolve_config)
 
         log_handler(
