@@ -53,17 +53,21 @@ def get_outfile(config, dir_name):
 def collect_args(request, workdir):
     args = {}
     for k in request.inputs.keys():
-        if vars(request.inputs[k][0])["_file"] != None:
-            args[request.inputs[k][0].identifier] = request.inputs[k][0].file
+        if "data_type" in vars(request.inputs[k][0]).keys():
+            # LiteralData
+            args[request.inputs[k][0].identifier] = request.inputs[k][0].data
         elif vars(request.inputs[k][0])["_url"] != None:
             url = request.inputs[k][0].url
             if is_opendap_url(request.inputs[k][0].url):
+                # OPeNDAP
                 args[request.inputs[k][0].identifier] = url
             else:
+                # HTTP or other
                 local_file = os.path.join(workdir, url.split("/")[-1])
                 urlretrieve(url, local_file)
                 args[request.inputs[k][0].identifier] = local_file
         else:
-            args[request.inputs[k][0].identifier] = request.inputs[k][0].data
+            # Local files
+            args[request.inputs[k][0].identifier] = request.inputs[k][0].file
 
     return args
