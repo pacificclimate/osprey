@@ -21,7 +21,6 @@ from wps_tools.io import (
 from osprey.utils import (
     logger,
     get_outfile,
-    replace_urls,
     collect_args,
 )
 
@@ -224,7 +223,7 @@ class Parameters(Process):
             raise ProcessError("Invalid config key provided")
 
     def _handler(self, request, response):
-        args = collect_args(request)
+        args = collect_args(request, self.workdir)
         loglevel = args["loglevel"]
 
         if args["version"]:

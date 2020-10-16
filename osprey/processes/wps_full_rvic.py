@@ -14,7 +14,7 @@ from rvic.parameters import parameters
 from rvic.core.config import read_config
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
-from osprey.utils import logger, get_outfile, replace_urls, collect_args
+from osprey.utils import logger, get_outfile, collect_args
 from osprey.processes.wps_parameters import Parameters
 from osprey.processes.wps_convolution import Convolution
 from wps_tools.utils import (
@@ -180,7 +180,7 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        args = collect_args(request)
+        args = collect_args(request, self.workdir)
         loglevel = args["loglevel"]
 
         log_handler(
