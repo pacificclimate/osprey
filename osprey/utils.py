@@ -2,6 +2,7 @@ from pkg_resources import resource_filename
 from pywps.app.exceptions import ProcessError
 import logging
 import os
+from urllib.parse import urlparse
 from urllib.request import urlretrieve
 from datetime import datetime, timedelta
 from collections.abc import Iterable
@@ -61,12 +62,12 @@ def collect_args(request, workdir):
             if is_opendap_url(request.inputs[k][0].url):
                 # OPeNDAP
                 args[request.inputs[k][0].identifier] = url
-            else:
+            elif urlparse(url).scheme and urlparse(url).netloc:
                 # HTTP or other
                 local_file = os.path.join(workdir, url.split("/")[-1])
                 urlretrieve(url, local_file)
                 args[request.inputs[k][0].identifier] = local_file
-        else:
+        elif os.path.isfile(request.inputs[k][0].file):
             # Local files
             args[request.inputs[k][0].identifier] = request.inputs[k][0].file
 

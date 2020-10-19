@@ -117,9 +117,7 @@ class FullRVIC(Process):
                 abstract="Path to input configuration file or input dictionary (optional)",
                 min_occurs=0,
                 max_occurs=1,
-                supported_formats=[
-                    Format("text/cfg", extension=".cfg", encoding="base64")
-                ],
+                supported_formats=[Format("text/cfg", extension=".cfg")],
             ),
             LiteralInput(
                 "params_config_dict",

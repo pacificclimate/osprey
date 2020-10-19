@@ -123,6 +123,6 @@ def test_parameters_https(
         f"routing=@xlink:href={routing};"
         f"domain=@xlink:href={domain};"
         f"config_file=@xlink:href={config_file};"
-        f"config_dict=@xlink:href={config_dict};"
+        f"config_dict={config_dict};"
     )
     run_wps_process(Parameters(), params)
