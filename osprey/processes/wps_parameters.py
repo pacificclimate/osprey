@@ -89,7 +89,7 @@ class Parameters(Process):
             LiteralInput(
                 "case_id",
                 "Case ID",
-                abstract="Case ID for the RVIC process (required)",
+                abstract="Case ID for the RVIC process",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -97,7 +97,7 @@ class Parameters(Process):
             LiteralInput(
                 "grid_id",
                 "GRID ID",
-                abstract="Routing domain grid shortname (required)",
+                abstract="Routing domain grid shortname",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -105,7 +105,7 @@ class Parameters(Process):
             ComplexInput(
                 "pour_points",
                 "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats] (required)",
+                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -113,7 +113,7 @@ class Parameters(Process):
             ComplexInput(
                 "uh_box",
                 "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell. (required)",
+                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -121,7 +121,7 @@ class Parameters(Process):
             ComplexInput(
                 "routing",
                 "ROUTING",
-                abstract="Path to routing inputs netCDF. (required)",
+                abstract="Path to routing inputs netCDF.",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -129,7 +129,7 @@ class Parameters(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file (required)",
+                abstract="Path to CESM complaint domain file",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -137,7 +137,7 @@ class Parameters(Process):
             ComplexInput(
                 "params_config_file",
                 "Parameters Configuration",
-                abstract="Path to input configuration file for Parameters process (optional)",
+                abstract="Path to input configuration file for Parameters process",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
@@ -145,7 +145,7 @@ class Parameters(Process):
             LiteralInput(
                 "params_config_dict",
                 "Parameters Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Parameters process (optional)",
+                abstract="Dictionary containing input configuration for Parameters process",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",
@@ -154,14 +154,14 @@ class Parameters(Process):
                 "np",
                 "numofproc",
                 default=1,
-                abstract="Number of processors used to run job (optional)",
+                abstract="Number of processors used to run job",
                 data_type="integer",
             ),
             LiteralInput(
                 "version",
                 "Version",
                 default=True,
-                abstract="Return RVIC version string (optional)",
+                abstract="Return RVIC version string",
                 data_type="boolean",
             ),
         ]
@@ -240,7 +240,7 @@ class Parameters(Process):
             args[k]
             for k in sorted(args.keys())
             if k != "params_config_file" and k != "params_config_dict"
-        ) # Define variables in lexicographic order
+        )  # Define variables in lexicographic order
 
         if version:
             logger.info(version)

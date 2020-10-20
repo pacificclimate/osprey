@@ -29,14 +29,14 @@ class Convert(Process):
             ComplexInput(
                 "uhs_files",
                 "UHS_Files",
-                abstract="Path to UHS file (required)",
+                abstract="Path to UHS file",
                 min_occurs=1,
                 supported_formats=[FORMATS.TEXT],
             ),
             ComplexInput(
                 "station_file",
                 "Station_FILE",
-                abstract="Path to stations file (required)",
+                abstract="Path to stations file",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT],
@@ -44,7 +44,7 @@ class Convert(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file (required)",
+                abstract="Path to CESM complaint domain file",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -52,7 +52,7 @@ class Convert(Process):
             ComplexInput(
                 "config_file",
                 "Convert Configuration",
-                abstract="Path to input configuration file for Convert process (optional)",
+                abstract="Path to input configuration file for Convert process",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
@@ -98,7 +98,7 @@ class Convert(Process):
         args = collect_args(request, self.workdir)
         config_file, domain, loglevel, station_file, uhs_files = (
             args[k] for k in sorted(args.keys())
-        ) # Define variables in lexicographic order
+        )  # Define variables in lexicographic order
 
         log_handler(
             self,

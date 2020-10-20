@@ -79,7 +79,7 @@ class Convolution(Process):
             LiteralInput(
                 "case_id",
                 "Case ID",
-                abstract="Case ID for the RVIC process (required)",
+                abstract="Case ID for the RVIC process",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -87,7 +87,7 @@ class Convolution(Process):
             LiteralInput(
                 "run_startdate",
                 "Run Start Date",
-                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs. (required)",
+                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -95,7 +95,7 @@ class Convolution(Process):
             LiteralInput(
                 "stop_date",
                 "Stop Date",
-                abstract="Run stop date based on STOP_OPTION (required)",
+                abstract="Run stop date based on STOP_OPTION",
                 min_occurs=1,
                 max_occurs=1,
                 data_type="string",
@@ -103,7 +103,7 @@ class Convolution(Process):
             ComplexInput(
                 "domain",
                 "Domain",
-                abstract="Path to CESM complaint domain file (required)",
+                abstract="Path to CESM complaint domain file",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -111,7 +111,7 @@ class Convolution(Process):
             ComplexInput(
                 "param_file",
                 "Parameter File",
-                abstract="Path to RVIC parameter file (required)",
+                abstract="Path to RVIC parameter file",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -119,7 +119,7 @@ class Convolution(Process):
             ComplexInput(
                 "input_forcings",
                 "Input Forcings",
-                abstract="Path to land data netCDF forcings (required)",
+                abstract="Path to land data netCDF forcings",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
@@ -127,7 +127,7 @@ class Convolution(Process):
             ComplexInput(
                 "convolve_config_file",
                 "Convolution Configuration File",
-                abstract="Path to input configuration file for Convolution process (optional)",
+                abstract="Path to input configuration file for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
                 supported_formats=[Format("text/cfg", extension=".cfg")],
@@ -135,7 +135,7 @@ class Convolution(Process):
             LiteralInput(
                 "convolve_config_dict",
                 "Convolution Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Convolution process (optional)",
+                abstract="Dictionary containing input configuration for Convolution process",
                 min_occurs=0,
                 max_occurs=1,
                 data_type="string",
