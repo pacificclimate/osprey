@@ -179,7 +179,30 @@ class FullRVIC(Process):
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
-        loglevel = args["loglevel"]
+        (
+            case_id,
+            domain,
+            grid_id,
+            input_forcings,
+            loglevel,
+            np,
+            pour_points,
+            routing,
+            run_startdate,
+            stop_date,
+            uh_box,
+            version,
+        ) = (
+            args[k]
+            for k in sorted(args.keys())
+            if k != "params_config_file"
+            and k != "params_config_dict"
+            and k != "convolve_config_file"
+            and k != "convolve_config_dict"
+        ) # Define variables in lexicographic order
+
+        if version:
+            logger.info(version)
 
         log_handler(
             self,
@@ -190,7 +213,9 @@ class FullRVIC(Process):
             process_step="start",
         )
 
-        params_config = Parameters().config_handler(self.workdir, args)
+        params_config = Parameters().config_handler(
+            self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
+        )
 
         log_handler(
             self,
@@ -201,9 +226,9 @@ class FullRVIC(Process):
             process_step="parameters_process",
         )
 
-        parameters(params_config, args["np"])
+        parameters(params_config, np)
         params_output = get_outfile(params_config, "params")
-        args["param_file"] = params_output
+        param_file = params_output
 
         log_handler(
             self,
@@ -214,7 +239,16 @@ class FullRVIC(Process):
             process_step="convolution_process",
         )
 
-        convolve_config = Convolution().config_handler(self.workdir, args)
+        convolve_config = Convolution().config_handler(
+            self.workdir,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            param_file,
+            input_forcings,
+            args,
+        )
         convolution(convolve_config)
 
         log_handler(

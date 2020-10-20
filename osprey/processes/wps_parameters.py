@@ -185,7 +185,9 @@ class Parameters(Process):
             status_supported=True,
         )
 
-    def config_handler(self, workdir, args):
+    def config_handler(
+        self, workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args
+    ):
         if "params_config_file" in args:
             unprocessed = read_config(args["params_config_file"])
         elif "params_config_dict" in args:
@@ -196,8 +198,8 @@ class Parameters(Process):
         processed = self.config_template
 
         try:
-            processed["OPTIONS"]["CASEID"] = args["case_id"]
-            processed["OPTIONS"]["GRIDID"] = args["grid_id"]
+            processed["OPTIONS"]["CASEID"] = case_id
+            processed["OPTIONS"]["GRIDID"] = grid_id
 
             for upper_key in unprocessed.keys():
                 for lower_key in unprocessed[upper_key].keys():
@@ -212,10 +214,10 @@ class Parameters(Process):
                     processed["OPTIONS"]["CASEID"] + "/temp"
                 )
 
-            processed["POUR_POINTS"]["FILE_NAME"] = args["pour_points"]
-            processed["UH_BOX"]["FILE_NAME"] = args["uh_box"]
-            processed["ROUTING"]["FILE_NAME"] = args["routing"]
-            processed["DOMAIN"]["FILE_NAME"] = args["domain"]
+            processed["POUR_POINTS"]["FILE_NAME"] = pour_points
+            processed["UH_BOX"]["FILE_NAME"] = uh_box
+            processed["ROUTING"]["FILE_NAME"] = routing
+            processed["DOMAIN"]["FILE_NAME"] = domain
 
             return processed
 
@@ -224,9 +226,23 @@ class Parameters(Process):
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
-        loglevel = args["loglevel"]
+        (
+            case_id,
+            domain,
+            grid_id,
+            loglevel,
+            np,
+            pour_points,
+            routing,
+            uh_box,
+            version,
+        ) = (
+            args[k]
+            for k in sorted(args.keys())
+            if k != "params_config_file" and k != "params_config_dict"
+        ) # Define variables in lexicographic order
 
-        if args["version"]:
+        if version:
             logger.info(version)
 
         log_handler(
@@ -238,7 +254,9 @@ class Parameters(Process):
             process_step="start",
         )
 
-        config = self.config_handler(self.workdir, args)
+        config = self.config_handler(
+            self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
+        )
 
         log_handler(
             self,
@@ -249,7 +267,7 @@ class Parameters(Process):
             process_step="process",
         )
 
-        parameters(config, args["np"])
+        parameters(config, np)
 
         log_handler(
             self,

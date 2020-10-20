@@ -73,20 +73,20 @@ class Convert(Process):
             status_supported=True,
         )
 
-    def edit_config_file(self, args):
+    def edit_config_file(self, config_file, uhs_files, station_file, domain):
         parser = configparser.ConfigParser()
         parser.optionxform = str
 
-        unprocessed = args["config_file"]
+        unprocessed = config_file
         config_dict = read_config(unprocessed)
         for section in config_dict.keys():
             parser[section] = {
                 k: str(config_dict[section][k]) for k in config_dict[section].keys()
             }
 
-        parser["UHS_FILES"]["ROUT_DIR"] = "/".join(args["uhs_files"].split("/")[:-1])
-        parser["UHS_FILES"]["STATION_FILE"] = args["station_file"]
-        parser["DOMAIN"]["FILE_NAME"] = args["domain"]
+        parser["UHS_FILES"]["ROUT_DIR"] = "/".join(uhs_files.split("/")[:-1])
+        parser["UHS_FILES"]["STATION_FILE"] = station_file
+        parser["DOMAIN"]["FILE_NAME"] = domain
 
         processed = ".".join(unprocessed.split(".")[:-1]) + "_edited.cfg"
         with open(processed, "w") as cfg:
@@ -96,7 +96,9 @@ class Convert(Process):
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
-        loglevel = args["loglevel"]
+        config_file, domain, loglevel, station_file, uhs_files = (
+            args[k] for k in sorted(args.keys())
+        ) # Define variables in lexicographic order
 
         log_handler(
             self,
@@ -107,7 +109,9 @@ class Convert(Process):
             process_step="start",
         )
 
-        config_file = self.edit_config_file(args)
+        config_file = self.edit_config_file(
+            config_file, uhs_files, station_file, domain
+        )
 
         log_handler(
             self,

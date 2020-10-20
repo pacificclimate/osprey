@@ -157,7 +157,17 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def config_handler(self, workdir, args):
+    def config_handler(
+        self,
+        workdir,
+        case_id,
+        run_startdate,
+        stop_date,
+        domain,
+        param_file,
+        input_forcings,
+        args,
+    ):
         if "convolve_config_file" in args:
             unprocessed = read_config(args["convolve_config_file"])
         elif "convolve_config_dict" in args:
@@ -168,9 +178,9 @@ class Convolution(Process):
         processed = self.config_template
 
         try:
-            processed["OPTIONS"]["CASEID"] = args["case_id"]
-            processed["OPTIONS"]["RUN_STARTDATE"] = args["run_startdate"]
-            processed["OPTIONS"]["STOP_DATE"] = args["stop_date"]
+            processed["OPTIONS"]["CASEID"] = case_id
+            processed["OPTIONS"]["RUN_STARTDATE"] = run_startdate
+            processed["OPTIONS"]["STOP_DATE"] = stop_date
 
             for upper_key in unprocessed.keys():
                 for lower_key in unprocessed[upper_key].keys():
@@ -183,14 +193,12 @@ class Convolution(Process):
             if processed["OPTIONS"]["REST_DATE"] == None:
                 processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
 
-            processed["DOMAIN"]["FILE_NAME"] = args["domain"]
-            processed["PARAM_FILE"]["FILE_NAME"] = args["param_file"]
+            processed["DOMAIN"]["FILE_NAME"] = domain
+            processed["PARAM_FILE"]["FILE_NAME"] = param_file
             processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
-                args["input_forcings"].split("/")[:-1]
+                input_forcings.split("/")[:-1]
             )
-            processed["INPUT_FORCINGS"]["DATL_FILE"] = args["input_forcings"].split(
-                "/"
-            )[-1]
+            processed["INPUT_FORCINGS"]["DATL_FILE"] = input_forcings.split("/")[-1]
 
             return processed
 
@@ -199,7 +207,19 @@ class Convolution(Process):
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
-        loglevel = args["loglevel"]
+        (
+            case_id,
+            domain,
+            input_forcings,
+            loglevel,
+            param_file,
+            run_startdate,
+            stop_date,
+        ) = (
+            args[k]
+            for k in sorted(args.keys())
+            if k != "convolve_config_file" and k != "convolve_config_dict"
+        ) # Define variables in lexicographic order
 
         log_handler(
             self,
@@ -210,7 +230,16 @@ class Convolution(Process):
             process_step="start",
         )
 
-        config = self.config_handler(self.workdir, args)
+        config = self.config_handler(
+            self.workdir,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            param_file,
+            input_forcings,
+            args,
+        )
 
         log_handler(
             self,
