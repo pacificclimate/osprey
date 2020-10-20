@@ -13,6 +13,7 @@ from osprey.utils import (
     collect_args,
 )
 import os
+import configparser
 
 
 class Convert(Process):
@@ -73,25 +74,25 @@ class Convert(Process):
         )
 
     def edit_config_file(self, args):
-        config_file = args["config_file"]
-        with open(config_file, "r") as cf:
-            lines = cf.read().split("\n")
-            for idx, line in enumerate(lines):
-                if line.startswith("ROUT_DIR"):
-                    lines[idx] = "ROUT_DIR:" + "/".join(
-                        args["uhs_files"].split("/")[:-1]
-                    )
-                elif line.startswith("STATION_FILE"):
-                    lines[idx] = "STATION_FILE:" + args["station_file"]
-                    print(line)
-                elif line.startswith("FILE_NAME"):
-                    lines[idx] = "FILE_NAME:" + args["domain"]
+        parser = configparser.ConfigParser()
+        parser.optionxform = str
 
-        config_data = "\n".join(lines)
-        with open(config_file, "w") as cf:
-            cf.write(config_data)
+        unprocessed = args["config_file"]
+        config_dict = read_config(unprocessed)
+        for section in config_dict.keys():
+            parser[section] = {
+                k: str(config_dict[section][k]) for k in config_dict[section].keys()
+            }
 
-        return config_file
+        parser["UHS_FILES"]["ROUT_DIR"] = "/".join(args["uhs_files"].split("/")[:-1])
+        parser["UHS_FILES"]["STATION_FILE"] = args["station_file"]
+        parser["DOMAIN"]["FILE_NAME"] = args["domain"]
+
+        processed = ".".join(unprocessed.split(".")[:-1]) + "_edited.cfg"
+        with open(processed, "w") as cfg:
+            parser.write(cfg)
+
+        return processed
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
