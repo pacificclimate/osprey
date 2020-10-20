@@ -1,4 +1,4 @@
-from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FORMATS
+from pywps import Process, ComplexInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 
