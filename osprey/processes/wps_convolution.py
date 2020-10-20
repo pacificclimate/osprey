@@ -186,11 +186,11 @@ class Convolution(Process):
                 for lower_key in unprocessed[upper_key].keys():
                     processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
 
-            if processed["OPTIONS"]["CASE_DIR"] == None:
+            if not processed["OPTIONS"]["CASE_DIR"]:
                 processed["OPTIONS"]["CASE_DIR"] = os.path.join(
                     workdir, processed["OPTIONS"]["CASEID"]
                 )
-            if processed["OPTIONS"]["REST_DATE"] == None:
+            if not processed["OPTIONS"]["REST_DATE"]:
                 processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
 
             processed["DOMAIN"]["FILE_NAME"] = domain
@@ -219,7 +219,7 @@ class Convolution(Process):
             args[k]
             for k in sorted(args.keys())
             if k != "convolve_config_file" and k != "convolve_config_dict"
-        ) # Define variables in lexicographic order
+        )  # Define variables in lexicographic order
 
         log_handler(
             self,

@@ -50,6 +50,7 @@ def get_outfile(config, dir_name):
 
     return os.path.join(outdir, out_file)
 
+
 def url_handler(workdir, url):
     if is_opendap_url(url):
         # OPeNDAP
@@ -60,6 +61,7 @@ def url_handler(workdir, url):
         urlretrieve(url, local_file)
         return local_file
 
+
 def collect_args(request, workdir):
     args = {}
     for k in request.inputs.keys():
@@ -67,7 +69,9 @@ def collect_args(request, workdir):
             # LiteralData
             args[request.inputs[k][0].identifier] = request.inputs[k][0].data
         elif vars(request.inputs[k][0])["_url"] != None:
-            args[request.inputs[k][0].identifier] = url_handler(workdir, request.inputs[k][0].url)
+            args[request.inputs[k][0].identifier] = url_handler(
+                workdir, request.inputs[k][0].url
+            )
         elif os.path.isfile(request.inputs[k][0].file):
             # Local files
             args[request.inputs[k][0].identifier] = request.inputs[k][0].file
