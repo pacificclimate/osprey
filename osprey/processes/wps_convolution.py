@@ -12,62 +12,13 @@ from osprey.utils import (
     get_outfile,
     collect_args,
 )
+from osprey.config_templates import convolve_config_template
 
 import os
 
 
 class Convolution(Process):
     def __init__(self):
-        self.config_template = {
-            # configuration dictionary used for RVIC convolution
-            # required user inputs are defined as None value
-            "OPTIONS": {
-                "LOG_LEVEL": "INFO",
-                "VERBOSE": True,
-                "CASE_DIR": None,
-                "CASEID": None,
-                "CASESTR": "historical",
-                "CALENDAR": "standard",
-                "RUN_TYPE": "drystart",  # automatic run
-                "RUN_STARTDATE": None,
-                "STOP_OPTION": "date",
-                "STOP_N": -999,
-                "STOP_DATE": None,
-                "REST_OPTION": "date",
-                "REST_N": -999,
-                "REST_DATE": None,
-                "REST_NCFORM": "NETCDF4",
-            },
-            "HISTORY": {
-                "RVICHIST_NTAPES": 1,
-                "RVICHIST_MFILT": 100000,
-                "RVICHIST_NDENS": 1,
-                "RVICHIST_NHTFRQ": 1,
-                "RVICHIST_AVGFLAG": "A",
-                "RVICHIST_OUTTYPE": "array",
-                "RVICHIST_NCFORM": "NETCDF4",
-                "RVICHIST_UNITS": "m3/s",
-            },
-            "DOMAIN": {
-                "FILE_NAME": None,
-                "LONGITUDE_VAR": "lon",
-                "LATITUDE_VAR": "lat",
-                "AREA_VAR": "area",
-                "LAND_MASK_VAR": "mask",
-                "FRACTION_VAR": "frac",
-            },
-            "INITIAL_STATE": {"FILE_NAME": None},
-            "PARAM_FILE": {"FILE_NAME": None},
-            "INPUT_FORCINGS": {
-                "DATL_PATH": None,
-                "DATL_FILE": None,
-                "TIME_VAR": "time",
-                "LATITUDE_VAR": "lat",
-                "DATL_LIQ_FLDS": ["RUNOFF", "BASEFLOW"],
-                "START": None,
-                "END": None,
-            },
-        }
         self.status_percentage_steps = {
             "start": 0,
             "process": 10,
@@ -173,9 +124,9 @@ class Convolution(Process):
         elif "convolve_config_dict" in args:
             unprocessed = eval(args["convolve_config_dict"])
         else:
-            unprocessed = self.config_template
+            unprocessed = convolve_config_template
 
-        processed = self.config_template
+        processed = convolve_config_template
 
         try:
             processed["OPTIONS"]["CASEID"] = case_id
