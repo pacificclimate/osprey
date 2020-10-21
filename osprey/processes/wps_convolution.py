@@ -107,18 +107,14 @@ class Convolution(Process):
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
         (
-            case_id,
-            domain,
-            input_forcings,
             loglevel,
-            param_file,
+            case_id,
             run_startdate,
             stop_date,
-        ) = (
-            args[k]
-            for k in sorted(args.keys())
-            if k != "convolve_config_file" and k != "convolve_config_dict"
-        )  # Define variables in lexicographic order
+            domain,
+            param_file,
+            input_forcings,
+        ) = tuple(args.values())[:7]
 
         log_handler(
             self,

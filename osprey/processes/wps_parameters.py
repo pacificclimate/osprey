@@ -38,6 +38,20 @@ class Parameters(Process):
         inputs = [
             log_level,
             LiteralInput(
+                "np",
+                "numofproc",
+                default=1,
+                abstract="Number of processors used to run job",
+                data_type="integer",
+            ),
+            LiteralInput(
+                "version",
+                "Version",
+                default=True,
+                abstract="Return RVIC version string",
+                data_type="boolean",
+            ),
+            LiteralInput(
                 "case_id",
                 "Case ID",
                 abstract="Case ID for the RVIC process",
@@ -101,20 +115,6 @@ class Parameters(Process):
                 max_occurs=1,
                 data_type="string",
             ),
-            LiteralInput(
-                "np",
-                "numofproc",
-                default=1,
-                abstract="Number of processors used to run job",
-                data_type="integer",
-            ),
-            LiteralInput(
-                "version",
-                "Version",
-                default=True,
-                abstract="Return RVIC version string",
-                data_type="boolean",
-            ),
         ]
         outputs = [
             nc_output,
@@ -139,20 +139,16 @@ class Parameters(Process):
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
         (
-            case_id,
-            domain,
-            grid_id,
             loglevel,
             np,
-            pour_points,
-            routing,
-            uh_box,
             version,
-        ) = (
-            args[k]
-            for k in sorted(args.keys())
-            if k != "params_config_file" and k != "params_config_dict"
-        )  # Define variables in lexicographic order
+            case_id,
+            grid_id,
+            pour_points,
+            uh_box,
+            routing,
+            domain,
+        ) = tuple(args.values())[:9]
 
         if version:
             logger.info(version)

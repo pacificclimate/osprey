@@ -39,6 +39,20 @@ class FullRVIC(Process):
         inputs = [
             log_level,
             LiteralInput(
+                "version",
+                "Version",
+                default=True,
+                abstract="Return RVIC version string",
+                data_type="boolean",
+            ),
+            LiteralInput(
+                "np",
+                "numofproc",
+                default=1,
+                abstract="Number of processors used to run job",
+                data_type="integer",
+            ),
+            LiteralInput(
                 "case_id",
                 "Case ID",
                 abstract="Case ID for the RVIC process",
@@ -142,20 +156,6 @@ class FullRVIC(Process):
                 max_occurs=1,
                 data_type="string",
             ),
-            LiteralInput(
-                "version",
-                "Version",
-                default=True,
-                abstract="Return RVIC version string",
-                data_type="boolean",
-            ),
-            LiteralInput(
-                "np",
-                "numofproc",
-                default=1,
-                abstract="Number of processors used to run job",
-                data_type="integer",
-            ),
         ]
         outputs = [
             nc_output,
@@ -179,26 +179,19 @@ class FullRVIC(Process):
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
         (
-            case_id,
-            domain,
-            grid_id,
-            input_forcings,
             loglevel,
+            version,
             np,
-            pour_points,
-            routing,
+            case_id,
+            grid_id,
             run_startdate,
             stop_date,
+            pour_points,
             uh_box,
-            version,
-        ) = (
-            args[k]
-            for k in sorted(args.keys())
-            if k != "params_config_file"
-            and k != "params_config_dict"
-            and k != "convolve_config_file"
-            and k != "convolve_config_dict"
-        )  # Define variables in lexicographic order
+            routing,
+            domain,
+            input_forcings,
+        ) = tuple(args.values())[:12]
 
         if version:
             logger.info(version)

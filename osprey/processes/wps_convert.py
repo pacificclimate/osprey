@@ -96,9 +96,7 @@ class Convert(Process):
 
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
-        config_file, domain, loglevel, station_file, uhs_files = (
-            args[k] for k in sorted(args.keys())
-        )  # Define variables in lexicographic order
+        loglevel, uhs_files, station_file, domain, config_file = tuple(args.values())
 
         log_handler(
             self,
