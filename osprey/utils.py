@@ -10,6 +10,7 @@ from wps_tools.utils import collect_output_files, is_opendap_url
 from tempfile import NamedTemporaryFile
 from .config_templates import convolve_config_template, params_config_template
 from rvic.core.config import read_config
+from collections import OrderedDict
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -65,7 +66,7 @@ def url_handler(workdir, url):
 
 
 def collect_args(request, workdir):
-    args = {}
+    args = OrderedDict()
     for k in request.inputs.keys():
         if "data_type" in vars(request.inputs[k][0]).keys():
             # LiteralData
