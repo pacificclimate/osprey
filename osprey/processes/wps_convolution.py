@@ -1,9 +1,7 @@
 from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
-from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
-from rvic.core.config import read_config
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
@@ -11,10 +9,8 @@ from osprey.utils import (
     logger,
     get_outfile,
     collect_args,
+    convolve_config_handler,
 )
-from osprey.config_templates import convolve_config_template
-
-import os
 
 
 class Convolution(Process):
@@ -108,54 +104,6 @@ class Convolution(Process):
             status_supported=True,
         )
 
-    def config_handler(
-        self,
-        workdir,
-        case_id,
-        run_startdate,
-        stop_date,
-        domain,
-        param_file,
-        input_forcings,
-        args,
-    ):
-        if "convolve_config_file" in args:
-            unprocessed = read_config(args["convolve_config_file"])
-        elif "convolve_config_dict" in args:
-            unprocessed = eval(args["convolve_config_dict"])
-        else:
-            unprocessed = convolve_config_template
-
-        processed = convolve_config_template
-
-        try:
-            processed["OPTIONS"]["CASEID"] = case_id
-            processed["OPTIONS"]["RUN_STARTDATE"] = run_startdate
-            processed["OPTIONS"]["STOP_DATE"] = stop_date
-
-            for upper_key in unprocessed.keys():
-                for lower_key in unprocessed[upper_key].keys():
-                    processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
-
-            if not processed["OPTIONS"]["CASE_DIR"]:
-                processed["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    workdir, processed["OPTIONS"]["CASEID"]
-                )
-            if not processed["OPTIONS"]["REST_DATE"]:
-                processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
-
-            processed["DOMAIN"]["FILE_NAME"] = domain
-            processed["PARAM_FILE"]["FILE_NAME"] = param_file
-            processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
-                input_forcings.split("/")[:-1]
-            )
-            processed["INPUT_FORCINGS"]["DATL_FILE"] = input_forcings.split("/")[-1]
-
-            return processed
-
-        except KeyError:
-            raise ProcessError("Invalid config key provided")
-
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
         (
@@ -181,7 +129,7 @@ class Convolution(Process):
             process_step="start",
         )
 
-        config = self.config_handler(
+        config = convolve_config_handler(
             self.workdir,
             case_id,
             run_startdate,

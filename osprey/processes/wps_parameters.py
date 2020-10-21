@@ -7,12 +7,10 @@ from pywps import (
     FORMATS,
 )
 from pywps.app.Common import Metadata
-from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
-from rvic.core.config import read_config
 from wps_tools.utils import log_handler
 from wps_tools.io import (
     log_level,
@@ -22,8 +20,8 @@ from osprey.utils import (
     logger,
     get_outfile,
     collect_args,
+    params_config_handler,
 )
-from osprey.config_templates import params_config_template
 
 # Library imports
 import os
@@ -138,45 +136,6 @@ class Parameters(Process):
             status_supported=True,
         )
 
-    def config_handler(
-        self, workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args
-    ):
-        if "params_config_file" in args:
-            unprocessed = read_config(args["params_config_file"])
-        elif "params_config_dict" in args:
-            unprocessed = eval(args["params_config_dict"])
-        else:
-            unprocessed = params_config_template
-
-        processed = params_config_template
-
-        try:
-            processed["OPTIONS"]["CASEID"] = case_id
-            processed["OPTIONS"]["GRIDID"] = grid_id
-
-            for upper_key in unprocessed.keys():
-                for lower_key in unprocessed[upper_key].keys():
-                    processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
-
-            if processed["OPTIONS"]["CASE_DIR"] == None:
-                processed["OPTIONS"]["CASE_DIR"] = os.path.join(
-                    workdir, processed["OPTIONS"]["CASEID"]
-                )
-            if processed["OPTIONS"]["TEMP_DIR"] == None:
-                processed["OPTIONS"]["TEMP_DIR"] = (
-                    processed["OPTIONS"]["CASEID"] + "/temp"
-                )
-
-            processed["POUR_POINTS"]["FILE_NAME"] = pour_points
-            processed["UH_BOX"]["FILE_NAME"] = uh_box
-            processed["ROUTING"]["FILE_NAME"] = routing
-            processed["DOMAIN"]["FILE_NAME"] = domain
-
-            return processed
-
-        except KeyError:
-            raise ProcessError("Invalid config key provided")
-
     def _handler(self, request, response):
         args = collect_args(request, self.workdir)
         (
@@ -207,7 +166,7 @@ class Parameters(Process):
             process_step="start",
         )
 
-        config = self.config_handler(
+        config = params_config_handler(
             self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
         )
 

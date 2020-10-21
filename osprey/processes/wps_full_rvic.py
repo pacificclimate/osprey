@@ -11,21 +11,20 @@ from pywps import (
 # Tool imports
 from rvic.convolution import convolution
 from rvic.parameters import parameters
-from rvic.core.config import read_config
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
-from osprey.utils import logger, get_outfile, collect_args
-from osprey.processes.wps_parameters import Parameters
-from osprey.processes.wps_convolution import Convolution
-from wps_tools.utils import (
-    collect_output_files,
-    log_handler,
+from osprey.utils import (
+    logger,
+    get_outfile,
+    collect_args,
+    convolve_config_handler,
+    params_config_handler,
 )
+from wps_tools.utils import log_handler
 from wps_tools.io import (
     log_level,
     nc_output,
 )
-import os
 
 
 class FullRVIC(Process):
@@ -213,7 +212,7 @@ class FullRVIC(Process):
             process_step="start",
         )
 
-        params_config = Parameters().config_handler(
+        params_config = params_config_handler(
             self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
         )
 
@@ -239,7 +238,7 @@ class FullRVIC(Process):
             process_step="convolution_process",
         )
 
-        convolve_config = Convolution().config_handler(
+        convolve_config = convolve_config_handler(
             self.workdir,
             case_id,
             run_startdate,

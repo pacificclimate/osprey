@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 from collections.abc import Iterable
 from wps_tools.utils import collect_output_files, is_opendap_url
 from tempfile import NamedTemporaryFile
+from .config_templates import convolve_config_template, params_config_template
+from rvic.core.config import read_config
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
@@ -77,3 +79,89 @@ def collect_args(request, workdir):
             args[request.inputs[k][0].identifier] = request.inputs[k][0].file
 
     return args
+
+
+def params_config_handler(
+    workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args
+):
+    if "params_config_file" in args:
+        unprocessed = read_config(args["params_config_file"])
+    elif "params_config_dict" in args:
+        unprocessed = eval(args["params_config_dict"])
+    else:
+        unprocessed = params_config_template
+
+    processed = params_config_template
+
+    try:
+        processed["OPTIONS"]["CASEID"] = case_id
+        processed["OPTIONS"]["GRIDID"] = grid_id
+
+        for upper_key in unprocessed.keys():
+            for lower_key in unprocessed[upper_key].keys():
+                processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
+
+        if processed["OPTIONS"]["CASE_DIR"] == None:
+            processed["OPTIONS"]["CASE_DIR"] = os.path.join(
+                workdir, processed["OPTIONS"]["CASEID"]
+            )
+        if processed["OPTIONS"]["TEMP_DIR"] == None:
+            processed["OPTIONS"]["TEMP_DIR"] = processed["OPTIONS"]["CASEID"] + "/temp"
+
+        processed["POUR_POINTS"]["FILE_NAME"] = pour_points
+        processed["UH_BOX"]["FILE_NAME"] = uh_box
+        processed["ROUTING"]["FILE_NAME"] = routing
+        processed["DOMAIN"]["FILE_NAME"] = domain
+
+        return processed
+
+    except KeyError:
+        raise ProcessError("Invalid config key provided")
+
+
+def convolve_config_handler(
+    workdir,
+    case_id,
+    run_startdate,
+    stop_date,
+    domain,
+    param_file,
+    input_forcings,
+    args,
+):
+    if "convolve_config_file" in args:
+        unprocessed = read_config(args["convolve_config_file"])
+    elif "convolve_config_dict" in args:
+        unprocessed = eval(args["convolve_config_dict"])
+    else:
+        unprocessed = convolve_config_template
+
+    processed = convolve_config_template
+
+    try:
+        processed["OPTIONS"]["CASEID"] = case_id
+        processed["OPTIONS"]["RUN_STARTDATE"] = run_startdate
+        processed["OPTIONS"]["STOP_DATE"] = stop_date
+
+        for upper_key in unprocessed.keys():
+            for lower_key in unprocessed[upper_key].keys():
+                processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
+
+        if not processed["OPTIONS"]["CASE_DIR"]:
+            processed["OPTIONS"]["CASE_DIR"] = os.path.join(
+                workdir, processed["OPTIONS"]["CASEID"]
+            )
+        if not processed["OPTIONS"]["REST_DATE"]:
+            processed["OPTIONS"]["REST_DATE"] = processed["OPTIONS"]["STOP_DATE"]
+
+        processed["DOMAIN"]["FILE_NAME"] = domain
+        processed["PARAM_FILE"]["FILE_NAME"] = param_file
+        processed["INPUT_FORCINGS"]["DATL_PATH"] = "/".join(
+            input_forcings.split("/")[:-1]
+        )
+        processed["INPUT_FORCINGS"]["DATL_FILE"] = input_forcings.split("/")[-1]
+
+        return processed
+
+    except KeyError:
+        raise ProcessError("Invalid config key provided")
