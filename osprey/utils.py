@@ -97,9 +97,9 @@ def params_config_handler(
         processed["OPTIONS"]["CASEID"] = case_id
         processed["OPTIONS"]["GRIDID"] = grid_id
 
-        for upper_key in unprocessed.keys():
-            for lower_key in unprocessed[upper_key].keys():
-                processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
+        for section in unprocessed.keys():
+            for key in unprocessed[section].keys():
+                processed[section][key] = unprocessed[section][key]
 
         if processed["OPTIONS"]["CASE_DIR"] == None:
             processed["OPTIONS"]["CASE_DIR"] = os.path.join(
@@ -113,7 +113,7 @@ def params_config_handler(
         processed["ROUTING"]["FILE_NAME"] = routing
         processed["DOMAIN"]["FILE_NAME"] = domain
 
-        return processed
+        return rvic_config_validator(processed)
 
     except KeyError:
         raise ProcessError("Invalid config key provided")
@@ -143,9 +143,9 @@ def convolve_config_handler(
         processed["OPTIONS"]["RUN_STARTDATE"] = run_startdate
         processed["OPTIONS"]["STOP_DATE"] = stop_date
 
-        for upper_key in unprocessed.keys():
-            for lower_key in unprocessed[upper_key].keys():
-                processed[upper_key][lower_key] = unprocessed[upper_key][lower_key]
+        for section in unprocessed.keys():
+            for key in unprocessed[section].keys():
+                processed[section][key] = unprocessed[section][key]
 
         if not processed["OPTIONS"]["CASE_DIR"]:
             processed["OPTIONS"]["CASE_DIR"] = os.path.join(
@@ -161,7 +161,19 @@ def convolve_config_handler(
         )
         processed["INPUT_FORCINGS"]["DATL_FILE"] = input_forcings.split("/")[-1]
 
-        return processed
+        return rvic_config_validator(processed)
 
     except KeyError:
         raise ProcessError("Invalid config key provided")
+
+
+def rvic_config_validator(cfg):
+    return {
+        section: {
+            key: cfg[section][key]
+            if type(cfg[section][key]) != list or len(cfg[section][key]) > 1
+            else cfg[section][key][0]
+            for key in cfg[section].keys()
+        }
+        for section in cfg.keys()
+    }
