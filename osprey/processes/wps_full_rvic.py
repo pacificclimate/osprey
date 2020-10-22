@@ -1,28 +1,30 @@
 # Processor imports
 from pywps import (
     Process,
+    ComplexInput,
     LiteralInput,
     ComplexOutput,
+    Format,
     FORMATS,
 )
 
 # Tool imports
 from rvic.convolution import convolution
 from rvic.parameters import parameters
-from rvic.core.config import read_config
 from pywps.app.Common import Metadata
-from osprey.utils import logger, config_hander, get_outfile, replace_urls
-from osprey.processes.wps_parameters import Parameters
-from osprey.processes.wps_convolution import Convolution
-from wps_tools.utils import (
-    collect_output_files,
-    log_handler,
+from pywps.app.exceptions import ProcessError
+from osprey.utils import (
+    logger,
+    get_outfile,
+    collect_args,
+    convolve_config_handler,
+    params_config_handler,
 )
+from wps_tools.utils import log_handler
 from wps_tools.io import (
     log_level,
     nc_output,
 )
-import os
 
 
 class FullRVIC(Process):
@@ -35,18 +37,7 @@ class FullRVIC(Process):
             "complete": 100,
         }
         inputs = [
-            LiteralInput(
-                "params_config",
-                "Parameters Configuration",
-                abstract="Path to parameters module's input configuration file or input dictionary",
-                data_type="string",
-            ),
-            LiteralInput(
-                "convolve_config",
-                "Convolution Configuration",
-                abstract="Path to convolution module's input configuration file or input dictionary",
-                data_type="string",
-            ),
+            log_level,
             LiteralInput(
                 "version",
                 "Version",
@@ -61,7 +52,110 @@ class FullRVIC(Process):
                 abstract="Number of processors used to run job",
                 data_type="integer",
             ),
-            log_level,
+            LiteralInput(
+                "case_id",
+                "Case ID",
+                abstract="Case ID for the RVIC process",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            LiteralInput(
+                "grid_id",
+                "GRID ID",
+                abstract="Routing domain grid shortname",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            LiteralInput(
+                "run_startdate",
+                "Run Start Date",
+                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            LiteralInput(
+                "stop_date",
+                "Stop Date",
+                abstract="Run stop date based on STOP_OPTION",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            ComplexInput(
+                "pour_points",
+                "POUR POINTS",
+                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
+            ),
+            ComplexInput(
+                "uh_box",
+                "UH BOX",
+                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
+            ),
+            ComplexInput(
+                "routing",
+                "ROUTING",
+                abstract="Path to routing inputs netCDF.",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "domain",
+                "Domain",
+                abstract="Path to CESM complaint domain file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "input_forcings",
+                "Input Forcings",
+                abstract="Path to land data netCDF forcings",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "params_config_file",
+                "Parameters Configuration",
+                abstract="Path to input configuration file or input dictionary",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format("text/cfg", extension=".cfg")],
+            ),
+            LiteralInput(
+                "params_config_dict",
+                "Parameters Configuration",
+                abstract="Dictionary containing input configuration for Parameters process",
+                min_occurs=0,
+                max_occurs=1,
+                data_type="string",
+            ),
+            ComplexInput(
+                "convolve_config_file",
+                "Convolution Configuration File",
+                abstract="Path to input configuration file for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format("text/cfg", extension=".cfg")],
+            ),
+            LiteralInput(
+                "convolve_config_dict",
+                "Convolution Configuration Dictionary",
+                abstract="Dictionary containing input configuration for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
+                data_type="string",
+            ),
         ]
         outputs = [
             nc_output,
@@ -83,9 +177,29 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        params_unprocessed = request.inputs["params_config"][0].data
-        np = request.inputs["np"][0].data
-        loglevel = request.inputs["loglevel"][0].data
+        (
+            loglevel,
+            version,
+            np,
+            case_id,
+            grid_id,
+            run_startdate,
+            stop_date,
+            pour_points,
+            uh_box,
+            routing,
+            domain,
+            input_forcings,
+            params_config_file,
+            params_config_dict,
+            convolve_config_file,
+            convolve_config_dict,
+        ) = collect_args(
+            request, self.workdir, modules=[parameters.__name__, convolution.__name__]
+        )
+
+        if version:
+            logger.info(version)
 
         log_handler(
             self,
@@ -96,16 +210,17 @@ class FullRVIC(Process):
             process_step="start",
         )
 
-        if os.path.isfile(params_unprocessed):
-            replace_urls(params_unprocessed, self.workdir)
-            params_config = read_config(params_unprocessed)
-        else:
-            params_config = config_hander(
-                self.workdir,
-                parameters.__name__,
-                params_unprocessed,
-                Parameters().config_template,
-            )
+        params_config = params_config_handler(
+            self.workdir,
+            case_id,
+            domain,
+            grid_id,
+            pour_points,
+            routing,
+            uh_box,
+            params_config_file,
+            params_config_dict,
+        )
 
         log_handler(
             self,
@@ -118,17 +233,7 @@ class FullRVIC(Process):
 
         parameters(params_config, np)
         params_output = get_outfile(params_config, "params")
-
-        convolve_unprocessed = request.inputs["convolve_config"][0].data
-        if os.path.isfile(convolve_unprocessed):
-            convolve_config = read_config(convolve_unprocessed)
-        else:
-            convolve_config = config_hander(
-                self.workdir,
-                convolution.__name__,
-                convolve_unprocessed,
-                Convolution().config_template,
-            )
+        param_file = params_output
 
         log_handler(
             self,
@@ -139,7 +244,17 @@ class FullRVIC(Process):
             process_step="convolution_process",
         )
 
-        convolve_config["PARAM_FILE"]["FILE_NAME"] = params_output
+        convolve_config = convolve_config_handler(
+            self.workdir,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            param_file,
+            input_forcings,
+            convolve_config_file,
+            convolve_config_dict,
+        )
         convolution(convolve_config)
 
         log_handler(

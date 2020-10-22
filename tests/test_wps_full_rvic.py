@@ -8,52 +8,97 @@ from osprey.processes.wps_full_rvic import FullRVIC
 @mark.slow
 @mark.online
 @mark.parametrize(
-    ("params_config", "convolve_config"),
+    (
+        "case_id",
+        "grid_id",
+        "run_startdate",
+        "stop_date",
+        "pour_points",
+        "uh_box",
+        "routing",
+        "domain",
+        "input_forcings",
+        "params_config_file",
+        "convolve_config_file",
+        "params_config_dict",
+        "convolve_config_dict",
+    ),
     [
         (
-            resource_filename(__name__, "data/configs/parameters_local.cfg"),
-            resource_filename(__name__, "data/configs/convolve_opendap.cfg"),
+            "sample",
+            "COLUMBIA",
+            "2012-12-01-00",
+            "2012-12-31",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            None,
+            None,
+            {},
+            {},
         ),
         (
-            {
-                "OPTIONS": {"CASEID": "sample", "GRIDID": "COLUMBIA",},
-                "POUR_POINTS": {
-                    "FILE_NAME": resource_filename(
-                        __name__, "data/samples/sample_pour.txt"
-                    )
-                },
-                "UH_BOX": {
-                    "FILE_NAME": resource_filename(__name__, "data/samples/uhbox.csv")
-                },
-                "ROUTING": {
-                    "FILE_NAME": resource_filename(
-                        __name__, "data/samples/sample_flow_parameters.nc"
-                    )
-                },
-                "DOMAIN": {
-                    "FILE_NAME": resource_filename(
-                        __name__, "data/samples/sample_routing_domain.nc"
-                    )
-                },
-            },
-            {
-                "OPTIONS": {
-                    "CASEID": "sample",
-                    "RUN_STARTDATE": "2012-12-01-00",
-                    "STOP_DATE": "2012-12-31",
-                    "CALENDAR": "standard",
-                },
-                "DOMAIN": {
-                    "FILE_NAME": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample_routing_domain.nc"
-                },
-                "INPUT_FORCINGS": {
-                    "DATL_PATH": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/",
-                    "DATL_FILE": "columbia_vicset2.nc",
-                },
-            },
+            "sample",
+            "COLUMBIA",
+            "2012-12-01-00",
+            "2012-12-31",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_pour.txt",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_flow_parameters.nc",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            f"file:///{resource_filename(__name__, '/data/configs/parameters.cfg')}",
+            f"file:///{resource_filename(__name__, '/data/configs/convolve.cfg')}",
+            {},
+            {},
+        ),
+        (
+            "sample",
+            "COLUMBIA",
+            "2012-12-01-00",
+            "2012-12-31",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_pour.txt",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_flow_parameters.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_routing_domain.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            None,
+            None,
+            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
+            {"OPTIONS": {"CASESTR": "Historical",},},
         ),
     ],
 )
-def test_full_rvic(params_config, convolve_config):
-    params = f"params_config={params_config};" f"convolve_config={convolve_config};"
+def test_full_rvic(
+    case_id,
+    grid_id,
+    run_startdate,
+    stop_date,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    input_forcings,
+    params_config_file,
+    convolve_config_file,
+    params_config_dict,
+    convolve_config_dict,
+):
+    params = (
+        f"case_id={case_id};"
+        f"grid_id={grid_id};"
+        f"run_startdate={run_startdate};"
+        f"stop_date={stop_date};"
+        f"pour_points=@xlink:href={pour_points};"
+        f"uh_box=@xlink:href={uh_box};"
+        f"routing=@xlink:href={routing};"
+        f"domain=@xlink:href={domain};"
+        f"input_forcings=@xlink:href={input_forcings};"
+        f"params_config_file=@xlink:href={params_config_file};"
+        f"convolve_config_file=@xlink:href={convolve_config_file};"
+        f"params_config_dict={params_config_dict};"
+        f"convolve_config_dict={convolve_config_dict};"
+    )
     run_wps_process(FullRVIC(), params)

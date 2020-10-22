@@ -1,4 +1,4 @@
-from pywps import Process, LiteralInput, ComplexOutput, FORMATS
+from pywps import Process, ComplexInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 
@@ -10,9 +10,10 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
-    replace_urls,
+    collect_args,
 )
 import os
+import configparser
 
 
 class Convert(Process):
@@ -24,13 +25,38 @@ class Convert(Process):
             "complete": 100,
         }
         inputs = [
-            LiteralInput(
-                "convert_config",
-                "Configuration",
-                abstract="Path to input configuration file or input dictionary",
-                data_type="string",
-            ),
             log_level,
+            ComplexInput(
+                "uhs_files",
+                "UHS_Files",
+                abstract="Path to UHS file",
+                min_occurs=1,
+                supported_formats=[FORMATS.TEXT],
+            ),
+            ComplexInput(
+                "station_file",
+                "Station_FILE",
+                abstract="Path to stations file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.TEXT],
+            ),
+            ComplexInput(
+                "domain",
+                "Domain",
+                abstract="Path to CESM complaint domain file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "config_file",
+                "Convert Configuration",
+                abstract="Path to input configuration file for Convert process",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[Format("text/cfg", extension=".cfg")],
+            ),
         ]
         outputs = [
             nc_output,
@@ -47,8 +73,32 @@ class Convert(Process):
             status_supported=True,
         )
 
+    def edit_config_file(self, config_file, uhs_files, station_file, domain):
+        parser = configparser.ConfigParser()
+        parser.optionxform = str
+
+        unprocessed = config_file
+        config_dict = read_config(unprocessed)
+        for section in config_dict.keys():
+            parser[section] = {
+                k: str(config_dict[section][k]) for k in config_dict[section].keys()
+            }
+
+        parser["UHS_FILES"]["ROUT_DIR"] = "/".join(uhs_files.split("/")[:-1])
+        parser["UHS_FILES"]["STATION_FILE"] = station_file
+        parser["DOMAIN"]["FILE_NAME"] = domain
+
+        processed = ".".join(unprocessed.split(".")[:-1]) + "_edited.cfg"
+        with open(processed, "w") as cfg:
+            parser.write(cfg)
+
+        return processed
+
     def _handler(self, request, response):
-        loglevel = request.inputs["loglevel"][0].data
+        loglevel, uhs_files, station_file, domain, config_file = collect_args(
+            request, self.workdir
+        )
+
         log_handler(
             self,
             response,
@@ -57,7 +107,10 @@ class Convert(Process):
             log_level=loglevel,
             process_step="start",
         )
-        config_file = request.inputs["convert_config"][0].data
+
+        config_file = self.edit_config_file(
+            config_file, uhs_files, station_file, domain
+        )
 
         log_handler(
             self,
@@ -68,8 +121,7 @@ class Convert(Process):
             process_step="process",
         )
 
-        tmp_config_file = replace_urls(config_file, self.workdir)
-        convert(tmp_config_file)
+        convert(config_file)
 
         log_handler(
             self,

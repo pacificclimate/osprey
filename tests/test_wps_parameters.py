@@ -8,39 +8,121 @@ from osprey.processes.wps_parameters import Parameters
 
 
 @pytest.mark.parametrize(
-    ("config"),
+    (
+        "case_id",
+        "grid_id",
+        "pour_points",
+        "uh_box",
+        "routing",
+        "domain",
+        "config_file",
+        "config_dict",
+    ),
     [
-        resource_filename(__name__, "data/configs/parameters_local.cfg"),
-        {
-            "OPTIONS": {"CASEID": "sample", "GRIDID": "COLUMBIA",},
-            "POUR_POINTS": {
-                "FILE_NAME": resource_filename(__name__, "data/samples/sample_pour.txt")
-            },
-            "UH_BOX": {
-                "FILE_NAME": resource_filename(__name__, "data/samples/uhbox.csv")
-            },
-            "ROUTING": {
-                "FILE_NAME": resource_filename(
-                    __name__, "data/samples/sample_flow_parameters.nc"
-                )
-            },
-            "DOMAIN": {
-                "FILE_NAME": resource_filename(
-                    __name__, "data/samples/sample_routing_domain.nc"
-                )
-            },
-        },
+        (
+            "sample",
+            "COLUMBIA",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            None,
+            None,
+        ),
+        (
+            "sample",
+            "COLUMBIA",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            f"file:///{resource_filename(__name__, '/data/configs/parameters.cfg')}",
+            None,
+        ),
+        (
+            "sample",
+            "COLUMBIA",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            None,
+            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
+        ),
     ],
 )
-def test_parameters_local(config):
-    params = f"params_config={config};"
+def test_parameters_local(
+    case_id, grid_id, pour_points, uh_box, routing, domain, config_file, config_dict
+):
+    params = (
+        f"case_id={case_id};"
+        f"grid_id={grid_id};"
+        f"pour_points=@xlink:href={pour_points};"
+        f"uh_box=@xlink:href={uh_box};"
+        f"routing=@xlink:href={routing};"
+        f"domain=@xlink:href={domain};"
+        f"config_file=@xlink:href={config_file};"
+        f"config_dict=@xlink:href={config_dict};"
+    )
     run_wps_process(Parameters(), params)
 
 
 @pytest.mark.online
 @pytest.mark.parametrize(
-    ("config"), [resource_filename(__name__, "data/configs/parameters_https.cfg")],
+    (
+        "case_id",
+        "grid_id",
+        "pour_points",
+        "uh_box",
+        "routing",
+        "domain",
+        "config_file",
+        "config_dict",
+    ),
+    [
+        (
+            "sample",
+            "COLUMBIA",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_pour.txt",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_flow_parameters.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_routing_domain.nc",
+            None,
+            None,
+        ),
+        (
+            "sample",
+            "COLUMBIA",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_pour.txt",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_flow_parameters.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_routing_domain.nc",
+            f"file:///{resource_filename(__name__, '/data/configs/parameters.cfg')}",
+            None,
+        ),
+        (
+            "sample",
+            "COLUMBIA",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_pour.txt",
+            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_flow_parameters.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_routing_domain.nc",
+            None,
+            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
+        ),
+    ],
 )
-def test_parameters_https(config, conftest_make_mock_urls):
-    params = f"params_config={config};"
+def test_parameters_https(
+    case_id, grid_id, pour_points, uh_box, routing, domain, config_file, config_dict
+):
+    params = (
+        f"case_id={case_id};"
+        f"grid_id={grid_id};"
+        f"pour_points=@xlink:href={pour_points};"
+        f"uh_box=@xlink:href={uh_box};"
+        f"routing=@xlink:href={routing};"
+        f"domain=@xlink:href={domain};"
+        f"config_file=@xlink:href={config_file};"
+        f"config_dict={config_dict};"
+    )
     run_wps_process(Parameters(), params)

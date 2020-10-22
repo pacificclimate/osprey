@@ -8,30 +8,67 @@ from osprey.processes.wps_convolution import Convolution
 @mark.slow
 @mark.online
 @mark.parametrize(
-    ("config"),
+    (
+        "case_id",
+        "run_startdate",
+        "stop_date",
+        "domain",
+        "param_file",
+        "input_forcings",
+        "config_file",
+        "config_dict",
+    ),
     [
-        f"{resource_filename(__name__, 'data/configs/convolve_mixed.cfg')}",
-        f"{resource_filename(__name__, 'data/configs/convolve_opendap.cfg')}",
-        {
-            "OPTIONS": {
-                "CASEID": "sample",
-                "RUN_STARTDATE": "2012-12-01-00",
-                "STOP_DATE": "2012-12-31",
-                "CALENDAR": "standard",
-            },
-            "DOMAIN": {
-                "FILE_NAME": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample_routing_domain.nc"
-            },
-            "PARAM_FILE": {
-                "FILE_NAME": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample.rvic.prm.COLUMBIA.20180516.nc"
-            },
-            "INPUT_FORCINGS": {
-                "DATL_PATH": "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/",
-                "DATL_FILE": "columbia_vicset2.nc",
-            },
-        },
+        (
+            "sample",
+            "2012-12-01-00",
+            "2012-12-31",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample_routing_domain.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample.rvic.prm.COLUMBIA.20180516.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            None,
+            None,
+        ),
+        (
+            "sample",
+            "2012-12-01-00",
+            "2012-12-31",
+            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample.rvic.prm.COLUMBIA.20180516.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            f"file:///{resource_filename(__name__, '/data/configs/convolve.cfg')}",
+            None,
+        ),
+        (
+            "sample",
+            "2012-12-01-00",
+            "2012-12-31",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/sample_routing_domain.nc",
+            f"file:///{resource_filename(__name__, 'data/samples/sample.rvic.prm.COLUMBIA.20180516.nc')}",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/RVIC/columbia_vicset2.nc",
+            None,
+            {"OPTIONS": {"CASESTR": "Historical",},},
+        ),
     ],
 )
-def test_wps_convolution(config):
-    params = f"convolve_config={config};"
+def test_wps_convolution(
+    case_id,
+    run_startdate,
+    stop_date,
+    domain,
+    param_file,
+    input_forcings,
+    config_file,
+    config_dict,
+):
+    params = (
+        f"case_id={case_id};"
+        f"run_startdate={run_startdate};"
+        f"stop_date={stop_date};"
+        f"domain=@xlink:href={domain};"
+        f"param_file=@xlink:href={param_file};"
+        f"input_forcings=@xlink:href={input_forcings};"
+        f"config_file=@xlink:href={config_file};"
+        f"config_dict={config_dict};"
+    )
     run_wps_process(Convolution(), params)

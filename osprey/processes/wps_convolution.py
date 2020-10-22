@@ -1,73 +1,20 @@
-from pywps import Process, LiteralInput, ComplexOutput, FORMATS
+from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
-from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
-from rvic.core.config import read_config
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
-    config_hander,
     get_outfile,
+    collect_args,
+    convolve_config_handler,
 )
-
-import os
 
 
 class Convolution(Process):
     def __init__(self):
-        self.config_template = {
-            # configuration dictionary used for RVIC convolution
-            # required user inputs are defined as None value
-            "OPTIONS": {
-                "LOG_LEVEL": "INFO",
-                "VERBOSE": True,
-                "CASE_DIR": None,
-                "CASEID": None,
-                "CASESTR": "historical",
-                "CALENDAR": None,
-                "RUN_TYPE": "drystart",  # automatic run
-                "RUN_STARTDATE": None,
-                "STOP_OPTION": "date",
-                "STOP_N": -999,
-                "STOP_DATE": None,
-                "REST_OPTION": "date",
-                "REST_N": -999,
-                "REST_DATE": None,
-                "REST_NCFORM": "NETCDF4",
-            },
-            "HISTORY": {
-                "RVICHIST_NTAPES": 1,
-                "RVICHIST_MFILT": 100000,
-                "RVICHIST_NDENS": 1,
-                "RVICHIST_NHTFRQ": 1,
-                "RVICHIST_AVGFLAG": "A",
-                "RVICHIST_OUTTYPE": "array",
-                "RVICHIST_NCFORM": "NETCDF4",
-                "RVICHIST_UNITS": "m3/s",
-            },
-            "DOMAIN": {
-                "FILE_NAME": None,
-                "LONGITUDE_VAR": "lon",
-                "LATITUDE_VAR": "lat",
-                "AREA_VAR": "area",
-                "LAND_MASK_VAR": "mask",
-                "FRACTION_VAR": "frac",
-            },
-            "INITIAL_STATE": {"FILE_NAME": None},
-            "PARAM_FILE": {"FILE_NAME": None},
-            "INPUT_FORCINGS": {
-                "DATL_PATH": None,
-                "DATL_FILE": None,
-                "TIME_VAR": "time",
-                "LATITUDE_VAR": "lat",
-                "DATL_LIQ_FLDS": ["RUNOFF", "BASEFLOW"],
-                "START": None,
-                "END": None,
-            },
-        }
         self.status_percentage_steps = {
             "start": 0,
             "process": 10,
@@ -75,13 +22,71 @@ class Convolution(Process):
             "complete": 100,
         }
         inputs = [
+            log_level,
             LiteralInput(
-                "convolve_config",
-                "Configuration",
-                abstract="Path to input configuration file or input dictionary",
+                "case_id",
+                "Case ID",
+                abstract="Case ID for the RVIC process",
+                min_occurs=1,
+                max_occurs=1,
                 data_type="string",
             ),
-            log_level,
+            LiteralInput(
+                "run_startdate",
+                "Run Start Date",
+                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            LiteralInput(
+                "stop_date",
+                "Stop Date",
+                abstract="Run stop date based on STOP_OPTION",
+                min_occurs=1,
+                max_occurs=1,
+                data_type="string",
+            ),
+            ComplexInput(
+                "domain",
+                "Domain",
+                abstract="Path to CESM complaint domain file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "param_file",
+                "Parameter File",
+                abstract="Path to RVIC parameter file",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "input_forcings",
+                "Input Forcings",
+                abstract="Path to land data netCDF forcings",
+                min_occurs=1,
+                max_occurs=1,
+                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
+            ),
+            ComplexInput(
+                "convolve_config_file",
+                "Convolution Configuration File",
+                abstract="Path to input configuration file for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
+                supported_formats=[Format("text/cfg", extension=".cfg")],
+            ),
+            LiteralInput(
+                "convolve_config_dict",
+                "Convolution Configuration Dictionary",
+                abstract="Dictionary containing input configuration for Convolution process",
+                min_occurs=0,
+                max_occurs=1,
+                data_type="string",
+            ),
         ]
         outputs = [
             nc_output,
@@ -100,7 +105,18 @@ class Convolution(Process):
         )
 
     def _handler(self, request, response):
-        loglevel = request.inputs["loglevel"][0].data
+        (
+            loglevel,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            param_file,
+            input_forcings,
+            convolve_config_file,
+            convolve_config_dict,
+        ) = collect_args(request, self.workdir, convolution.__name__)
+
         log_handler(
             self,
             response,
@@ -109,7 +125,18 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="start",
         )
-        unprocessed = request.inputs["convolve_config"][0].data
+
+        config = convolve_config_handler(
+            self.workdir,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            param_file,
+            input_forcings,
+            convolve_config_file,
+            convolve_config_dict,
+        )
 
         log_handler(
             self,
@@ -119,13 +146,6 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="process",
         )
-
-        if os.path.isfile(unprocessed):
-            config = read_config(unprocessed)
-        else:
-            config = config_hander(
-                self.workdir, convolution.__name__, unprocessed, self.config_template
-            )
 
         convolution(config)
 
