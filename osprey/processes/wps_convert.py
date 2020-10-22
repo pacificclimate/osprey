@@ -4,6 +4,7 @@ from pywps.app.exceptions import ProcessError
 
 from rvic.convert import convert
 from rvic.core.config import read_config
+from rvic.core.log import close_logger
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
@@ -121,7 +122,10 @@ class Convert(Process):
             process_step="process",
         )
 
-        convert(config_file)
+        try:
+            convert(config_file)
+        except RecursionError:
+            close_logger()
 
         log_handler(
             self,
