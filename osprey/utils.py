@@ -1,13 +1,10 @@
-from pkg_resources import resource_filename
 from pywps.app.exceptions import ProcessError
 import logging
 import os
 from urllib.parse import urlparse
 from urllib.request import urlretrieve
 from datetime import datetime, timedelta
-from collections.abc import Iterable
 from wps_tools.utils import collect_output_files, is_opendap_url
-from tempfile import NamedTemporaryFile
 from .config_templates import convolve_config_template, params_config_template
 from rvic.core.config import read_config
 from collections import OrderedDict
@@ -65,7 +62,26 @@ def url_handler(workdir, url):
         return local_file
 
 
-def collect_args(request, workdir):
+def optional_args_handler(args, identifier):
+    """
+    The function takes an OrderedDict of arguments and rearranges the optional arguments in the right order.
+    """
+    if identifier + "_config_file" in args.keys():
+        config_file = args.pop(identifier + "_config_file")
+        args[identifier + "_config_file"] = config_file
+    else:
+        args[identifier + "_config_file"] = None
+
+    if identifier + "_config_dict" in args.keys():
+        config_file = args.pop(identifier + "_config_dict")
+        args[identifier + "_config_dict"] = config_file
+    else:
+        args[identifier + "_config_dict"] = None
+
+    return args
+
+
+def collect_args(request, workdir, modules=[]):
     args = OrderedDict()
     for k in request.inputs.keys():
         if "data_type" in vars(request.inputs[k][0]).keys():
@@ -79,16 +95,29 @@ def collect_args(request, workdir):
             # Local files
             args[request.inputs[k][0].identifier] = request.inputs[k][0].file
 
-    return args
+    if "parameters" in modules:
+        optional_args_handler(args, "params")
+    if "convolution" in modules:
+        optional_args_handler(args, "convolve")
+
+    return tuple(args.values())
 
 
 def params_config_handler(
-    workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args
+    workdir,
+    case_id,
+    domain,
+    grid_id,
+    pour_points,
+    routing,
+    uh_box,
+    params_config_file,
+    params_config_dict,
 ):
-    if "params_config_file" in args:
-        unprocessed = read_config(args["params_config_file"])
-    elif "params_config_dict" in args:
-        unprocessed = eval(args["params_config_dict"])
+    if params_config_file:
+        unprocessed = read_config(params_config_file)
+    elif params_config_dict:
+        unprocessed = eval(params_config_dict)
     else:
         unprocessed = params_config_template
 
@@ -128,12 +157,13 @@ def convolve_config_handler(
     domain,
     param_file,
     input_forcings,
-    args,
+    convolve_config_file,
+    convolve_config_dict,
 ):
-    if "convolve_config_file" in args:
-        unprocessed = read_config(args["convolve_config_file"])
-    elif "convolve_config_dict" in args:
-        unprocessed = eval(args["convolve_config_dict"])
+    if convolve_config_file:
+        unprocessed = read_config(convolve_config_file)
+    elif convolve_config_dict:
+        unprocessed = eval(convolve_config_dict)
     else:
         unprocessed = convolve_config_template
 

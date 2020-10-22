@@ -105,7 +105,6 @@ class Convolution(Process):
         )
 
     def _handler(self, request, response):
-        args = collect_args(request, self.workdir)
         (
             loglevel,
             case_id,
@@ -114,7 +113,9 @@ class Convolution(Process):
             domain,
             param_file,
             input_forcings,
-        ) = tuple(args.values())[:7]
+            convolve_config_file,
+            convolve_config_dict,
+        ) = collect_args(request, self.workdir, convolution.__name__)
 
         log_handler(
             self,
@@ -133,7 +134,8 @@ class Convolution(Process):
             domain,
             param_file,
             input_forcings,
-            args,
+            convolve_config_file,
+            convolve_config_dict,
         )
 
         log_handler(

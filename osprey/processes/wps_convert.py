@@ -95,8 +95,9 @@ class Convert(Process):
         return processed
 
     def _handler(self, request, response):
-        args = collect_args(request, self.workdir)
-        loglevel, uhs_files, station_file, domain, config_file = tuple(args.values())
+        loglevel, uhs_files, station_file, domain, config_file = collect_args(
+            request, self.workdir
+        )
 
         log_handler(
             self,

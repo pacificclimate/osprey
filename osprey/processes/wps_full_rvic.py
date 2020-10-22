@@ -177,7 +177,6 @@ class FullRVIC(Process):
         )
 
     def _handler(self, request, response):
-        args = collect_args(request, self.workdir)
         (
             loglevel,
             version,
@@ -191,7 +190,13 @@ class FullRVIC(Process):
             routing,
             domain,
             input_forcings,
-        ) = tuple(args.values())[:12]
+            params_config_file,
+            params_config_dict,
+            convolve_config_file,
+            convolve_config_dict,
+        ) = collect_args(
+            request, self.workdir, modules=[parameters.__name__, convolution.__name__]
+        )
 
         if version:
             logger.info(version)
@@ -206,7 +211,15 @@ class FullRVIC(Process):
         )
 
         params_config = params_config_handler(
-            self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
+            self.workdir,
+            case_id,
+            domain,
+            grid_id,
+            pour_points,
+            routing,
+            uh_box,
+            params_config_file,
+            params_config_dict,
         )
 
         log_handler(
@@ -239,7 +252,8 @@ class FullRVIC(Process):
             domain,
             param_file,
             input_forcings,
-            args,
+            convolve_config_file,
+            convolve_config_dict,
         )
         convolution(convolve_config)
 

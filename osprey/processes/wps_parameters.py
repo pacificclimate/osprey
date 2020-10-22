@@ -137,7 +137,6 @@ class Parameters(Process):
         )
 
     def _handler(self, request, response):
-        args = collect_args(request, self.workdir)
         (
             loglevel,
             np,
@@ -148,7 +147,9 @@ class Parameters(Process):
             uh_box,
             routing,
             domain,
-        ) = tuple(args.values())[:9]
+            params_config_file,
+            params_config_dict,
+        ) = collect_args(request, self.workdir, modules=[parameters.__name__])
 
         if version:
             logger.info(version)
@@ -163,7 +164,15 @@ class Parameters(Process):
         )
 
         config = params_config_handler(
-            self.workdir, case_id, domain, grid_id, pour_points, routing, uh_box, args,
+            self.workdir,
+            case_id,
+            domain,
+            grid_id,
+            pour_points,
+            routing,
+            uh_box,
+            params_config_file,
+            params_config_dict,
         )
 
         log_handler(
