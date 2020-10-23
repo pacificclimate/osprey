@@ -11,6 +11,8 @@ from pywps import (
 # Tool imports
 from rvic.convolution import convolution
 from rvic.parameters import parameters
+from rvic.core.log import close_logger
+
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 from osprey.utils import (
@@ -230,8 +232,11 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="parameters_process",
         )
+        try:
+            parameters(params_config, np)
+        except RecursionError:
+            close_logger()
 
-        parameters(params_config, np)
         params_output = get_outfile(params_config, "params")
         param_file = params_output
 
@@ -255,7 +260,11 @@ class FullRVIC(Process):
             convolve_config_file,
             convolve_config_dict,
         )
-        convolution(convolve_config)
+
+        try:
+            convolution(convolve_config)
+        except RecursionError:
+            close_logger()
 
         log_handler(
             self,

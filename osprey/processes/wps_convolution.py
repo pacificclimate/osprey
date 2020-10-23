@@ -2,6 +2,7 @@ from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FO
 from pywps.app.Common import Metadata
 
 from rvic.convolution import convolution
+from rvic.core.log import close_logger
 
 from wps_tools.utils import log_handler
 from wps_tools.io import nc_output, log_level
@@ -147,7 +148,10 @@ class Convolution(Process):
             process_step="process",
         )
 
-        convolution(config)
+        try:
+            convolution(config)
+        except RecursionError:
+            close_logger()
 
         log_handler(
             self,
