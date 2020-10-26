@@ -1,5 +1,19 @@
 Changes
 *******
+1.0.0 (2020-10-26)
+==================
+
+* Updated notebook demo (#_47)
+* Updated logging configuration (#_51)
+* Updated ``Makefile`` (#_54)
+* Added ComplexInputs (#_55)
+* Resolved ``RecursionError`` (#_58)
+
+.. _47: https://github.com/pacificclimate/osprey/pull/47
+.. _51: https://github.com/pacificclimate/osprey/pull/51
+.. _54: https://github.com/pacificclimate/osprey/pull/54
+.. _55: https://github.com/pacificclimate/osprey/pull/55
+.. _58: https://github.com/pacificclimate/osprey/pull/58
 
 0.2.0 (2020-09-23)
 ==================
