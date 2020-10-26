@@ -2,8 +2,9 @@ version: '3'
 services:
   wps:
     build: .
-    image: pcic/osprey:i59-update-urls
-      - "32049:5002"
+    image: pcic/osprey
+    ports:
+      - "8100:5002"
 
 
 # docker-compose build
