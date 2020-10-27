@@ -33,7 +33,7 @@ def test_wps_convolution_local(uhs_files, station_file, domain, config_file):
         (
             f"file:///{resource_filename(__name__, '/data/samples/sample.uh_s2')}",
             f"file:///{resource_filename(__name__, '/data/samples/station_file.txt')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/RVIC/sample_routing_domain.nc",
+            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
             f"file:///{resource_filename(__name__, 'data/configs/convert.cfg')}",
         )
     ],
