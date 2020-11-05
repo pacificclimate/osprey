@@ -184,10 +184,8 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="process",
         )
-        try:
-            parameters(config, np)
-        except RecursionError:
-            close_logger()
+
+        parameters(config, np)
 
         log_handler(
             self,

@@ -232,10 +232,8 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="parameters_process",
         )
-        try:
-            parameters(params_config, np)
-        except RecursionError:
-            close_logger()
+
+        parameters(params_config, np)
 
         params_output = get_outfile(params_config, "params")
         param_file = params_output
@@ -261,10 +259,7 @@ class FullRVIC(Process):
             convolve_config_dict,
         )
 
-        try:
-            convolution(convolve_config)
-        except RecursionError:
-            close_logger()
+        convolution(convolve_config)
 
         log_handler(
             self,

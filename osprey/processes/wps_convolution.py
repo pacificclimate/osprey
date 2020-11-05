@@ -148,10 +148,7 @@ class Convolution(Process):
             process_step="process",
         )
 
-        try:
-            convolution(config)
-        except RecursionError:
-            close_logger()
+        convolution(config)
 
         log_handler(
             self,

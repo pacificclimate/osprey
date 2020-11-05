@@ -122,10 +122,7 @@ class Convert(Process):
             process_step="process",
         )
 
-        try:
-            convert(config_file)
-        except RecursionError:
-            close_logger()
+        convert(config_file)
 
         log_handler(
             self,
