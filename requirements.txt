@@ -2,6 +2,6 @@ pywps>=4.2
 jinja2
 click
 psutil
-rvic-daccs==1.1.2
+rvic-daccs==1.1.4
 nchelpers==5.5.7
 wps-tools==0.2.0
