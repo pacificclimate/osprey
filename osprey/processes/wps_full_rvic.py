@@ -11,7 +11,6 @@ from pywps import (
 # Tool imports
 from rvic.convolution import convolution
 from rvic.parameters import parameters
-from rvic.core.log import close_logger
 
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError

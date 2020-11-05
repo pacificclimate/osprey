@@ -11,7 +11,6 @@ from pywps.app.Common import Metadata
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
-from rvic.core.log import close_logger
 from wps_tools.utils import log_handler
 from wps_tools.io import (
     log_level,
