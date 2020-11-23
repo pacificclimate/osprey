@@ -17,7 +17,7 @@ from pywps.app.exceptions import ProcessError
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
     convolve_config_handler,
     params_config_handler,
 )
@@ -195,7 +195,7 @@ class FullRVIC(Process):
             params_config_dict,
             convolve_config_file,
             convolve_config_dict,
-        ) = collect_args(
+        ) = collect_args_wrapper(
             request, self.workdir, modules=[parameters.__name__, convolution.__name__]
         )
 

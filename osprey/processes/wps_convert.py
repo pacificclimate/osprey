@@ -10,7 +10,7 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
 )
 import os
 import configparser
@@ -95,7 +95,7 @@ class Convert(Process):
         return processed
 
     def _handler(self, request, response):
-        loglevel, uhs_files, station_file, domain, config_file = collect_args(
+        loglevel, uhs_files, station_file, domain, config_file = collect_args_wrapper(
             request, self.workdir
         )
 

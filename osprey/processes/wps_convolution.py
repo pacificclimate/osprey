@@ -8,7 +8,7 @@ from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
     convolve_config_handler,
 )
 
@@ -115,7 +115,7 @@ class Convolution(Process):
             input_forcings,
             convolve_config_file,
             convolve_config_dict,
-        ) = collect_args(request, self.workdir, convolution.__name__)
+        ) = collect_args_wrapper(request, self.workdir, convolution.__name__)
 
         log_handler(
             self,

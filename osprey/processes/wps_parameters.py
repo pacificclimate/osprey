@@ -19,7 +19,7 @@ from wps_tools.io import (
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
     params_config_handler,
 )
 
@@ -149,7 +149,7 @@ class Parameters(Process):
             domain,
             params_config_file,
             params_config_dict,
-        ) = collect_args(request, self.workdir, modules=[parameters.__name__])
+        ) = collect_args_wrapper(request, self.workdir, modules=[parameters.__name__])
 
         if version:
             logger.info(version)
