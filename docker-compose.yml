@@ -1,10 +1,20 @@
-version: '3'
+version: '3.0'
 services:
-  wps:
-    build: .
-    image: pcic/osprey
+  osprey-dev:
+    image: pcic/osprey:latest
+    container_name: osprey-dev
+    environment:
+      - PYWPS_CFG=/wps.cfg
     ports:
-      - "8100:5002"
+      - "30100:5002"
+    volumes:
+      - ./dev-component/wps.cfg:/wps.cfg
+    restart: always
+
+networks:
+  default:
+    external:
+      name: pcicbr0
 
 
 # docker-compose build
