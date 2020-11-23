@@ -89,7 +89,7 @@ def collect_args_wrapper(request, workdir, modules=[]):
     if "convolution" in modules:
         optional_args_handler(args, "convolve")
 
-    return [arg[0] for arg in args.values()]
+    return [arg[0] if arg != None else arg for arg in args.values()]
 
 
 def params_config_handler(
