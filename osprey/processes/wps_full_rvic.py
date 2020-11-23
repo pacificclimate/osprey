@@ -21,7 +21,7 @@ from osprey.utils import (
     convolve_config_handler,
     params_config_handler,
 )
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
     nc_output,
@@ -30,13 +30,7 @@ from wps_tools.io import (
 
 class FullRVIC(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "parameters_process": 10,
-            "convolution_process": 20,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = common_status_percentages
         inputs = [
             log_level,
             LiteralInput(

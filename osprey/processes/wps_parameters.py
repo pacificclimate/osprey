@@ -11,7 +11,7 @@ from pywps.app.Common import Metadata
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
     nc_output,
@@ -29,12 +29,7 @@ import os
 
 class Parameters(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = common_status_percentages
         inputs = [
             log_level,
             LiteralInput(

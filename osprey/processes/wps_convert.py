@@ -5,7 +5,7 @@ from pywps.app.exceptions import ProcessError
 from rvic.convert import convert
 from rvic.core.config import read_config
 
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
@@ -18,12 +18,7 @@ import configparser
 
 class Convert(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = common_status_percentages
         inputs = [
             log_level,
             ComplexInput(

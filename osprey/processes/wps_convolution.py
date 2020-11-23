@@ -3,7 +3,7 @@ from pywps.app.Common import Metadata
 
 from rvic.convolution import convolution
 
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
@@ -15,12 +15,7 @@ from osprey.utils import (
 
 class Convolution(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = common_status_percentages
         inputs = [
             log_level,
             LiteralInput(
@@ -115,7 +110,7 @@ class Convolution(Process):
             input_forcings,
             convolve_config_file,
             convolve_config_dict,
-        ) = collect_args_wrapper(request, self.workdir, convolution.__name__)
+        ) = collect_args_wrapper(request, self.workdir, modules=[convolution.__name__])
 
         log_handler(
             self,
