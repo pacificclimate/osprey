@@ -1,7 +1,7 @@
 from pytest import mark
 from pkg_resources import resource_filename
 
-from wps_tools.testing import run_wps_process
+from wps_tools.testing import run_wps_process, local_path, url_path
 from osprey.processes.wps_convolution import Convolution
 
 
@@ -23,9 +23,18 @@ from osprey.processes.wps_convolution import Convolution
             "sample",
             "2012-12-01-00",
             "2012-12-31",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
+                "opendap",
+            ),
             None,
             None,
         ),
@@ -33,19 +42,31 @@ from osprey.processes.wps_convolution import Convolution
             "sample",
             "2012-12-01-00",
             "2012-12-31",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
-            f"file:///{resource_filename(__name__, '/data/configs/convolve.cfg')}",
+            local_path("samples/sample_routing_domain.nc"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
+                "opendap",
+            ),
+            local_path("configs/convolve.cfg"),
             None,
         ),
         (
             "sample",
             "2012-12-01-00",
             "2012-12-31",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-            f"file:///{resource_filename(__name__, 'data/samples/sample.rvic.prm.COLUMBIA.20180516.nc')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "opendap",
+            ),
+            local_path("samples/sample.rvic.prm.COLUMBIA.20180516.nc"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
+                "opendap",
+            ),
             None,
             {"OPTIONS": {"CASESTR": "Historical",},},
         ),

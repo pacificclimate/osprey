@@ -1,7 +1,7 @@
 from pytest import mark
 from pkg_resources import resource_filename
 
-from wps_tools.testing import run_wps_process
+from wps_tools.testing import run_wps_process, local_path, url_path
 from osprey.processes.wps_convert import Convert
 
 
@@ -9,10 +9,10 @@ from osprey.processes.wps_convert import Convert
     ("uhs_files", "station_file", "domain", "config_file"),
     [
         (
-            f"file:///{resource_filename(__name__, '/data/samples/sample.uh_s2')}",
-            f"file:///{resource_filename(__name__, '/data/samples/station_file.txt')}",
-            f"file:///{resource_filename(__name__, '/data/samples/sample_routing_domain.nc')}",
-            f"file:///{resource_filename(__name__, 'data/configs/convert.cfg')}",
+            local_path("samples/sample.uh_s2"),
+            local_path("samples/station_file.txt"),
+            local_path("samples/sample_routing_domain.nc"),
+            local_path("configs/convert.cfg"),
         )
     ],
 )
@@ -31,10 +31,13 @@ def test_wps_convolution_local(uhs_files, station_file, domain, config_file):
     ("uhs_files", "station_file", "domain", "config_file"),
     [
         (
-            f"file:///{resource_filename(__name__, '/data/samples/sample.uh_s2')}",
-            f"file:///{resource_filename(__name__, '/data/samples/station_file.txt')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-            f"file:///{resource_filename(__name__, 'data/configs/convert.cfg')}",
+            local_path("samples/sample.uh_s2"),
+            local_path("samples/station_file.txt"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "opendap",
+            ),
+            local_path("configs/convert.cfg"),
         )
     ],
 )

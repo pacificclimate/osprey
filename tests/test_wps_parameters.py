@@ -3,7 +3,7 @@ import os
 import pytest
 from tempfile import NamedTemporaryFile
 
-from wps_tools.testing import run_wps_process
+from wps_tools.testing import run_wps_process, local_path, url_path
 from osprey.processes.wps_parameters import Parameters
 
 
@@ -22,30 +22,30 @@ from osprey.processes.wps_parameters import Parameters
         (
             "sample",
             "COLUMBIA",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            local_path("samples/sample_pour.txt"),
+            local_path("samples/uhbox.csv"),
+            local_path("samples/sample_flow_parameters.nc"),
+            local_path("samples/sample_routing_domain.nc"),
             None,
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
-            f"file:///{resource_filename(__name__, '/data/configs/parameters.cfg')}",
+            local_path("samples/sample_pour.txt"),
+            local_path("samples/uhbox.csv"),
+            local_path("samples/sample_flow_parameters.nc"),
+            local_path("samples/sample_routing_domain.nc"),
+            local_path("configs/parameters.cfg"),
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_pour.txt')}",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_flow_parameters.nc')}",
-            f"file:///{resource_filename(__name__, 'data/samples/sample_routing_domain.nc')}",
+            local_path("samples/sample_pour.txt"),
+            local_path("samples/uhbox.csv"),
+            local_path("samples/sample_flow_parameters.nc"),
+            local_path("samples/sample_routing_domain.nc"),
             None,
             {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
         ),
@@ -83,30 +83,57 @@ def test_parameters_local(
         (
             "sample",
             "COLUMBIA",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
+                "http",
+            ),
+            local_path("samples/uhbox.csv"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "opendap",
+            ),
             None,
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-            f"file:///{resource_filename(__name__, '/data/configs/parameters.cfg')}",
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
+                "http",
+            ),
+            local_path("samples/uhbox.csv"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "opendap",
+            ),
+            local_path("configs/parameters.cfg"),
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-            f"file:///{resource_filename(__name__, 'data/samples/uhbox.csv')}",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-            "https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/fileServer/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
+                "http",
+            ),
+            local_path("samples/uhbox.csv"),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
+                "opendap",
+            ),
+            url_path(
+                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
+                "http",
+            ),
             None,
             {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
         ),
