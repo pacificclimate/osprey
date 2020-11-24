@@ -30,7 +30,16 @@ from wps_tools.io import (
 
 class FullRVIC(Process):
     def __init__(self):
-        self.status_percentage_steps = common_status_percentages
+        self.status_percentage_steps = dict(
+            common_status_percentages,
+            **{
+                "params_config_rebuild": 5,
+                "params_process": 10,
+                "params_build": 15,
+                "convolve_config_rebuild": 20,
+                "convolution_process": 25,
+            },
+        )
         inputs = [
             log_level,
             LiteralInput(
@@ -193,9 +202,6 @@ class FullRVIC(Process):
             request, self.workdir, modules=[parameters.__name__, convolution.__name__]
         )
 
-        if version:
-            logger.info(version)
-
         log_handler(
             self,
             response,
@@ -204,7 +210,17 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="start",
         )
+        if version:
+            logger.info(version)
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding Parameters configuration",
+            logger,
+            log_level=loglevel,
+            process_step="params_config_rebuild",
+        )
         params_config = params_config_handler(
             self.workdir,
             case_id,
@@ -220,16 +236,42 @@ class FullRVIC(Process):
         log_handler(
             self,
             response,
-            "Creating parameters",
+            "Processing parameters",
             logger,
             log_level=loglevel,
-            process_step="parameters_process",
+            process_step="params_process",
         )
-
         parameters(params_config, np)
 
-        params_output = get_outfile(params_config, "params")
-        param_file = params_output
+        log_handler(
+            self,
+            response,
+            "Building parameters file",
+            logger,
+            log_level=loglevel,
+            process_step="params_build",
+        )
+        params_file = get_outfile(params_config, "params")
+
+        log_handler(
+            self,
+            response,
+            "Rebuilding Convolution configuration",
+            logger,
+            log_level=loglevel,
+            process_step="convolve_config_rebuild",
+        )
+        convolve_config = convolve_config_handler(
+            self.workdir,
+            case_id,
+            run_startdate,
+            stop_date,
+            domain,
+            params_file,
+            input_forcings,
+            convolve_config_file,
+            convolve_config_dict,
+        )
 
         log_handler(
             self,
@@ -239,19 +281,6 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="convolution_process",
         )
-
-        convolve_config = convolve_config_handler(
-            self.workdir,
-            case_id,
-            run_startdate,
-            stop_date,
-            domain,
-            param_file,
-            input_forcings,
-            convolve_config_file,
-            convolve_config_dict,
-        )
-
         convolution(convolve_config)
 
         log_handler(
@@ -262,7 +291,6 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         response.outputs["output"].file = get_outfile(convolve_config, "hist")
 
         log_handler(
@@ -273,5 +301,4 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="complete",
         )
-
         return response

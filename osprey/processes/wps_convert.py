@@ -18,7 +18,9 @@ import configparser
 
 class Convert(Process):
     def __init__(self):
-        self.status_percentage_steps = common_status_percentages
+        self.status_percentage_steps = dict(
+            common_status_percentages, **{"config_rebuild": 10},
+        )
         inputs = [
             log_level,
             ComplexInput(
@@ -103,6 +105,14 @@ class Convert(Process):
             process_step="start",
         )
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding configuration",
+            logger,
+            log_level=loglevel,
+            process_step="config_rebuild",
+        )
         config_file = self.edit_config_file(
             config_file, uhs_files, station_file, domain
         )
@@ -115,7 +125,6 @@ class Convert(Process):
             log_level=loglevel,
             process_step="process",
         )
-
         convert(config_file)
 
         log_handler(
@@ -126,7 +135,6 @@ class Convert(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         config = read_config(config_file)
         response.outputs["output"].file = get_outfile(config, "params")
 

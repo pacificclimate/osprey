@@ -15,7 +15,9 @@ from osprey.utils import (
 
 class Convolution(Process):
     def __init__(self):
-        self.status_percentage_steps = common_status_percentages
+        self.status_percentage_steps = dict(
+            common_status_percentages, **{"config_rebuild": 10},
+        )
         inputs = [
             log_level,
             LiteralInput(
@@ -121,6 +123,14 @@ class Convolution(Process):
             process_step="start",
         )
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding configuration",
+            logger,
+            log_level=loglevel,
+            process_step="config_rebuild",
+        )
         config = convolve_config_handler(
             self.workdir,
             case_id,
@@ -141,7 +151,6 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="process",
         )
-
         convolution(config)
 
         log_handler(
@@ -152,7 +161,6 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(
