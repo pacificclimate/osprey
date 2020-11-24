@@ -3,24 +3,21 @@ from pywps.app.Common import Metadata
 
 from rvic.convolution import convolution
 
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
     convolve_config_handler,
 )
 
 
 class Convolution(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = dict(
+            common_status_percentages, **{"config_rebuild": 10},
+        )
         inputs = [
             log_level,
             LiteralInput(
@@ -115,7 +112,7 @@ class Convolution(Process):
             input_forcings,
             convolve_config_file,
             convolve_config_dict,
-        ) = collect_args(request, self.workdir, convolution.__name__)
+        ) = collect_args_wrapper(request, self.workdir, modules=[convolution.__name__])
 
         log_handler(
             self,
@@ -126,6 +123,14 @@ class Convolution(Process):
             process_step="start",
         )
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding configuration",
+            logger,
+            log_level=loglevel,
+            process_step="config_rebuild",
+        )
         config = convolve_config_handler(
             self.workdir,
             case_id,
@@ -146,7 +151,6 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="process",
         )
-
         convolution(config)
 
         log_handler(
@@ -157,7 +161,6 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         response.outputs["output"].file = get_outfile(config, "hist")
 
         log_handler(

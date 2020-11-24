@@ -4,7 +4,7 @@ import os
 from urllib.parse import urlparse
 from urllib.request import urlretrieve
 from datetime import datetime, timedelta
-from wps_tools.utils import collect_output_files, is_opendap_url
+from wps_tools.utils import collect_output_files, is_opendap_url, collect_args
 from .config_templates import convolve_config_template, params_config_template
 from rvic.core.config import read_config
 from collections import OrderedDict
@@ -81,26 +81,15 @@ def optional_args_handler(args, identifier):
     return args
 
 
-def collect_args(request, workdir, modules=[]):
-    args = OrderedDict()
-    for k in request.inputs.keys():
-        if "data_type" in vars(request.inputs[k][0]).keys():
-            # LiteralData
-            args[request.inputs[k][0].identifier] = request.inputs[k][0].data
-        elif vars(request.inputs[k][0])["_url"] != None:
-            args[request.inputs[k][0].identifier] = url_handler(
-                workdir, request.inputs[k][0].url
-            )
-        elif os.path.isfile(request.inputs[k][0].file):
-            # Local files
-            args[request.inputs[k][0].identifier] = request.inputs[k][0].file
+def collect_args_wrapper(request, workdir, modules=[]):
+    args = collect_args(request, workdir)
 
     if "parameters" in modules:
         optional_args_handler(args, "params")
     if "convolution" in modules:
         optional_args_handler(args, "convolve")
 
-    return tuple(args.values())
+    return [arg[0] if arg != None else arg for arg in args.values()]
 
 
 def params_config_handler(

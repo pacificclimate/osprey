@@ -11,7 +11,7 @@ from pywps.app.Common import Metadata
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
     nc_output,
@@ -19,7 +19,7 @@ from wps_tools.io import (
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
     params_config_handler,
 )
 
@@ -29,12 +29,9 @@ import os
 
 class Parameters(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = dict(
+            common_status_percentages, **{"config_rebuild": 10},
+        )
         inputs = [
             log_level,
             LiteralInput(
@@ -149,10 +146,7 @@ class Parameters(Process):
             domain,
             params_config_file,
             params_config_dict,
-        ) = collect_args(request, self.workdir, modules=[parameters.__name__])
-
-        if version:
-            logger.info(version)
+        ) = collect_args_wrapper(request, self.workdir, modules=[parameters.__name__])
 
         log_handler(
             self,
@@ -162,7 +156,17 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="start",
         )
+        if version:
+            logger.info(version)
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding configuration",
+            logger,
+            log_level=loglevel,
+            process_step="config_rebuild",
+        )
         config = params_config_handler(
             self.workdir,
             case_id,
@@ -183,7 +187,6 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="process",
         )
-
         parameters(config, np)
 
         log_handler(
@@ -194,7 +197,6 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         response.outputs["output"].file = get_outfile(config, "params")
 
         log_handler(
@@ -205,5 +207,4 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="complete",
         )
-
         return response

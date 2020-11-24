@@ -5,12 +5,12 @@ from pywps.app.exceptions import ProcessError
 from rvic.convert import convert
 from rvic.core.config import read_config
 
-from wps_tools.utils import log_handler
+from wps_tools.utils import log_handler, common_status_percentages
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
     get_outfile,
-    collect_args,
+    collect_args_wrapper,
 )
 import os
 import configparser
@@ -18,12 +18,9 @@ import configparser
 
 class Convert(Process):
     def __init__(self):
-        self.status_percentage_steps = {
-            "start": 0,
-            "process": 10,
-            "build_output": 95,
-            "complete": 100,
-        }
+        self.status_percentage_steps = dict(
+            common_status_percentages, **{"config_rebuild": 10},
+        )
         inputs = [
             log_level,
             ComplexInput(
@@ -95,7 +92,7 @@ class Convert(Process):
         return processed
 
     def _handler(self, request, response):
-        loglevel, uhs_files, station_file, domain, config_file = collect_args(
+        loglevel, uhs_files, station_file, domain, config_file = collect_args_wrapper(
             request, self.workdir
         )
 
@@ -108,6 +105,14 @@ class Convert(Process):
             process_step="start",
         )
 
+        log_handler(
+            self,
+            response,
+            "Rebuilding configuration",
+            logger,
+            log_level=loglevel,
+            process_step="config_rebuild",
+        )
         config_file = self.edit_config_file(
             config_file, uhs_files, station_file, domain
         )
@@ -120,7 +125,6 @@ class Convert(Process):
             log_level=loglevel,
             process_step="process",
         )
-
         convert(config_file)
 
         log_handler(
@@ -131,7 +135,6 @@ class Convert(Process):
             log_level=loglevel,
             process_step="build_output",
         )
-
         config = read_config(config_file)
         response.outputs["output"].file = get_outfile(config, "params")
 
