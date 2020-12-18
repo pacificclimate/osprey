@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM python:3.7-slim
+FROM python:3.8-slim
 MAINTAINER https://github.com/pacificclimate/osprey
 LABEL Description="osprey WPS" Vendor="pacificclimate" Version="0.1.0"
 
