@@ -32,8 +32,8 @@ For example change the hostname (*demo.org*) and logging level:
    $ vim etc/custom.cfg
    $ cat etc/custom.cfg
    [server]
-   url = http://demo.org:5002/wps
-   outputurl = http://demo.org:5002/outputs
+   url = http://demo.org:5000/wps
+   outputurl = http://demo.org:5000/outputs
 
    [logging]
    level = DEBUG

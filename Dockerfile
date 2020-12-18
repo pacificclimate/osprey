@@ -16,11 +16,11 @@ WORKDIR /opt/wps
 RUN pip install --upgrade pip && \
     pip install -e .
 
-EXPOSE 5002
+EXPOSE 5000
 ENTRYPOINT ["sh", "-c"]
 CMD ["exec osprey start -b 0.0.0.0"]
 
 # docker build -t pcic/osprey .
-# docker run -p 5002:5002 pcic/osprey
-# http://localhost:5002/wps?request=GetCapabilities&service=WPS
-# http://localhost:5002/wps?request=DescribeProcess&service=WPS&identifier=all&version=1.0.0
+# docker run -p 5000:5000 pcic/osprey
+# http://localhost:5000/wps?request=GetCapabilities&service=WPS
+# http://localhost:5000/wps?request=DescribeProcess&service=WPS&identifier=all&version=1.0.0

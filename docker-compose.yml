@@ -6,7 +6,7 @@ services:
     environment:
       - PYWPS_CFG=/wps.cfg
     ports:
-      - "30100:5002"
+      - "30100:5000"
     volumes:
       - ./dev-component/wps.cfg:/wps.cfg
     restart: always
