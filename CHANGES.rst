@@ -5,6 +5,7 @@ Changes
 ==================
 
 * Modify default target port
+* Add ``gunicorn`` to ``Dockerfile``
 
 1.0.0 (2020-10-26)
 ==================
