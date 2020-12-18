@@ -14,11 +14,11 @@ COPY . /opt/wps
 WORKDIR /opt/wps
 
 RUN pip install --upgrade pip && \
-    pip install -e .
+    pip install -e . && \
+    pip install gunicorn
 
 EXPOSE 5000
-ENTRYPOINT ["sh", "-c"]
-CMD ["exec osprey start -b 0.0.0.0"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
 
 # docker build -t pcic/osprey .
 # docker run -p 5000:5000 pcic/osprey
