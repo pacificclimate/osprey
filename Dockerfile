@@ -6,9 +6,9 @@ ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 RUN apt-get update && apt-get install -y \
     build-essential
 
-COPY . /opt/wps
-
 WORKDIR /opt/wps
+COPY ./osprey /opt/wps/osprey
+COPY CHANGES.rst README.rst requirements.txt requirements_dev.txt setup.py ./
 
 RUN pip install --upgrade pip && \
     pip install --user . && \
