@@ -12,7 +12,7 @@ WORKDIR /opt/wps
 
 RUN pip install --upgrade pip && \
     pip install --user . && \
-    pip install gunicorn
+    pip install --user gunicorn
 
 # vim:set ft=dockerfile:
 FROM python:3.8-slim AS prod
@@ -24,8 +24,7 @@ COPY --from=builder /root/.local /root/.local
 # Make sure scripts in .local are usable:
 ENV PATH=/root/.local/bin:$PATH
 
-COPY ./osprey /opt/wps
-WORKDIR /opt/wps
+WORKDIR /root/.local/lib/python3.8/dist-packages/osprey
 
 EXPOSE 5000
 CMD ["gunicorn", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
