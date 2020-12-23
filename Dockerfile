@@ -6,12 +6,10 @@ ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 RUN apt-get update && apt-get install -y \
     build-essential
 
-WORKDIR /opt/wps
-COPY ./osprey /opt/wps/osprey
-COPY CHANGES.rst README.rst requirements.txt requirements_dev.txt setup.py ./
+COPY requirements.txt ./
 
 RUN pip install --upgrade pip && \
-    pip install --user . && \
+    pip install --user -r requirements.txt && \
     pip install --user gunicorn
 
 # vim:set ft=dockerfile:
@@ -24,7 +22,8 @@ COPY --from=builder /root/.local /root/.local
 # Make sure scripts in .local are usable:
 ENV PATH=/root/.local/bin:$PATH
 
-WORKDIR /root/.local/lib/python3.8/dist-packages/osprey
+WORKDIR /opt/wps
+COPY ./osprey /opt/wps/osprey
 
 EXPOSE 5000
 CMD ["gunicorn", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
