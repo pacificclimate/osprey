@@ -85,8 +85,12 @@ def test_parameters_local(
             "COLUMBIA",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
-            url_path("sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"),
+            url_path(
+                "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
+            ),
+            url_path(
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
+            ),
             None,
             None,
         ),
@@ -95,8 +99,12 @@ def test_parameters_local(
             "COLUMBIA",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
-            url_path("sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"),
+            url_path(
+                "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
+            ),
+            url_path(
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
+            ),
             local_path("configs/parameters.cfg"),
             None,
         ),
@@ -105,7 +113,9 @@ def test_parameters_local(
             "COLUMBIA",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
+            url_path(
+                "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
+            ),
             url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
             None,
             {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},

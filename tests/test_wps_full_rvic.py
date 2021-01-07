@@ -46,7 +46,9 @@ from osprey.processes.wps_full_rvic import FullRVIC
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
+            url_path(
+                "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
+            ),
             local_path("samples/sample_routing_domain.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             local_path("configs/parameters.cfg"),
@@ -61,8 +63,12 @@ from osprey.processes.wps_full_rvic import FullRVIC
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
-            url_path("sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"),
+            url_path(
+                "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
+            ),
+            url_path(
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
+            ),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             None,
             None,
