@@ -4,10 +4,12 @@ import os
 from urllib.parse import urlparse
 from urllib.request import urlretrieve
 from datetime import datetime, timedelta
-from wps_tools.utils import collect_output_files, is_opendap_url, collect_args
+from collections import OrderedDict
+
+from wps_tools.file_handling import collect_output_files, is_opendap_url
+from wps_tools.io import collect_args
 from .config_templates import convolve_config_template, params_config_template
 from rvic.core.config import read_config
-from collections import OrderedDict
 
 logger = logging.getLogger("PYWPS")
 logger.setLevel(logging.NOTSET)
