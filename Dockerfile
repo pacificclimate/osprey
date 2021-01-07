@@ -5,7 +5,7 @@ ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 # Update system
 RUN apt-get update && apt-get install -y \
     build-essential \
-    -y r-base
+    r-base
 
 COPY requirements.txt ./
 
