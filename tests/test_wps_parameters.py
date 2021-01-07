@@ -83,57 +83,30 @@ def test_parameters_local(
         (
             "sample",
             "COLUMBIA",
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-                "http",
-            ),
+            url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-                "opendap",
-            ),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "opendap",
-            ),
+            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
+            url_path("sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"),
             None,
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-                "http",
-            ),
+            url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-                "opendap",
-            ),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "opendap",
-            ),
+            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
+            url_path("sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"),
             local_path("configs/parameters.cfg"),
             None,
         ),
         (
             "sample",
             "COLUMBIA",
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_pour.txt",
-                "http",
-            ),
+            url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
             local_path("samples/uhbox.csv"),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc",
-                "opendap",
-            ),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "http",
-            ),
+            url_path("sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"),
+            url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
             None,
             {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
         ),
