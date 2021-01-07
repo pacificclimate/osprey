@@ -11,7 +11,7 @@ from pywps.app.Common import Metadata
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
-from wps_tools.utils import log_handler, common_status_percentages
+from wps_tools.logging import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
     nc_output,

@@ -3,7 +3,7 @@ from pywps.app.Common import Metadata
 
 from rvic.convolution import convolution
 
-from wps_tools.utils import log_handler, common_status_percentages
+from wps_tools.logging import log_handler, common_status_percentages
 from wps_tools.io import nc_output, log_level
 from osprey.utils import (
     logger,
