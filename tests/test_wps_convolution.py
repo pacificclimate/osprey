@@ -24,17 +24,14 @@ from osprey.processes.wps_convolution import Convolution
             "2012-12-01-00",
             "2012-12-31",
             url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "opendap",
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
             ),
             url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
+                "sample.rvic.prm.COLUMBIA.20180516.nc",
                 "opendap",
+                "climate_explorer_data_prep",
             ),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
-                "opendap",
-            ),
+            url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             None,
             None,
         ),
@@ -44,13 +41,11 @@ from osprey.processes.wps_convolution import Convolution
             "2012-12-31",
             local_path("samples/sample_routing_domain.nc"),
             url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample.rvic.prm.COLUMBIA.20180516.nc",
+                "sample.rvic.prm.COLUMBIA.20180516.nc",
                 "opendap",
+                "climate_explorer_data_prep",
             ),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
-                "opendap",
-            ),
+            url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             local_path("configs/convolve.cfg"),
             None,
         ),
@@ -59,14 +54,10 @@ from osprey.processes.wps_convolution import Convolution
             "2012-12-01-00",
             "2012-12-31",
             url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "opendap",
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
             ),
             local_path("samples/sample.rvic.prm.COLUMBIA.20180516.nc"),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc",
-                "opendap",
-            ),
+            url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             None,
             {"OPTIONS": {"CASESTR": "Historical",},},
         ),

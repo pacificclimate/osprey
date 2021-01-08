@@ -21,7 +21,7 @@ from osprey.utils import (
     convolve_config_handler,
     params_config_handler,
 )
-from wps_tools.utils import log_handler, common_status_percentages
+from wps_tools.logging import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
     nc_output,

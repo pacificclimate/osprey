@@ -33,10 +33,7 @@ def test_wps_convolution_local(uhs_files, station_file, domain, config_file):
         (
             local_path("samples/sample.uh_s2"),
             local_path("samples/station_file.txt"),
-            url_path(
-                "projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_routing_domain.nc",
-                "http",
-            ),
+            url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
             local_path("configs/convert.cfg"),
         )
     ],
