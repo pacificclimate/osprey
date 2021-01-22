@@ -81,9 +81,14 @@ class Convert(Process):
                 k: str(config_dict[section][k]) for k in config_dict[section].keys()
             }
 
-        parser["UHS_FILES"]["ROUT_DIR"] = "/".join(uhs_files.split("/")[:-1])
-        parser["UHS_FILES"]["STATION_FILE"] = station_file
-        parser["DOMAIN"]["FILE_NAME"] = domain
+        try:
+            parser["UHS_FILES"]["ROUT_DIR"] = "/".join(uhs_files.split("/")[:-1])
+            parser["UHS_FILES"]["STATION_FILE"] = station_file
+            parser["DOMAIN"]["FILE_NAME"] = domain
+        except KeyError as e:
+            raise ProcessError(
+                f"{type(e).__name__}: Invalid header or config key in config file"
+            )
 
         processed = ".".join(unprocessed.split(".")[:-1]) + "_edited.cfg"
         with open(processed, "w") as cfg:
@@ -125,7 +130,10 @@ class Convert(Process):
             log_level=loglevel,
             process_step="process",
         )
-        convert(config_file)
+        try:
+            convert(config_file)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,

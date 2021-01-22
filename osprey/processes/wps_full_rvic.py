@@ -241,7 +241,10 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="params_process",
         )
-        parameters(params_config, np)
+        try:
+            parameters(params_config, np)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,
@@ -281,7 +284,10 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="convolution_process",
         )
-        convolution(convolve_config)
+        try:
+            convolution(convolve_config)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,

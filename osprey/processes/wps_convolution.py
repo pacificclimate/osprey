@@ -1,5 +1,6 @@
 from pywps import Process, ComplexInput, LiteralInput, ComplexOutput, Format, FORMATS
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 from rvic.convolution import convolution
 
@@ -151,7 +152,10 @@ class Convolution(Process):
             log_level=loglevel,
             process_step="process",
         )
-        convolution(config)
+        try:
+            convolution(config)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,

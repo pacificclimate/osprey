@@ -137,7 +137,7 @@ def params_config_handler(
         return rvic_config_validator(processed)
 
     except KeyError:
-        raise ProcessError("Invalid config key provided")
+        raise ProcessError("Invalid config key provided in param file")
 
 
 def convolve_config_handler(
@@ -186,7 +186,7 @@ def convolve_config_handler(
         return rvic_config_validator(processed)
 
     except KeyError:
-        raise ProcessError("Invalid config key provided")
+        raise ProcessError("Invalid config key provided in convolve file ")
 
 
 def rvic_config_validator(cfg):
