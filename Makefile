@@ -130,22 +130,22 @@ notebook-sanitizer:
 .PHONY: test-notebooks
 test-notebooks: notebook-sanitizer
 	@echo "Running notebook-based tests"
-	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-prod
 test-notebooks-prod: notebook-sanitizer
 	@echo "Running notebook-based tests against production instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-dev
 test-notebooks-dev: notebook-sanitizer
 	@echo "Running notebook-based tests against development instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-custom
 test-notebooks-custom: notebook-sanitizer
 	@echo "Running notebook-based tests against custom instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: lint
 lint: venv
