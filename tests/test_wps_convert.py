@@ -12,7 +12,8 @@ from .utils import process_err_test
 
 def RVIC_err_test(process, params):
     client = client_for(Service(processes=[process]))
-    datainputs = params
+    # exception_el.text only shows the ProcessError message if loglevel is set to DEBUG
+    datainputs = params + f"loglevel=DEBUG"
     resp = client.get(
         service="wps",
         request="Execute",
@@ -21,7 +22,6 @@ def RVIC_err_test(process, params):
         datainputs=datainputs,
     )
 
-    # exception_el.text only shows the ProcessError message if loglevel is set to DEBUG
     exception_el = resp.xpath(
         "/wps:ExecuteResponse/wps:Status/wps:ProcessFailed/"
         "wps:ExceptionReport/ows:Exception/ows:ExceptionText"
@@ -102,7 +102,5 @@ def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
     ],
 )
 def test_wps_convert_rvic_err(uhs_files, station_file, domain, config_file):
-    params = (
-        build_params(uhs_files, station_file, domain, config_file) + f"loglevel=DEBUG"
-    )
+    params = build_params(uhs_files, station_file, domain, config_file)
     RVIC_err_test(Convert(), params)
