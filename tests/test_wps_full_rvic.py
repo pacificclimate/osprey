@@ -165,7 +165,7 @@ def test_full_rvic(
         (
             "sample",
             "COLUMBIA",
-            None,  # Date cannot be None
+            None,
             "2012-12-31",
             local_path("samples/sample_pour.txt"),
             local_path("samples/uhbox.csv"),
@@ -179,7 +179,7 @@ def test_full_rvic(
         ),
     ],
 )
-def test_full_rvic_err(
+def test_full_rvic_date_err(
     case_id,
     grid_id,
     run_startdate,
@@ -209,4 +209,4 @@ def test_full_rvic_err(
         params_config_dict,
         convolve_config_dict,
     )
-    process_err_test(FullRVIC(), params)
+    assert process_err_test(FullRVIC(), params)

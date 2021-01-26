@@ -162,7 +162,7 @@ def test_parameters_https(
         ),
     ],
 )
-def test_parameters_err(
+def test_parameters_file_err(
     case_id, grid_id, uh_box, routing, domain, config_file, config_dict
 ):
     # Invalid pour_points in empty text file
@@ -179,4 +179,4 @@ def test_parameters_err(
             config_file,
             config_dict,
         )
-        process_err_test(Parameters(), params)
+        assert process_err_test(Parameters(), params)

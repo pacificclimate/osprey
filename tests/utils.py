@@ -18,6 +18,9 @@ def process_err_test(process, params):
     exception_el = resp.xpath(
         "/wps:ExecuteResponse/wps:Status/wps:ProcessFailed/"
         "wps:ExceptionReport/ows:Exception/ows:ExceptionText"
-    )[0]
+    )
 
-    assert "Process error" in exception_el.text
+    for elem in exception_el:
+        if "Process error" in elem.text:
+            return True
+    return False

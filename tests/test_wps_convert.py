@@ -66,7 +66,7 @@ def test_wps_convert_https(uhs_files, station_file, domain, config_file):
 )
 def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
     params = build_params(uhs_files, station_file, domain, config_file)
-    process_err_test(Convert(), params)
+    assert process_err_test(Convert(), params)
 
 
 @mark.online
@@ -84,4 +84,4 @@ def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
 )
 def test_wps_convert_rvic_err(uhs_files, station_file, domain, config_file):
     params = build_params(uhs_files, station_file, domain, config_file)
-    process_err_test(Convert(), params)
+    assert process_err_test(Convert(), params)

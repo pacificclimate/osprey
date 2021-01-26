@@ -125,7 +125,7 @@ def test_wps_convolution(
     [
         (
             "sample",
-            None,  # Date cannot be None
+            None,
             "2012-12-31",
             local_path("samples/sample_routing_domain.nc"),
             url_path(
@@ -138,7 +138,7 @@ def test_wps_convolution(
         ),
     ],
 )
-def test_wps_convolution_err(
+def test_wps_convolution_date_err(
     case_id, run_startdate, stop_date, domain, param_file, input_forcings, config_dict,
 ):
     with NamedTemporaryFile(
@@ -154,4 +154,4 @@ def test_wps_convolution_err(
             config_file.name,
             config_dict,
         )
-    process_err_test(Convolution(), params)
+    assert process_err_test(Convolution(), params)
