@@ -7,6 +7,7 @@ from pywps import (
     FORMATS,
 )
 from pywps.app.Common import Metadata
+from pywps.app.exceptions import ProcessError
 
 # Tool imports
 from rvic.version import version
@@ -187,7 +188,10 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="process",
         )
-        parameters(config, np)
+        try:
+            parameters(config, np)
+        except Exception as e:
+            raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,
