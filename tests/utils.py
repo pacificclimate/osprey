@@ -1,13 +1,23 @@
-import io
-import pytest
-from contextlib import redirect_stderr, redirect_stdout
-from wps_tools.testing import run_wps_process
+from wps_tools.testing import client_for
+from pywps import Service
 
 
-def process_err_test(process, datainputs):
-    err = io.StringIO()
-    with redirect_stderr(err), pytest.raises(Exception):
-        run_wps_process(process(), datainputs)
+def process_err_test(process, params):
+    client = client_for(Service(processes=[process]))
+    # exception_el.text only shows the ProcessError message if loglevel is set to DEBUG
+    if "loglevel=DEBUG" not in params:
+        params += "loglevel=DEBUG"
+    resp = client.get(
+        service="wps",
+        request="Execute",
+        version="1.0.0",
+        identifier=process.identifier,
+        datainputs=params,
+    )
 
-    assert "pywps.app.exceptions.ProcessError" in err.getvalue()
-    err.close()
+    exception_el = resp.xpath(
+        "/wps:ExecuteResponse/wps:Status/wps:ProcessFailed/"
+        "wps:ExceptionReport/ows:Exception/ows:ExceptionText"
+    )[0]
+
+    assert "Process error" in exception_el.text

@@ -1,33 +1,12 @@
 import configparser
 from pytest import mark
 from pkg_resources import resource_filename
-from tempfile import NamedTemporaryFile
 from rvic.core.config import read_config
-from pywps import Service
 
-from wps_tools.testing import run_wps_process, local_path, url_path, client_for
+
+from wps_tools.testing import run_wps_process, local_path, url_path
 from osprey.processes.wps_convert import Convert
 from .utils import process_err_test
-
-
-def RVIC_err_test(process, params):
-    client = client_for(Service(processes=[process]))
-    # exception_el.text only shows the ProcessError message if loglevel is set to DEBUG
-    datainputs = params + f"loglevel=DEBUG"
-    resp = client.get(
-        service="wps",
-        request="Execute",
-        version="1.0.0",
-        identifier=process.identifier,
-        datainputs=datainputs,
-    )
-
-    exception_el = resp.xpath(
-        "/wps:ExecuteResponse/wps:Status/wps:ProcessFailed/"
-        "wps:ExceptionReport/ows:Exception/ows:ExceptionText"
-    )[0]
-
-    assert "Process error" in exception_el.text
 
 
 def build_params(uhs_files, station_file, domain, config_file):
@@ -80,13 +59,14 @@ def test_wps_convert_https(uhs_files, station_file, domain, config_file):
             local_path("samples/sample.uh_s2"),
             local_path("samples/station_file.txt"),
             url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
+            # convolve.cfg has wrong keys
             local_path("configs/convolve.cfg"),
         )
     ],
 )
 def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
     params = build_params(uhs_files, station_file, domain, config_file)
-    process_err_test(Convert, params)
+    process_err_test(Convert(), params)
 
 
 @mark.online
@@ -97,10 +77,11 @@ def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
             local_path("samples/sample.uh_s2"),
             local_path("samples/station_file.txt"),
             url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
+            # convert[UHS_FILES][ROUT_PROGRAM] is Python (should be C pr Fortran)
             local_path("configs/convert_err.cfg"),
         )
     ],
 )
 def test_wps_convert_rvic_err(uhs_files, station_file, domain, config_file):
     params = build_params(uhs_files, station_file, domain, config_file)
-    RVIC_err_test(Convert(), params)
+    process_err_test(Convert(), params)
