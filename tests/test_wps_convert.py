@@ -77,7 +77,7 @@ def test_wps_convert_config_err(uhs_files, station_file, domain, config_file):
             local_path("samples/sample.uh_s2"),
             local_path("samples/station_file.txt"),
             url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
-            # convert[UHS_FILES][ROUT_PROGRAM] is Python (should be C pr Fortran)
+            # convert[UHS_FILES][ROUT_PROGRAM] is Python (should be C or Fortran)
             local_path("configs/convert_err.cfg"),
         )
     ],
