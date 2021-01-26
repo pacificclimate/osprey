@@ -125,27 +125,27 @@ test-all: venv
 .PHONY: notebook-sanitizer
 notebook-sanitizer:
 	@echo "Copying notebook output sanitizer ..."
-	@-bash -c "curl -L $(SANITIZE_FILE) -o $(CURDIR)/docs/source/output-sanitize.cfg --silent"
+	@-bash -c "curl -L $(SANITIZE_FILE) -o $(CURDIR)/docs/output-sanitize.cfg --silent"
 
 .PHONY: test-notebooks
 test-notebooks: notebook-sanitizer
 	@echo "Running notebook-based tests"
-	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/docs/source/notebooks/ --sanitize-with $(CURDIR)/docs/source/output-sanitize.cfg --ignore $(CURDIR)/docs/source/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-prod
 test-notebooks-prod: notebook-sanitizer
 	@echo "Running notebook-based tests against production instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/docs/source/notebooks/ --sanitize-with $(CURDIR)/docs/source/output-sanitize.cfg --ignore $(CURDIR)/docs/source/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-dev
 test-notebooks-dev: notebook-sanitizer
 	@echo "Running notebook-based tests against development instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/docs/source/notebooks/ --sanitize-with $(CURDIR)/docs/source/output-sanitize.cfg --ignore $(CURDIR)/docs/source/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-custom
 test-notebooks-custom: notebook-sanitizer
 	@echo "Running notebook-based tests against custom instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/docs/source/notebooks/ --sanitize-with $(CURDIR)/docs/source/output-sanitize.cfg --ignore $(CURDIR)/docs/source/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
 
 .PHONY: lint
 lint: venv
@@ -154,18 +154,15 @@ lint: venv
 
 .PHONY: refresh-notebooks
 refresh-notebooks:
-	@echo "Refresh all notebook outputs under docs/source/notebooks"
-	@bash -c 'for nb in $(CURDIR)/docs/source/notebooks/*.ipynb; do LOCAL_URL="$(LOCAL_URL)" jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=60 --output "$$nb" "$$nb"; sed -i "s@$(LOCAL_URL)/outputs/@$(OUTPUT_URL)/@g" "$$nb"; done; cd $(APP_ROOT)'
+	@echo "Refresh all notebook outputs under notebooks"
+	@bash -c 'for nb in $(CURDIR)/notebooks/*.ipynb; do LOCAL_URL="$(LOCAL_URL)" jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=60 --output "$$nb" "$$nb"; sed -i "s@$(LOCAL_URL)/outputs/@$(OUTPUT_URL)/@g" "$$nb"; done; cd $(APP_ROOT)'
 
-## Sphinx targets
+## Documentation
 
 .PHONY: docs
 docs:
-	@echo "Generating docs with Sphinx ..."
-	@bash -c '$(MAKE) -C $@ clean html'
-	@echo "Open your browser to: file:/$(APP_ROOT)/docs/build/html/index.html"
-	## do not execute xdg-open automatically since it hangs travis and job does not complete
-	@echo "xdg-open $(APP_ROOT)/docs/build/html/index.html"
+	@echo "Updating notebook docs"
+	@bash -c 'source $(VENV)/bin/activate && jupyter nbconvert --to html notebooks/* --output-dir docs/formatted_demos/'
 
 ## Deployment targets
 
