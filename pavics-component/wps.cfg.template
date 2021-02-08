@@ -1,6 +1,8 @@
 [server]
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
+maxrequestsize = 65gb
+parallelprocesses = 14
 
 [logging]
 level = INFO
