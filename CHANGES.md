@@ -1,5 +1,12 @@
 # Changes
 
+## 1.1.0
+*2020-02-08*
+
+* Add `wps_tools.output_handling` to demos
+* Build documentation
+* Add `ProcessError`s
+
 ## 1.0.2
 *2020-12-23*
 
