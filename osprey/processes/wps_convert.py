@@ -28,7 +28,7 @@ class Convert(Process):
                 "UHS_Files",
                 abstract="Path to UHS file",
                 min_occurs=1,
-                supported_formats=[Format('text/plain', extension='.uhs_s2'),],
+                supported_formats=[Format("text/plain", extension=".uhs_s2"),],
             ),
             ComplexInput(
                 "station_file",
