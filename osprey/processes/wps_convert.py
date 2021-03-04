@@ -28,7 +28,7 @@ class Convert(Process):
                 "UHS_Files",
                 abstract="Path to UHS file",
                 min_occurs=1,
-                supported_formats=[FORMATS.TEXT],
+                supported_formats=[Format("text/plain", extension=".uhs_s2"),],
             ),
             ComplexInput(
                 "station_file",
@@ -71,6 +71,12 @@ class Convert(Process):
         )
 
     def edit_config_file(self, config_file, uhs_files, station_file, domain):
+        with open(station_file, "r") as f:
+            data = f.readlines()
+        data[1] = uhs_files
+        with open(station_file, "w") as f:
+            f.writelines(data)
+
         parser = configparser.ConfigParser()
         parser.optionxform = str
 
