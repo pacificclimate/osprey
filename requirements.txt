@@ -4,4 +4,4 @@ click
 psutil
 rvic-daccs==1.1.5
 nchelpers==5.5.7
-wps-tools==1.0.2
+wps-tools==1.2.1
