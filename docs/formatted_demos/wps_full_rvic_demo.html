@@ -10,9 +10,9 @@
 
 <style type="text/css">
     pre { line-height: 125%; }
-td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .highlight .hll { background-color: var(--jp-cell-editor-active-background) }
 .highlight { background: var(--jp-cell-editor-background); color: var(--jp-mirror-editor-variable-color) }
@@ -14390,6 +14390,7 @@ osprey<span class="ansi-blue-fg">.</span>full_rvic<span class="ansi-blue-fg">(</
     params_config_dict<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
     convolve_config_file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
     convolve_config_dict<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
+    output_formats<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
 <span class="ansi-blue-fg">)</span>
 <span class="ansi-red-fg">Docstring:</span>
 Run full RVIC process combining Parameters and Convolution modules
@@ -14467,6 +14468,8 @@ output : ComplexData:mimetype:`application/x-netcdf`
     <span class="n">domain</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;/data/samples/sample_routing_domain.nc&quot;</span><span class="p">),</span>
     <span class="n">input_forcings</span> <span class="o">=</span> <span class="s2">&quot;https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/columbia_vicset2.nc&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="c1"># Use asobj=True to access the data from the output file</span>
+<span class="n">basic_data</span> <span class="o">=</span> <span class="n">output_basic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -14494,6 +14497,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
     <span class="n">params_config_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;/data/configs/parameters.cfg&quot;</span><span class="p">),</span>
     <span class="n">convolve_config_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;/data/configs/convolve.cfg&quot;</span><span class="p">)</span>
 <span class="p">)</span>
+<span class="n">config_files_data</span> <span class="o">=</span> <span class="n">output_config_files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -14529,80 +14533,12 @@ output : ComplexData:mimetype:`application/x-netcdf`
         <span class="p">},</span>
     <span class="p">},</span>
 <span class="p">)</span>
+<span class="n">config_dicts_data</span> <span class="o">=</span> <span class="n">output_config_dicts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
      </div>
 </div>
 </div>
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Access the output with nc_to_dataset() or auto_construct_outputs() from wps_tools.output_handling</p>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
-<span class="kn">from</span> <span class="nn">wps_tools.output_handling</span> <span class="kn">import</span> <span class="n">nc_to_dataset</span><span class="p">,</span> <span class="n">auto_construct_outputs</span>
-
-<span class="c1"># Example full_rvic with only required inputs</span>
-<span class="n">nc_to_dataset</span><span class="p">(</span><span class="n">output_basic</span><span class="o">.</span><span class="n">get</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">auto_construct_outputs</span><span class="p">(</span><span class="n">output_basic</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
- root group (NETCDF4 data model, file format HDF5):
-     title: RVIC history file
-     comment: Output from the RVIC Streamflow Routing Model.
-     Conventions: CF-1.6
-     history: Created: Wed Jan  6 17:15:22 2021
-     source: /tmp/osprey-venv/bin/osprey
-     institution: University of Washington
-     hostname: pcic-2003
-     username: csanders
-     casename: sample
-     casestr: Historical
-     references: Based on the initial model of Lohmann, et al., 1996, Tellus, 48(A), 708-721
-     version: 1.1.4
-     RvicPourPointsFile: sample_pour.txt
-     RvicUHFile: uhbox.csv
-     RvicFdrFile: sample_flow_parameters.nc
-     RvicDomainFile: sample_routing_domain.nc
-     featureType: timeSeries
-     dimensions(sizes): time(31), nv(2), outlets(1), nc_chars(256)
-     variables(dimensions): float32 time(time), float32 time_bnds(time, nv), float32 lon(outlets), float32 lat(outlets), int32 outlet_x_ind(outlets), int32 outlet_y_ind(outlets), int32 outlet_decomp_ind(outlets), |S1 outlet_name(outlets, nc_chars), float32 streamflow(time, outlets)
-     groups: ]</pre>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -14613,7 +14549,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">params_config</span> <span class="o">=</span> <span class="n">read_config</span><span class="p">(</span><span class="s2">&quot;tests/data/configs/parameters.cfg&quot;</span><span class="p">)</span>
@@ -14637,12 +14573,10 @@ output : ComplexData:mimetype:`application/x-netcdf`
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test_full_rvic_output</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
-    <span class="n">output_data</span> <span class="o">=</span> <span class="n">nc_to_dataset</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">test_full_rvic_output</span><span class="p">(</span><span class="n">output_data</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
     <span class="c1"># Metadata of the final output of RVIC parameters + convolution </span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">output_data</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
@@ -14663,12 +14597,12 @@ output : ComplexData:mimetype:`application/x-netcdf`
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">output_basic</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
-<span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">output_config_files</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
-<span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">output_config_dicts</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">basic_data</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+<span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">config_files_data</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+<span class="n">test_full_rvic_output</span><span class="p">(</span><span class="n">config_dicts_data</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
 </pre></div>
 
      </div>
