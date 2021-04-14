@@ -84,7 +84,7 @@ def optional_args_handler(args, identifier):
 
 
 def collect_args_wrapper(request, workdir, modules=[]):
-    args = collect_args(request, workdir)
+    args = collect_args(request.inputs, workdir)
 
     if "parameters" in modules:
         optional_args_handler(args, "params")
