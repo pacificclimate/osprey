@@ -21,7 +21,9 @@ from osprey.utils import (
     collect_args_wrapper,
     convolve_config_handler,
     params_config_handler,
+    prep_csv,
 )
+from osprey.io import pour_points_csv, uh_box_csv
 from wps_tools.logging import log_handler, common_status_percentages
 from wps_tools.io import log_level, nc_output, csv_input
 
@@ -86,24 +88,8 @@ class FullRVIC(Process):
                 max_occurs=1,
                 data_type="string",
             ),
-            ComplexInput(
-                "pour_points_csv",
-                "POUR POINTS",
-                abstract="Pour Points File content; A comma separated file of outlets to route to [lons, lats]"
-                " Use open(filename).read() for local files and a URL for remote files.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
-            ComplexInput(
-                "uh_box_csv",
-                "UH BOX",
-                abstract="UH Box File content. Use open(filename).read() for local files and a URL for remote files."
-                " This defines the unit hydrograph to rout flow to the edge of each grid cell.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
+            pour_points_csv,
+            uh_box_csv,
             ComplexInput(
                 "routing",
                 "ROUTING",
@@ -180,17 +166,6 @@ class FullRVIC(Process):
             status_supported=True,
         )
 
-    def prep_csv(self, csv):
-        csv.seek(0)
-        csv_content = csv.read()
-
-        try:
-            csv_content = csv_content.decode("utf-8")
-        except (UnicodeDecodeError, AttributeError):
-            pass
-
-        return csv_content
-
     def _handler(self, request, response):
         (
             loglevel,
@@ -233,8 +208,8 @@ class FullRVIC(Process):
             process_step="params_config_rebuild",
         )
 
-        uh_box_content = self.prep_csv(uh_box)
-        pour_points_content = self.prep_csv(pour_points)
+        uh_box_content = prep_csv(uh_box)
+        pour_points_content = prep_csv(pour_points)
 
         with NamedTemporaryFile(
             mode="w+", suffix=".csv"

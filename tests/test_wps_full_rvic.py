@@ -6,38 +6,6 @@ from osprey.processes.wps_full_rvic import FullRVIC
 from .utils import process_err_test
 
 
-def build_params(
-    case_id,
-    grid_id,
-    run_startdate,
-    stop_date,
-    pour_points_csv,
-    uh_box_csv,
-    routing,
-    domain,
-    input_forcings,
-    params_config_file,
-    convolve_config_file,
-    params_config_dict,
-    convolve_config_dict,
-):
-    return (
-        f"case_id={case_id};"
-        f"grid_id={grid_id};"
-        f"run_startdate={run_startdate};"
-        f"stop_date={stop_date};"
-        f"pour_points_csv={pour_points_csv};"
-        f"uh_box_csv={uh_box_csv};"
-        f"routing=@xlink:href={routing};"
-        f"domain=@xlink:href={domain};"
-        f"input_forcings=@xlink:href={input_forcings};"
-        f"params_config_file=@xlink:href={params_config_file};"
-        f"convolve_config_file=@xlink:href={convolve_config_file};"
-        f"params_config_dict={params_config_dict};"
-        f"convolve_config_dict={convolve_config_dict};"
-    )
-
-
 @mark.slow
 @mark.online
 @mark.parametrize(

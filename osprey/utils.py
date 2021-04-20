@@ -199,3 +199,15 @@ def rvic_config_validator(cfg):
         }
         for section in cfg.keys()
     }
+
+
+def prep_csv(csv):
+    csv.seek(0)
+    csv_content = csv.read()
+
+    try:
+        csv_content = csv_content.decode("utf-8")
+    except (UnicodeDecodeError, AttributeError):
+        pass
+
+    return csv_content

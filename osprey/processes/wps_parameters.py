@@ -12,6 +12,7 @@ from pywps.app.exceptions import ProcessError
 # Tool imports
 from rvic.version import version
 from rvic.parameters import parameters
+from tempfile import NamedTemporaryFile
 from wps_tools.logging import log_handler, common_status_percentages
 from wps_tools.io import (
     log_level,
@@ -22,7 +23,9 @@ from osprey.utils import (
     get_outfile,
     collect_args_wrapper,
     params_config_handler,
+    prep_csv,
 )
+from osprey.io import pour_points_csv, uh_box_csv
 
 # Library imports
 import os
@@ -65,22 +68,8 @@ class Parameters(Process):
                 max_occurs=1,
                 data_type="string",
             ),
-            ComplexInput(
-                "pour_points",
-                "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
-            ComplexInput(
-                "uh_box",
-                "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
+            pour_points_csv,
+            uh_box_csv,
             ComplexInput(
                 "routing",
                 "ROUTING",
@@ -168,30 +157,44 @@ class Parameters(Process):
             log_level=loglevel,
             process_step="config_rebuild",
         )
-        config = params_config_handler(
-            self.workdir,
-            case_id,
-            domain,
-            grid_id,
-            pour_points,
-            routing,
-            uh_box,
-            params_config_file,
-            params_config_dict,
-        )
 
-        log_handler(
-            self,
-            response,
-            "Creating parameters",
-            logger,
-            log_level=loglevel,
-            process_step="process",
-        )
-        try:
-            parameters(config, np)
-        except Exception as e:
-            raise ProcessError(f"{type(e).__name__}: {e}")
+        uh_box_content = prep_csv(uh_box)
+        pour_points_content = prep_csv(pour_points)
+
+        with NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_uh_box, NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_pour_points:
+            temp_uh_box.write(uh_box_content)
+            temp_uh_box.seek(0)
+            temp_pour_points.write(pour_points_content)
+            temp_pour_points.seek(0)
+
+            config = params_config_handler(
+                self.workdir,
+                case_id,
+                domain,
+                grid_id,
+                temp_pour_points.name,
+                routing,
+                temp_uh_box.name,
+                params_config_file,
+                params_config_dict,
+            )
+
+            log_handler(
+                self,
+                response,
+                "Creating parameters",
+                logger,
+                log_level=loglevel,
+                process_step="process",
+            )
+            try:
+                parameters(config, np)
+            except Exception as e:
+                raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,
