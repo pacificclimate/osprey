@@ -25,7 +25,7 @@ from osprey.utils import (
     params_config_handler,
     prep_csv,
 )
-from osprey.io import pour_points_csv, uh_box_csv
+from osprey import io
 
 # Library imports
 import os
@@ -38,70 +38,16 @@ class Parameters(Process):
         )
         inputs = [
             log_level,
-            LiteralInput(
-                "np",
-                "numofproc",
-                default=1,
-                abstract="Number of processors used to run job",
-                data_type="integer",
-            ),
-            LiteralInput(
-                "version",
-                "Version",
-                default=True,
-                abstract="Return RVIC version string",
-                data_type="boolean",
-            ),
-            LiteralInput(
-                "case_id",
-                "Case ID",
-                abstract="Case ID for the RVIC process",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "grid_id",
-                "GRID ID",
-                abstract="Routing domain grid shortname",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            pour_points_csv,
-            uh_box_csv,
-            ComplexInput(
-                "routing",
-                "ROUTING",
-                abstract="Path to routing inputs netCDF.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "domain",
-                "Domain",
-                abstract="Path to CESM complaint domain file",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "params_config_file",
-                "Parameters Configuration",
-                abstract="Path to input configuration file for Parameters process",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[Format("text/cfg", extension=".cfg")],
-            ),
-            LiteralInput(
-                "params_config_dict",
-                "Parameters Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Parameters process",
-                min_occurs=0,
-                max_occurs=1,
-                data_type="string",
-            ),
+            io.np,
+            io.version,
+            io.case_id,
+            io.grid_id,
+            io.pour_points_csv,
+            io.uh_box_csv,
+            io.routing,
+            io.domain,
+            io.params_config_file,
+            io.params_config_dict,
         ]
         outputs = [
             nc_output,

@@ -12,6 +12,7 @@ from osprey.utils import (
     collect_args_wrapper,
     convolve_config_handler,
 )
+from osprey import io
 
 
 class Convolution(Process):
@@ -21,38 +22,10 @@ class Convolution(Process):
         )
         inputs = [
             log_level,
-            LiteralInput(
-                "case_id",
-                "Case ID",
-                abstract="Case ID for the RVIC process",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "run_startdate",
-                "Run Start Date",
-                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "stop_date",
-                "Stop Date",
-                abstract="Run stop date based on STOP_OPTION",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            ComplexInput(
-                "domain",
-                "Domain",
-                abstract="Path to CESM complaint domain file",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
+            io.case_id,
+            io.run_startdate,
+            io.stop_date,
+            io.domain,
             ComplexInput(
                 "param_file",
                 "Parameter File",
@@ -61,30 +34,9 @@ class Convolution(Process):
                 max_occurs=1,
                 supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
             ),
-            ComplexInput(
-                "input_forcings",
-                "Input Forcings",
-                abstract="Path to land data netCDF forcings",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "convolve_config_file",
-                "Convolution Configuration File",
-                abstract="Path to input configuration file for Convolution process",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[Format("text/cfg", extension=".cfg")],
-            ),
-            LiteralInput(
-                "convolve_config_dict",
-                "Convolution Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Convolution process",
-                min_occurs=0,
-                max_occurs=1,
-                data_type="string",
-            ),
+            io.input_forcings,
+            io.convolve_config_file,
+            io.convolve_config_dict,
         ]
         outputs = [
             nc_output,
