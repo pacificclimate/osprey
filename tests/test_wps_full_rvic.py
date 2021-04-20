@@ -11,7 +11,7 @@ def build_params(
     grid_id,
     run_startdate,
     stop_date,
-    pour_points,
+    pour_points_csv,
     uh_box_csv,
     routing,
     domain,
@@ -26,7 +26,7 @@ def build_params(
         f"grid_id={grid_id};"
         f"run_startdate={run_startdate};"
         f"stop_date={stop_date};"
-        f"pour_points=@xlink:href={pour_points};"
+        f"pour_points_csv={pour_points_csv};"
         f"uh_box_csv={uh_box_csv};"
         f"routing=@xlink:href={routing};"
         f"domain=@xlink:href={domain};"
@@ -62,7 +62,7 @@ def build_params(
             "COLUMBIA",
             "2012-12-01-00",
             "2012-12-31",
-            local_path("samples/sample_pour.txt"),
+            resource_filename("tests", "data/samples/sample_pour.txt"),
             resource_filename("tests", "data/samples/uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
@@ -72,6 +72,61 @@ def build_params(
             {},
             {},
         ),
+    ],
+)
+def test_full_rvic_local_pour_points(
+    case_id,
+    grid_id,
+    run_startdate,
+    stop_date,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    input_forcings,
+    params_config_file,
+    convolve_config_file,
+    params_config_dict,
+    convolve_config_dict,
+):
+    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+        params = (
+            f"case_id={case_id};"
+            f"grid_id={grid_id};"
+            f"run_startdate={run_startdate};"
+            f"stop_date={stop_date};"
+            f"pour_points_csv={pour_points_csv.read()};"
+            f"uh_box_csv={uh_box_csv.read()};"
+            f"routing=@xlink:href={routing};"
+            f"domain=@xlink:href={domain};"
+            f"input_forcings=@xlink:href={input_forcings};"
+            f"params_config_file=@xlink:href={params_config_file};"
+            f"convolve_config_file=@xlink:href={convolve_config_file};"
+            f"params_config_dict={params_config_dict};"
+            f"convolve_config_dict={convolve_config_dict};"
+        )
+        run_wps_process(FullRVIC(), params)
+
+
+@mark.slow
+@mark.online
+@mark.parametrize(
+    (
+        "case_id",
+        "grid_id",
+        "run_startdate",
+        "stop_date",
+        "pour_points",
+        "uh_box",
+        "routing",
+        "domain",
+        "input_forcings",
+        "params_config_file",
+        "convolve_config_file",
+        "params_config_dict",
+        "convolve_config_dict",
+    ),
+    [
         (
             "sample",
             "COLUMBIA",
@@ -110,7 +165,7 @@ def build_params(
         ),
     ],
 )
-def test_full_rvic(
+def test_full_rvic_online_pour_points(
     case_id,
     grid_id,
     run_startdate,
@@ -125,21 +180,21 @@ def test_full_rvic(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as csv_file:
-        params = build_params(
-            case_id,
-            grid_id,
-            run_startdate,
-            stop_date,
-            pour_points,
-            csv_file.read(),
-            routing,
-            domain,
-            input_forcings,
-            params_config_file,
-            convolve_config_file,
-            params_config_dict,
-            convolve_config_dict,
+    with open(uh_box, "r") as uh_box_csv:
+        params = (
+            f"case_id={case_id};"
+            f"grid_id={grid_id};"
+            f"run_startdate={run_startdate};"
+            f"stop_date={stop_date};"
+            f"pour_points_csv=@xlink:href={pour_points};"
+            f"uh_box_csv={uh_box_csv.read()};"
+            f"routing=@xlink:href={routing};"
+            f"domain=@xlink:href={domain};"
+            f"input_forcings=@xlink:href={input_forcings};"
+            f"params_config_file=@xlink:href={params_config_file};"
+            f"convolve_config_file=@xlink:href={convolve_config_file};"
+            f"params_config_dict={params_config_dict};"
+            f"convolve_config_dict={convolve_config_dict};"
         )
         run_wps_process(FullRVIC(), params)
 
@@ -168,7 +223,7 @@ def test_full_rvic(
             "COLUMBIA",
             None,
             "2012-12-31",
-            local_path("samples/sample_pour.txt"),
+            resource_filename("tests", "data/samples/sample_pour.txt"),
             resource_filename("tests", "data/samples/uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
@@ -195,20 +250,20 @@ def test_full_rvic_date_err(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as csv_file:
-        params = build_params(
-            case_id,
-            grid_id,
-            run_startdate,
-            stop_date,
-            pour_points,
-            csv_file.read(),
-            routing,
-            domain,
-            input_forcings,
-            params_config_file,
-            convolve_config_file,
-            params_config_dict,
-            convolve_config_dict,
+    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+        params = (
+            f"case_id={case_id};"
+            f"grid_id={grid_id};"
+            f"run_startdate={run_startdate};"
+            f"stop_date={stop_date};"
+            f"pour_points_csv={pour_points_csv.read()};"
+            f"uh_box_csv={uh_box_csv.read()};"
+            f"routing=@xlink:href={routing};"
+            f"domain=@xlink:href={domain};"
+            f"input_forcings=@xlink:href={input_forcings};"
+            f"params_config_file=@xlink:href={params_config_file};"
+            f"convolve_config_file=@xlink:href={convolve_config_file};"
+            f"params_config_dict={params_config_dict};"
+            f"convolve_config_dict={convolve_config_dict};"
         )
         assert process_err_test(FullRVIC(), params)

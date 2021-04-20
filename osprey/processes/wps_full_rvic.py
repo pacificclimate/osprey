@@ -87,7 +87,7 @@ class FullRVIC(Process):
                 data_type="string",
             ),
             ComplexInput(
-                "pour_points",
+                "pour_points_csv",
                 "POUR POINTS",
                 abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
                 min_occurs=1,
@@ -100,10 +100,7 @@ class FullRVIC(Process):
                 abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[
-                    Format("text/csv", extension=".csv"),
-                    Format("application/csv", extension=".csv"),
-                ],
+                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
             ),
             ComplexInput(
                 "routing",
@@ -181,6 +178,17 @@ class FullRVIC(Process):
             status_supported=True,
         )
 
+    def prep_csv(self, csv):
+        csv.seek(0)
+        csv_content = csv.read()
+
+        try:
+            csv_content = csv_content.decode("utf-8")
+        except (UnicodeDecodeError, AttributeError):
+            pass
+
+        return csv_content
+
     def _handler(self, request, response):
         (
             loglevel,
@@ -223,26 +231,27 @@ class FullRVIC(Process):
             process_step="params_config_rebuild",
         )
 
-        uh_box.seek(0)
-        csv_content = uh_box.read()
+        uh_box_content = self.prep_csv(uh_box)
+        pour_points_content = self.prep_csv(pour_points)
 
-        try:
-            csv_content = csv_content.decode("utf-8")
-        except (UnicodeDecodeError, AttributeError):
-            pass
-
-        with NamedTemporaryFile(mode="w+", suffix=".csv") as temp_csv:
-            temp_csv.write(csv_content)
-            temp_csv.seek(0)
+        with NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_uh_box, NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_pour_points:
+            temp_uh_box.write(uh_box_content)
+            temp_uh_box.seek(0)
+            temp_pour_points.write(pour_points_content)
+            temp_pour_points.seek(0)
 
             params_config = params_config_handler(
                 self.workdir,
                 case_id,
                 domain,
                 grid_id,
-                pour_points,
+                temp_pour_points.name,
                 routing,
-                temp_csv.name,
+                temp_uh_box.name,
                 params_config_file,
                 params_config_dict,
             )
