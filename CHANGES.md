@@ -1,5 +1,11 @@
 # Changes
 
+## 1.1.1
+*2020-03-25*
+
+* Fix uhs file bug
+* Update results gathering in notebooks
+
 ## 1.1.0
 *2020-02-08*
 
