@@ -12,7 +12,7 @@ def build_params(
     run_startdate,
     stop_date,
     pour_points,
-    uh_box,
+    uh_box_csv,
     routing,
     domain,
     input_forcings,
@@ -27,7 +27,7 @@ def build_params(
         f"run_startdate={run_startdate};"
         f"stop_date={stop_date};"
         f"pour_points=@xlink:href={pour_points};"
-        f"uh_box=@xlink:href={uh_box};"
+        f"uh_box_csv={uh_box_csv};"
         f"routing=@xlink:href={routing};"
         f"domain=@xlink:href={domain};"
         f"input_forcings=@xlink:href={input_forcings};"
@@ -63,7 +63,7 @@ def build_params(
             "2012-12-01-00",
             "2012-12-31",
             local_path("samples/sample_pour.txt"),
-            local_path("samples/uhbox.csv"),
+            resource_filename("tests", "data/samples/uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
@@ -78,7 +78,7 @@ def build_params(
             "2012-12-01-00",
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
-            local_path("samples/uhbox.csv"),
+            resource_filename("tests", "data/samples/uhbox.csv"),
             url_path(
                 "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
             ),
@@ -95,7 +95,7 @@ def build_params(
             "2012-12-01-00",
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
-            local_path("samples/uhbox.csv"),
+            resource_filename("tests", "data/samples/uhbox.csv"),
             url_path(
                 "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
             ),
@@ -125,22 +125,23 @@ def test_full_rvic(
     params_config_dict,
     convolve_config_dict,
 ):
-    params = build_params(
-        case_id,
-        grid_id,
-        run_startdate,
-        stop_date,
-        pour_points,
-        uh_box,
-        routing,
-        domain,
-        input_forcings,
-        params_config_file,
-        convolve_config_file,
-        params_config_dict,
-        convolve_config_dict,
-    )
-    run_wps_process(FullRVIC(), params)
+    with open(uh_box, "r") as csv_file:
+        params = build_params(
+            case_id,
+            grid_id,
+            run_startdate,
+            stop_date,
+            pour_points,
+            csv_file.read(),
+            routing,
+            domain,
+            input_forcings,
+            params_config_file,
+            convolve_config_file,
+            params_config_dict,
+            convolve_config_dict,
+        )
+        run_wps_process(FullRVIC(), params)
 
 
 @mark.slow
@@ -168,7 +169,7 @@ def test_full_rvic(
             None,
             "2012-12-31",
             local_path("samples/sample_pour.txt"),
-            local_path("samples/uhbox.csv"),
+            resource_filename("tests", "data/samples/uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
@@ -194,19 +195,20 @@ def test_full_rvic_date_err(
     params_config_dict,
     convolve_config_dict,
 ):
-    params = build_params(
-        case_id,
-        grid_id,
-        run_startdate,
-        stop_date,
-        pour_points,
-        uh_box,
-        routing,
-        domain,
-        input_forcings,
-        params_config_file,
-        convolve_config_file,
-        params_config_dict,
-        convolve_config_dict,
-    )
-    assert process_err_test(FullRVIC(), params)
+    with open(uh_box, "r") as csv_file:
+        params = build_params(
+            case_id,
+            grid_id,
+            run_startdate,
+            stop_date,
+            pour_points,
+            csv_file.read(),
+            routing,
+            domain,
+            input_forcings,
+            params_config_file,
+            convolve_config_file,
+            params_config_dict,
+            convolve_config_dict,
+        )
+        assert process_err_test(FullRVIC(), params)

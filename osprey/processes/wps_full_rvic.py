@@ -12,6 +12,7 @@ from pywps import (
 from rvic.convolution import convolution
 from rvic.parameters import parameters
 
+from tempfile import NamedTemporaryFile
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 from osprey.utils import (
@@ -22,10 +23,7 @@ from osprey.utils import (
     params_config_handler,
 )
 from wps_tools.logging import log_handler, common_status_percentages
-from wps_tools.io import (
-    log_level,
-    nc_output,
-)
+from wps_tools.io import log_level, nc_output, csv_input
 
 
 class FullRVIC(Process):
@@ -97,12 +95,15 @@ class FullRVIC(Process):
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
             ),
             ComplexInput(
-                "uh_box",
+                "uh_box_csv",
                 "UH BOX",
                 abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
                 min_occurs=1,
                 max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
+                supported_formats=[
+                    Format("text/csv", extension=".csv"),
+                    Format("application/csv", extension=".csv"),
+                ],
             ),
             ComplexInput(
                 "routing",
@@ -221,30 +222,43 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="params_config_rebuild",
         )
-        params_config = params_config_handler(
-            self.workdir,
-            case_id,
-            domain,
-            grid_id,
-            pour_points,
-            routing,
-            uh_box,
-            params_config_file,
-            params_config_dict,
-        )
 
-        log_handler(
-            self,
-            response,
-            "Processing parameters",
-            logger,
-            log_level=loglevel,
-            process_step="params_process",
-        )
+        uh_box.seek(0)
+        csv_content = uh_box.read()
+
         try:
-            parameters(params_config, np)
-        except Exception as e:
-            raise ProcessError(f"{type(e).__name__}: {e}")
+            csv_content = csv_content.decode("utf-8")
+        except (UnicodeDecodeError, AttributeError):
+            pass
+
+        with NamedTemporaryFile(mode="w+", suffix=".csv") as temp_csv:
+            temp_csv.write(csv_content)
+            temp_csv.seek(0)
+
+            params_config = params_config_handler(
+                self.workdir,
+                case_id,
+                domain,
+                grid_id,
+                pour_points,
+                routing,
+                temp_csv.name,
+                params_config_file,
+                params_config_dict,
+            )
+
+            log_handler(
+                self,
+                response,
+                "Processing parameters",
+                logger,
+                log_level=loglevel,
+                process_step="params_process",
+            )
+            try:
+                parameters(params_config, np)
+            except Exception as e:
+                raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,
