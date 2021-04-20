@@ -89,7 +89,8 @@ class FullRVIC(Process):
             ComplexInput(
                 "pour_points_csv",
                 "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
+                abstract="Pour Points File content; A comma separated file of outlets to route to [lons, lats]"
+                " Use open(filename).read() for local files and a URL for remote files.",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
@@ -97,7 +98,8 @@ class FullRVIC(Process):
             ComplexInput(
                 "uh_box_csv",
                 "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
+                abstract="UH Box File content. Use open(filename).read() for local files and a URL for remote files."
+                " This defines the unit hydrograph to rout flow to the edge of each grid cell.",
                 min_occurs=1,
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
