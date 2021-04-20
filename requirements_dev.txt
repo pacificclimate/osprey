@@ -15,7 +15,7 @@ cruft
 black==19.10b0
 
 # notebook requirements
-jupyterlab
+jupyterlab==3.0.14
 ipywidgets
 nodejs
 birdhouse-birdy
