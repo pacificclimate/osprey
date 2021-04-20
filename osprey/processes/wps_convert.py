@@ -12,6 +12,7 @@ from osprey.utils import (
     get_outfile,
     collect_args_wrapper,
 )
+from osprey.io import domain
 import os
 import configparser
 
@@ -38,14 +39,7 @@ class Convert(Process):
                 max_occurs=1,
                 supported_formats=[FORMATS.TEXT],
             ),
-            ComplexInput(
-                "domain",
-                "Domain",
-                abstract="Path to CESM complaint domain file",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
+            domain,
             ComplexInput(
                 "config_file",
                 "Convert Configuration",

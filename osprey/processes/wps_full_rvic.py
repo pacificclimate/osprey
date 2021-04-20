@@ -12,6 +12,7 @@ from pywps import (
 from rvic.convolution import convolution
 from rvic.parameters import parameters
 
+from tempfile import NamedTemporaryFile
 from pywps.app.Common import Metadata
 from pywps.app.exceptions import ProcessError
 from osprey.utils import (
@@ -20,12 +21,11 @@ from osprey.utils import (
     collect_args_wrapper,
     convolve_config_handler,
     params_config_handler,
+    prep_csv,
 )
+from osprey import io
 from wps_tools.logging import log_handler, common_status_percentages
-from wps_tools.io import (
-    log_level,
-    nc_output,
-)
+from wps_tools.io import log_level, nc_output
 
 
 class FullRVIC(Process):
@@ -42,124 +42,21 @@ class FullRVIC(Process):
         )
         inputs = [
             log_level,
-            LiteralInput(
-                "version",
-                "Version",
-                default=True,
-                abstract="Return RVIC version string",
-                data_type="boolean",
-            ),
-            LiteralInput(
-                "np",
-                "numofproc",
-                default=1,
-                abstract="Number of processors used to run job",
-                data_type="integer",
-            ),
-            LiteralInput(
-                "case_id",
-                "Case ID",
-                abstract="Case ID for the RVIC process",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "grid_id",
-                "GRID ID",
-                abstract="Routing domain grid shortname",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "run_startdate",
-                "Run Start Date",
-                abstract="Run start date (yyyy-mm-dd-hh). Only used for startup and drystart runs.",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            LiteralInput(
-                "stop_date",
-                "Stop Date",
-                abstract="Run stop date based on STOP_OPTION",
-                min_occurs=1,
-                max_occurs=1,
-                data_type="string",
-            ),
-            ComplexInput(
-                "pour_points",
-                "POUR POINTS",
-                abstract="Path to Pour Points File; A comma separated file of outlets to route to [lons, lats]",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
-            ComplexInput(
-                "uh_box",
-                "UH BOX",
-                abstract="Path to UH Box File. This defines the unit hydrograph to rout flow to the edge of each grid cell.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.TEXT, Format("text/csv", extension=".csv")],
-            ),
-            ComplexInput(
-                "routing",
-                "ROUTING",
-                abstract="Path to routing inputs netCDF.",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "domain",
-                "Domain",
-                abstract="Path to CESM complaint domain file",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "input_forcings",
-                "Input Forcings",
-                abstract="Path to land data netCDF forcings",
-                min_occurs=1,
-                max_occurs=1,
-                supported_formats=[FORMATS.NETCDF, FORMATS.DODS],
-            ),
-            ComplexInput(
-                "params_config_file",
-                "Parameters Configuration",
-                abstract="Path to input configuration file or input dictionary",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[Format("text/cfg", extension=".cfg")],
-            ),
-            LiteralInput(
-                "params_config_dict",
-                "Parameters Configuration",
-                abstract="Dictionary containing input configuration for Parameters process",
-                min_occurs=0,
-                max_occurs=1,
-                data_type="string",
-            ),
-            ComplexInput(
-                "convolve_config_file",
-                "Convolution Configuration File",
-                abstract="Path to input configuration file for Convolution process",
-                min_occurs=0,
-                max_occurs=1,
-                supported_formats=[Format("text/cfg", extension=".cfg")],
-            ),
-            LiteralInput(
-                "convolve_config_dict",
-                "Convolution Configuration Dictionary",
-                abstract="Dictionary containing input configuration for Convolution process",
-                min_occurs=0,
-                max_occurs=1,
-                data_type="string",
-            ),
+            io.version,
+            io.np,
+            io.case_id,
+            io.grid_id,
+            io.run_startdate,
+            io.stop_date,
+            io.pour_points_csv,
+            io.uh_box_csv,
+            io.routing,
+            io.domain,
+            io.input_forcings,
+            io.params_config_file,
+            io.params_config_dict,
+            io.convolve_config_file,
+            io.convolve_config_dict,
         ]
         outputs = [
             nc_output,
@@ -221,30 +118,44 @@ class FullRVIC(Process):
             log_level=loglevel,
             process_step="params_config_rebuild",
         )
-        params_config = params_config_handler(
-            self.workdir,
-            case_id,
-            domain,
-            grid_id,
-            pour_points,
-            routing,
-            uh_box,
-            params_config_file,
-            params_config_dict,
-        )
 
-        log_handler(
-            self,
-            response,
-            "Processing parameters",
-            logger,
-            log_level=loglevel,
-            process_step="params_process",
-        )
-        try:
-            parameters(params_config, np)
-        except Exception as e:
-            raise ProcessError(f"{type(e).__name__}: {e}")
+        uh_box_content = prep_csv(uh_box)
+        pour_points_content = prep_csv(pour_points)
+
+        with NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_uh_box, NamedTemporaryFile(
+            mode="w+", suffix=".csv"
+        ) as temp_pour_points:
+            temp_uh_box.write(uh_box_content)
+            temp_uh_box.seek(0)
+            temp_pour_points.write(pour_points_content)
+            temp_pour_points.seek(0)
+
+            params_config = params_config_handler(
+                self.workdir,
+                case_id,
+                domain,
+                grid_id,
+                temp_pour_points.name,
+                routing,
+                temp_uh_box.name,
+                params_config_file,
+                params_config_dict,
+            )
+
+            log_handler(
+                self,
+                response,
+                "Processing parameters",
+                logger,
+                log_level=loglevel,
+                process_step="params_process",
+            )
+            try:
+                parameters(params_config, np)
+            except Exception as e:
+                raise ProcessError(f"{type(e).__name__}: {e}")
 
         log_handler(
             self,

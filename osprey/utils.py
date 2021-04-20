@@ -84,7 +84,7 @@ def optional_args_handler(args, identifier):
 
 
 def collect_args_wrapper(request, workdir, modules=[]):
-    args = collect_args(request, workdir)
+    args = collect_args(request.inputs, workdir)
 
     if "parameters" in modules:
         optional_args_handler(args, "params")
@@ -199,3 +199,15 @@ def rvic_config_validator(cfg):
         }
         for section in cfg.keys()
     }
+
+
+def prep_csv(csv):
+    csv.seek(0)
+    csv_content = csv.read()
+
+    try:
+        csv_content = csv_content.decode("utf-8")
+    except (UnicodeDecodeError, AttributeError):
+        pass
+
+    return csv_content
