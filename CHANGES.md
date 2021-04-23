@@ -1,13 +1,18 @@
 # Changes
 
+# 1.2.0
+*2021-04-23*
+
+* Use stream input for csv files
+
 ## 1.1.1
-*2020-03-25*
+*2021-03-25*
 
 * Fix uhs file bug
 * Update results gathering in notebooks
 
 ## 1.1.0
-*2020-02-08*
+*2021-02-08*
 
 * Add `wps_tools.output_handling` to demos
 * Build documentation
