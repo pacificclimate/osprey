@@ -100,7 +100,7 @@ class Convert(Process):
         loglevel, uhs_files, station_file, domain, config_file = collect_args_wrapper(
             request, self.workdir
         )
-
+        
         log_handler(
             self,
             response,
