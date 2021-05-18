@@ -48,22 +48,22 @@ def build_params(
         "convolve_config_dict",
     ),
     [
-        # (
-        #     "sample",
-        #     "2012-12-01-00",
-        #     "2012-12-31",
-        #     url_path(
-        #         "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
-        #     ),
-        #     url_path(
-        #         "sample.rvic.prm.COLUMBIA.20180516.nc",
-        #         "opendap",
-        #         "climate_explorer_data_prep",
-        #     ),
-        #     url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
-        #     None,
-        #     None,
-        # ),
+        (
+            "sample",
+            "2012-12-01-00",
+            "2012-12-31",
+            url_path(
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
+            ),
+            url_path(
+                "sample.rvic.prm.COLUMBIA.20180516.nc",
+                "opendap",
+                "climate_explorer_data_prep",
+            ),
+            url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
+            None,
+            None,
+        ),
         (
             "sample",
             "2012-12-01-00",
@@ -78,18 +78,18 @@ def build_params(
             local_path("configs/convolve.cfg"),
             None,
         ),
-        # (
-        #     "sample",
-        #     "2012-12-01-00",
-        #     "2012-12-31",
-        #     url_path(
-        #         "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
-        #     ),
-        #     local_path("samples/sample.rvic.prm.COLUMBIA.20180516.nc"),
-        #     url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
-        #     None,
-        #     {"OPTIONS": {"CASESTR": "Historical",},},
-        # ),
+        (
+            "sample",
+            "2012-12-01-00",
+            "2012-12-31",
+            url_path(
+                "sample_routing_domain.nc", "opendap", "climate_explorer_data_prep"
+            ),
+            local_path("samples/sample.rvic.prm.COLUMBIA.20180516.nc"),
+            url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
+            None,
+            {"OPTIONS": {"CASESTR": "Historical",},},
+        ),
     ],
 )
 def test_wps_convolution(
@@ -112,7 +112,6 @@ def test_wps_convolution(
         convolve_config_file,
         convolve_config_dict,
     )
-    print(params)
     run_wps_process(Convolution(), params)
 
 
