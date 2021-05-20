@@ -144,7 +144,13 @@ def test_wps_convolution(
     ],
 )
 def test_wps_convolution_date_err(
-    case_id, run_startdate, stop_date, domain, param_file, input_forcings, convolve_config_dict,
+    case_id,
+    run_startdate,
+    stop_date,
+    domain,
+    param_file,
+    input_forcings,
+    convolve_config_dict,
 ):
     with NamedTemporaryFile(
         suffix=".cfg", prefix="tmp_copy", dir="/tmp", delete=True

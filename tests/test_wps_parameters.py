@@ -53,7 +53,14 @@ from .utils import process_err_test
     ],
 )
 def test_parameters_local(
-    case_id, grid_id, pour_points, uh_box, routing, domain, convolve_config_file, convolve_config_dict,
+    case_id,
+    grid_id,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
         params = (
@@ -129,7 +136,14 @@ def test_parameters_local(
     ],
 )
 def test_parameters_https(
-    case_id, grid_id, pour_points, uh_box, routing, domain, convolve_config_file, convolve_config_dict,
+    case_id,
+    grid_id,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     with open(uh_box, "r") as uh_box_csv:
         params = (
@@ -172,7 +186,13 @@ def test_parameters_https(
     ],
 )
 def test_parameters_file_err(
-    case_id, grid_id, uh_box, routing, domain, convolve_config_file, convolve_config_dict,
+    case_id,
+    grid_id,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     # Invalid pour_points in empty text file
     with NamedTemporaryFile(
