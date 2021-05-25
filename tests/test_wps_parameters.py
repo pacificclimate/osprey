@@ -16,8 +16,8 @@ from .utils import process_err_test
         "uh_box",
         "routing",
         "domain",
-        "config_file",
-        "config_dict",
+        "convolve_config_file",
+        "convolve_config_dict",
     ),
     [
         (
@@ -53,7 +53,14 @@ from .utils import process_err_test
     ],
 )
 def test_parameters_local(
-    case_id, grid_id, pour_points, uh_box, routing, domain, config_file, config_dict
+    case_id,
+    grid_id,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
         params = (
@@ -63,9 +70,13 @@ def test_parameters_local(
             f"uh_box_csv={uh_box_csv.read()};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
-            f"config_file=@xlink:href={config_file};"
-            f"config_dict=@xlink:href={config_dict};"
         )
+
+        if convolve_config_file:
+            params += f"convolve_config_file=@xlink:href={convolve_config_file};"
+        if convolve_config_dict:
+            params += f"convolve_config_dict=@xlink:href={convolve_config_dict};"
+
         run_wps_process(Parameters(), params)
 
 
@@ -78,8 +89,8 @@ def test_parameters_local(
         "uh_box",
         "routing",
         "domain",
-        "config_file",
-        "config_dict",
+        "convolve_config_file",
+        "convolve_config_dict",
     ),
     [
         (
@@ -125,7 +136,14 @@ def test_parameters_local(
     ],
 )
 def test_parameters_https(
-    case_id, grid_id, pour_points, uh_box, routing, domain, config_file, config_dict
+    case_id,
+    grid_id,
+    pour_points,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     with open(uh_box, "r") as uh_box_csv:
         params = (
@@ -135,9 +153,13 @@ def test_parameters_https(
             f"uh_box_csv={uh_box_csv.read()};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
-            f"config_file=@xlink:href={config_file};"
-            f"config_dict=@xlink:href={config_dict};"
         )
+
+        if convolve_config_file:
+            params += f"convolve_config_file=@xlink:href={convolve_config_file};"
+        if convolve_config_dict:
+            params += f"convolve_config_dict=@xlink:href={convolve_config_dict};"
+
         run_wps_process(Parameters(), params)
 
 
@@ -148,8 +170,8 @@ def test_parameters_https(
         "uh_box",
         "routing",
         "domain",
-        "config_file",
-        "config_dict",
+        "convolve_config_file",
+        "convolve_config_dict",
     ),
     [
         (
@@ -164,7 +186,13 @@ def test_parameters_https(
     ],
 )
 def test_parameters_file_err(
-    case_id, grid_id, uh_box, routing, domain, config_file, config_dict
+    case_id,
+    grid_id,
+    uh_box,
+    routing,
+    domain,
+    convolve_config_file,
+    convolve_config_dict,
 ):
     # Invalid pour_points in empty text file
     with NamedTemporaryFile(
@@ -178,7 +206,5 @@ def test_parameters_file_err(
             f"uh_box_csv={uh_box_csv.read()};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
-            f"config_file=@xlink:href={config_file};"
-            f"config_dict=@xlink:href={config_dict};"
         )
         assert process_err_test(Parameters(), params)
