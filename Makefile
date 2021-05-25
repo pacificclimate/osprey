@@ -14,7 +14,7 @@ DEV_PORT ?= $(shell bash -c 'read -ep "Target port: " port; echo $$port')
 # been refreshed from the production server below instead of from the local dev
 # instance so the notebooks can also be used as tutorial notebooks.
 OUTPUT_URL = https://docker-dev03.pcic.uvic.ca/wpsoutputs
-SANITIZE_FILE := https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/raw/master/notebooks/output-sanitize.cfg
+SANITIZE_FILE := https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/raw/master/notebooks/tests/output-sanitize.cfg
 
 
 .PHONY: all
@@ -130,22 +130,22 @@ notebook-sanitizer:
 .PHONY: test-notebooks
 test-notebooks: notebook-sanitizer
 	@echo "Running notebook-based tests"
-	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env LOCAL_URL=$(LOCAL_URL) pytest --nbval --verbose $(CURDIR)/notebooks/tests/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/tests/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-prod
 test-notebooks-prod: notebook-sanitizer
 	@echo "Running notebook-based tests against production instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && pytest --nbval --verbose $(CURDIR)/notebooks/tests/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/tests/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-dev
 test-notebooks-dev: notebook-sanitizer
 	@echo "Running notebook-based tests against development instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:30100/wps pytest --nbval --verbose $(CURDIR)/notebooks/tests/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/tests/.ipynb_checkpoints"
 
 .PHONY: test-notebooks-custom
 test-notebooks-custom: notebook-sanitizer
 	@echo "Running notebook-based tests against custom instance of osprey"
-	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/notebooks/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/.ipynb_checkpoints"
+	@bash -c "source $(VENV)/bin/activate && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$(DEV_PORT)/wps pytest --nbval --verbose $(CURDIR)/notebooks/tests/ --sanitize-with $(CURDIR)/docs/output-sanitize.cfg --ignore $(CURDIR)/notebooks/tests/.ipynb_checkpoints"
 
 .PHONY: lint
 lint: venv
@@ -155,14 +155,14 @@ lint: venv
 .PHONY: refresh-notebooks
 refresh-notebooks:
 	@echo "Refresh all notebook outputs under notebooks"
-	@bash -c 'for nb in $(CURDIR)/notebooks/*.ipynb; do LOCAL_URL="$(LOCAL_URL)" jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=60 --output "$$nb" "$$nb"; sed -i "s@$(LOCAL_URL)/outputs/@$(OUTPUT_URL)/@g" "$$nb"; done; cd $(APP_ROOT)'
+	@bash -c 'for nb in $(CURDIR)/notebooks/tests/*.ipynb; do LOCAL_URL="$(LOCAL_URL)" jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=60 --output "$$nb" "$$nb"; sed -i "s@$(LOCAL_URL)/outputs/@$(OUTPUT_URL)/@g" "$$nb"; done; cd $(APP_ROOT)'
 
 ## Documentation
 
 .PHONY: docs
 docs:
 	@echo "Updating notebook docs"
-	@bash -c 'source $(VENV)/bin/activate && jupyter nbconvert --to html notebooks/* --output-dir docs/formatted_demos/'
+	@bash -c 'source $(VENV)/bin/activate && jupyter nbconvert --to html notebooks/tests/* --output-dir docs/formatted_demos/'
 
 ## Deployment targets
 
