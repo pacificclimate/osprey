@@ -1,5 +1,11 @@
 # Changes
 
+# 1.2.1
+*2021-06-09*
+
+* Clean up `Dockerfile`
+* Update arg collection
+
 # 1.2.0
 *2021-04-23*
 
