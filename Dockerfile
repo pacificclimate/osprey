@@ -23,4 +23,4 @@ ENV PATH=/root/.local/bin:$PATH
 COPY ./osprey /tmp/osprey
 
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
+CMD ["gunicorn -t 300", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
