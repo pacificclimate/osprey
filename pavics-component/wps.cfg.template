@@ -5,7 +5,7 @@ maxrequestsize = 65gb
 parallelprocesses = 14
 
 [logging]
-level = INFO
+level = DEBUG
 db_echo = false
 
 ${EXTRA_PYWPS_CONFIG}
