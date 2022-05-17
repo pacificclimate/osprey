@@ -48,7 +48,11 @@ from .utils import process_err_test
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
             None,
-            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
+            {
+                "OPTIONS": {
+                    "LOG_LEVEL": "CRITICAL",
+                },
+            },
         ),
     ],
 )
@@ -131,7 +135,11 @@ def test_parameters_local(
             ),
             url_path("sample_routing_domain.nc", "http", "climate_explorer_data_prep"),
             None,
-            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
+            {
+                "OPTIONS": {
+                    "LOG_LEVEL": "CRITICAL",
+                },
+            },
         ),
     ],
 )

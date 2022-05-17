@@ -20,7 +20,8 @@ import configparser
 class Convert(Process):
     def __init__(self):
         self.status_percentage_steps = dict(
-            common_status_percentages, **{"config_rebuild": 10},
+            common_status_percentages,
+            **{"config_rebuild": 10},
         )
         inputs = [
             log_level,
@@ -29,7 +30,9 @@ class Convert(Process):
                 "UHS_Files",
                 abstract="Path to UHS file",
                 min_occurs=1,
-                supported_formats=[Format("text/plain", extension=".uhs_s2"),],
+                supported_formats=[
+                    Format("text/plain", extension=".uhs_s2"),
+                ],
             ),
             ComplexInput(
                 "station_file",
