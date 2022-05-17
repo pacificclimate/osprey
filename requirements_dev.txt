@@ -4,6 +4,7 @@ pytest-flake8
 requests-mock
 ipython
 pytest-notebook
+nbclient==0.5.10
 nbsphinx
 nbval>=0.9.6
 nbconvert
@@ -19,4 +20,5 @@ jupyterlab==3.0.14
 ipywidgets
 nodejs
 birdhouse-birdy
-beautifulsoup4
+beautifulsoup4==4.9.3
+setuptools==60.2.0
