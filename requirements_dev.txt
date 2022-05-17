@@ -4,7 +4,7 @@ pytest-flake8
 requests-mock
 ipython
 pytest-notebook
-nbclient==0.5.10
+nbclient~=0.5.9
 nbsphinx
 nbval>=0.9.6
 nbconvert
