@@ -4,7 +4,6 @@ pytest-flake8
 requests-mock
 ipython
 pytest-notebook
-nbclient~=0.5.9
 nbsphinx
 nbval>=0.9.6
 nbconvert
@@ -14,6 +13,7 @@ twine
 cruft
 # Changing dependencies above this comment will create merge conflicts when updating the cookiecutter template with cruft. Add extra requirements below this line.
 black==19.10b0
+nbclient~=0.5.10
 
 # notebook requirements
 jupyterlab==3.0.14
