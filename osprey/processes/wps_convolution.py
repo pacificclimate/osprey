@@ -18,7 +18,8 @@ from osprey import io
 class Convolution(Process):
     def __init__(self):
         self.status_percentage_steps = dict(
-            common_status_percentages, **{"config_rebuild": 10},
+            common_status_percentages,
+            **{"config_rebuild": 10},
         )
         inputs = [
             log_level,
