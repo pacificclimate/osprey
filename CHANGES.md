@@ -1,5 +1,12 @@
 # Changes
 
+# 1.2.2
+*2022-06-15*
+
+* Add `dev-component`
+* Remove anchore
+* Update dependencies and drop outdated Python support
+
 # 1.2.1
 *2021-06-09*
 
