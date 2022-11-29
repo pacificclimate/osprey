@@ -1,5 +1,10 @@
 # Changes
 
+# 1.2.3
+*2022-11-29*
+
+* Remove timeout for `gunicorn` for `Dockerfile`
+
 # 1.2.2
 *2022-06-15*
 
