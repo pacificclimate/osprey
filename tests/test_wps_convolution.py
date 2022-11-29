@@ -88,7 +88,11 @@ def build_params(
             local_path("samples/sample.rvic.prm.COLUMBIA.20180516.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             None,
-            {"OPTIONS": {"CASESTR": "Historical",},},
+            {
+                "OPTIONS": {
+                    "CASESTR": "Historical",
+                },
+            },
         ),
     ],
 )

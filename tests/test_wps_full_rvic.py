@@ -128,8 +128,16 @@ def test_full_rvic_local_pour_points(
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
             None,
             None,
-            {"OPTIONS": {"LOG_LEVEL": "CRITICAL",},},
-            {"OPTIONS": {"CASESTR": "Historical",},},
+            {
+                "OPTIONS": {
+                    "LOG_LEVEL": "CRITICAL",
+                },
+            },
+            {
+                "OPTIONS": {
+                    "CASESTR": "Historical",
+                },
+            },
         ),
     ],
 )
