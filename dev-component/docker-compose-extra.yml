@@ -17,6 +17,10 @@ services:
       - wps_outputs:/data/wpsoutputs
       - /tmp
     restart: always
+    networks:
+      default:
+        external:
+          name: osprey-flask-app-network
 
   magpie:
     volumes:
@@ -26,8 +30,3 @@ services:
   proxy:
     volumes:
       - ../../osprey/pavics-component/osprey_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/osprey_canarie_api_monitoring.py:ro
-
-networks:
-  default:
-    external:
-      name: osprey-flask-app-network
