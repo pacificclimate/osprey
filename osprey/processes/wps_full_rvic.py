@@ -57,6 +57,7 @@ class FullRVIC(Process):
             io.params_config_dict,
             io.convolve_config_file,
             io.convolve_config_dict,
+            io.listener_port,
         ]
         outputs = [
             nc_output,
@@ -91,6 +92,7 @@ class FullRVIC(Process):
             routing,
             domain,
             input_forcings,
+            listener_port,
             params_config_file,
             params_config_dict,
             convolve_config_file,
@@ -185,6 +187,7 @@ class FullRVIC(Process):
             input_forcings,
             convolve_config_file,
             convolve_config_dict,
+            listener_port,
         )
 
         log_handler(
