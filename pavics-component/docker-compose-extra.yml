@@ -5,6 +5,7 @@ services:
     container_name: osprey
     environment:
       - PYWPS_CFG=/wps.cfg
+      - LISTENER_HOST=0.0.0.0
     ports:
       - "8100:5000"
     expose:
