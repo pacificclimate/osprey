@@ -2,8 +2,8 @@ FROM python:3.10 AS builder
 
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
-RUN apt-get update &&
-    apt-get install -y libhdf5-serial-dev netcdf-bin libnetcdf-dev
+RUN apt update &&
+    apt install -y libhdf5-serial-dev netcdf-bin libnetcdf-dev
 
 COPY requirements.txt ./
 
