@@ -6,6 +6,8 @@ services:
     environment:
       - PYWPS_CFG=/wps.cfg
       - LISTENER_HOST=0.0.0.0
+      - GUNICORN_TIMEOUT=0
+      - GUNICORN_WORKERS=10
     ports:
       - "8100:5000"
     expose:
@@ -15,6 +17,9 @@ services:
       - wps_outputs:/data/wpsoutputs
       - /tmp
     restart: always
+    networks:
+      - pcicbr0 # Network with twitcher and other DACCS components
+      - pcicbr1 # Network with osprey-flask-app
 
   magpie:
     volumes:
@@ -24,3 +29,9 @@ services:
   proxy:
     volumes:
       - /storage/data/projects/comp_support/daccs/osprey/pavics-component/osprey_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/osprey_canarie_api_monitoring.py:ro
+
+networks:
+  pcicbr0:
+    external: true
+  pcicbr1:
+    external: true
