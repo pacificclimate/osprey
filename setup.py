@@ -17,6 +17,8 @@ with open(os.path.join(here, "osprey", "__version__.py"), "r") as f:
     exec(f.read(), about)
 
 reqs = [line.strip() for line in open("requirements.txt")]
+reqs.remove('git+https://github.com/pacificclimate/rvic-daccs.git@i17-add-listener')
+reqs.append('rvic-daccs @ git+https://github.com/pacificclimate/rvic-daccs.git@i17-add-listener')
 dev_reqs = [line.strip() for line in open("requirements_dev.txt")]
 
 classifiers = [
