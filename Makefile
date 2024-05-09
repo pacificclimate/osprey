@@ -45,6 +45,8 @@ help:
 .PHONY: install
 install: venv
 	@echo "Installing application ..."
+    @-bash -c 'sudo apt-get update'
+    @-bash -c 'sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev'
 	@-bash -c '${PIP} install .'
 	@echo "\nStart service with \`osprey start'"
 

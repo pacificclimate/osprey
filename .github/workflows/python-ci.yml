@@ -25,6 +25,8 @@ jobs:
       env:
         PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
       run: |
+        sudo apt-get update
+        sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev
         pip install -U pip pytest
         pip install -r requirements.txt
         pip install -e .[dev]
