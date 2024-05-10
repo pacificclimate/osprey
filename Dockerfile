@@ -22,7 +22,6 @@ ENV PATH=/root/.local/bin:$PATH
 
 COPY ./osprey /tmp/osprey
 COPY ./gunicorn.conf /tmp
-COPY ./logging.conf /tmp
 
 EXPOSE 5000
-CMD ["gunicorn", "--config", "gunicorn.conf", "--log-config", "logging.conf", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
+CMD ["gunicorn", "--config", "gunicorn.conf", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
