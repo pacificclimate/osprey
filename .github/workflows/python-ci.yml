@@ -8,7 +8,11 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
 
     steps:
     - uses: actions/checkout@v2
@@ -20,6 +24,8 @@ jobs:
       env:
         PIP_INDEX_URL: https://pypi.pacificclimate.org/simple
       run: |
+        sudo apt-get update
+        sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev
         pip install -U pip pytest
         pip install -r requirements.txt
         pip install -e .[dev]

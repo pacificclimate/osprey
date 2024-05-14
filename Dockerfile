@@ -1,4 +1,4 @@
-FROM python:3.8 AS builder
+FROM python:3.10 AS builder
 
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
@@ -8,7 +8,7 @@ RUN pip install -U pip && \
     pip install --user -r requirements.txt && \
     pip install --user gunicorn
 
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 LABEL Maintainer="https://github.com/pacificclimate/osprey" \
     Description="osprey WPS" \
@@ -21,6 +21,7 @@ COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 
 COPY ./osprey /tmp/osprey
+COPY ./gunicorn.conf /tmp
 
 EXPOSE 5000
-CMD ["gunicorn", "-t 0", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
+CMD ["gunicorn", "--config", "gunicorn.conf", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]

@@ -10,13 +10,17 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, "README.md")).read()
 CHANGES = open(os.path.join(here, "CHANGES.md")).read()
-REQUIRES_PYTHON = ">=3.7.0"
+REQUIRES_PYTHON = ">=3.8.0"
 
 about = {}
 with open(os.path.join(here, "osprey", "__version__.py"), "r") as f:
     exec(f.read(), about)
 
 reqs = [line.strip() for line in open("requirements.txt")]
+reqs.remove("git+https://github.com/pacificclimate/rvic-daccs.git@i17-add-listener")
+reqs.append(
+    "rvic-daccs @ git+https://github.com/pacificclimate/rvic-daccs.git@i17-add-listener"
+)
 dev_reqs = [line.strip() for line in open("requirements_dev.txt")]
 
 classifiers = [
@@ -28,8 +32,10 @@ classifiers = [
     "Programming Language :: Python",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]

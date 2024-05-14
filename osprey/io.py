@@ -134,3 +134,11 @@ params_config_dict = LiteralInput(
     max_occurs=1,
     data_type="string",
 )
+
+listener_port = LiteralInput(
+    "listener_port",
+    "Listener Port",
+    default=5005,
+    abstract="Port number for Listener to pass timestamp to Client (used for Convolution process)",
+    data_type="integer",
+)

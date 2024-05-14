@@ -63,6 +63,7 @@ convolve_config_template = OrderedDict(
         "OPTIONS": {
             "LOG_LEVEL": "INFO",
             "VERBOSE": True,
+            "LISTENER_PORT": 5005,
             "CASE_DIR": None,
             "CASEID": None,
             "CASESTR": "historical",

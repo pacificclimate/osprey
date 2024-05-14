@@ -150,6 +150,7 @@ def convolve_config_handler(
     input_forcings,
     convolve_config_file,
     convolve_config_dict,
+    listener_port,
 ):
     if convolve_config_file:
         unprocessed = read_config(convolve_config_file)
@@ -161,6 +162,7 @@ def convolve_config_handler(
     processed = convolve_config_template
 
     try:
+        processed["OPTIONS"]["LISTENER_PORT"] = listener_port
         processed["OPTIONS"]["CASEID"] = case_id
         processed["OPTIONS"]["RUN_STARTDATE"] = run_startdate
         processed["OPTIONS"]["STOP_DATE"] = stop_date
