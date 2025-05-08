@@ -192,9 +192,11 @@ def convolve_config_handler(
 def rvic_config_validator(cfg):
     return {
         section: {
-            key: cfg[section][key]
-            if type(cfg[section][key]) != list or len(cfg[section][key]) > 1
-            else cfg[section][key][0]
+            key: (
+                cfg[section][key]
+                if type(cfg[section][key]) != list or len(cfg[section][key]) > 1
+                else cfg[section][key][0]
+            )
             for key in cfg[section].keys()
         }
         for section in cfg.keys()
