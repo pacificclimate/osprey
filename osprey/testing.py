@@ -1,4 +1,4 @@
-from pkg_resources import resource_filename
+from importlib.resources import files
 
 
 def make_mock_urls(config, requests_mock):
@@ -22,7 +22,7 @@ def make_mock_urls(config, requests_mock):
             url = line.split(" ")[-1]  # https url is last word in line
             url = url.rstrip()  # remove \n character at end
             filename = url.split("/")[-1]
-            f = open(resource_filename("tests", f"data/samples/{filename}"), "rb")
+            f = open((files("tests") / f"data/samples/{filename}").resolve(), "rb")
             filedata = f.read()
             f.close()
             requests_mock.get(url, content=filedata)

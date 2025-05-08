@@ -1,6 +1,5 @@
 import configparser
 from pytest import mark
-from pkg_resources import resource_filename
 from rvic.core.config import read_config
 
 
