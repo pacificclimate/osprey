@@ -1,26 +1,31 @@
-FROM python:3.8 AS builder
+FROM python:3.12-slim AS builder
 
+# Set custom PyPI index URL
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
 
-COPY requirements.txt ./
+# Install Poetry
+RUN pip install -U pip && pip install poetry
 
-RUN pip install -U pip && \
-    pip install --user -r requirements.txt && \
-    pip install --user gunicorn
+COPY pyproject.toml poetry.lock ./
 
-FROM python:3.8-slim
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+RUN poetry config repositories.pcic https://pypi.pacificclimate.org/simple/ && \
+    poetry install
+
+COPY ./osprey /tmp/osprey
+
+FROM python:3.12-slim
 
 LABEL Maintainer="https://github.com/pacificclimate/osprey" \
     Description="osprey WPS" \
     Vendor="pacificclimate" \
-    Version="1.2.1"
+    Version="1.2.3"
 
+# Set working directory
 WORKDIR /tmp
-
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-
+COPY --from=builder /usr/local /usr/local
 COPY ./osprey /tmp/osprey
 
 EXPOSE 5000
-CMD ["gunicorn", "-t 0", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
+CMD ["gunicorn", "-t", "0", "--bind=0.0.0.0:5000", "osprey.wsgi:application"]
