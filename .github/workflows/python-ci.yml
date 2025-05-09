@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
+          poetry lock
           poetry install --extras "dev"
       - name: Test with pytest (full)
         if: github.ref == 'refs/heads/master'

@@ -17,6 +17,7 @@ COPY pyproject.toml poetry.lock ./
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 RUN poetry config repositories.pcic https://pypi.pacificclimate.org/simple/ && \
+    poetry lock && \
     poetry install --no-root
 
 COPY ./osprey /tmp/osprey
