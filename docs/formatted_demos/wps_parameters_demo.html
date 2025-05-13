@@ -7526,7 +7526,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">birdy</span><span class="w"> </span><span class="kn">import</span> <span class="n">WPSClient</span>
@@ -7568,7 +7568,7 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Using osprey on https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/osprey/wps
+<pre>Using osprey on https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/osprey/wps
 </pre>
 </div>
 </div>
@@ -7622,20 +7622,19 @@ osprey.parameters<span class="o">?</span>
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre><span class="ansi-red-fg">Signature:</span>
-osprey<span class="ansi-blue-fg">.</span>parameters<span class="ansi-blue-fg">(</span>
-    case_id<span class="ansi-blue-fg">,</span>
-    grid_id<span class="ansi-blue-fg">,</span>
-    pour_points_csv<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    uh_box_csv<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    routing<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    domain<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    loglevel<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">'INFO'</span><span class="ansi-blue-fg">,</span>
-    np<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span>
-    version<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">,</span>
-    params_config_file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    params_config_dict<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    output_formats<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-<span class="ansi-blue-fg">)</span>
+osprey.parameters(
+    case_id,
+    grid_id,
+    pour_points_csv=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    uh_box_csv=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    routing=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    domain=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    loglevel=<span class="ansi-yellow-fg">'INFO'</span>,
+    np=<span class="ansi-green-fg">1</span>,
+    version=<span class="ansi-bold" style="color: rgb(0,135,0)">True</span>,
+    params_config_file=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    params_config_dict=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+)
 <span class="ansi-red-fg">Docstring:</span>
 Develop impulse response functions using inputs from a configuration file or dictionary
 
@@ -7668,9 +7667,8 @@ Returns
 -------
 output : ComplexData:mimetype:`application/x-netcdf`
     Output Netcdf File
-<span class="ansi-red-fg">File:</span>      ~/code/birds/osprey/&lt;/tmp/osprey-venv/lib/python3.8/site-packages/birdy/client/base.py-2&gt;
-<span class="ansi-red-fg">Type:</span>      method
-</pre>
+<span class="ansi-red-fg">File:</span>      ~/python-sprint/py-repos/osprey/&lt;/home/quintins/.cache/pypoetry/virtualenvs/osprey-ZXncEVFc-py3.11/lib/python3.11/site-packages/birdy/client/base.py-2&gt;
+<span class="ansi-red-fg">Type:</span>      method</pre>
 </div>
 </div>
 </div>
@@ -7691,7 +7689,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># run parameters only with required inputs</span>
@@ -7715,7 +7713,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># run parameters with local configuration file</span>
@@ -7726,7 +7724,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
     <span class="n">uh_box_csv</span> <span class="o">=</span> <span class="p">(</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/samples/uhbox.csv"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(),</span>
     <span class="n">routing</span> <span class="o">=</span> <span class="s2">"https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/thredds/dodsC/datasets/storage/data/projects/comp_support/climate_explorer_data_prep/hydro/sample_data/set4/sample_flow_parameters.nc"</span><span class="p">,</span>
     <span class="n">domain</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/samples/sample_routing_domain.nc"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
-    <span class="n">params_config_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"/data/configs/parameters.cfg"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
+    <span class="n">params_config_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/configs/parameters.cfg"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
 <span class="p">)</span>
 <span class="n">config_file_data</span> <span class="o">=</span> <span class="n">output_config_file</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
@@ -7739,7 +7737,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># run parameters with configuration dictionary</span>

@@ -7550,7 +7550,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
@@ -7568,7 +7568,7 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Using osprey on https://docker-dev03.pcic.uvic.ca/twitcher/ows/proxy/osprey/wps
+<pre>Using osprey on https://marble-dev01.pcic.uvic.ca/twitcher/ows/proxy/osprey/wps
 </pre>
 </div>
 </div>
@@ -7579,7 +7579,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">osprey</span> <span class="o">=</span> <span class="n">WPSClient</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -7604,7 +7604,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
@@ -7622,14 +7622,13 @@ osprey.convert<span class="o">?</span>
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre><span class="ansi-red-fg">Signature:</span>
-osprey<span class="ansi-blue-fg">.</span>convert<span class="ansi-blue-fg">(</span>
-    uhs_files<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    station_file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    domain<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    config_file<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-    loglevel<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">'INFO'</span><span class="ansi-blue-fg">,</span>
-    output_formats<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">,</span>
-<span class="ansi-blue-fg">)</span>
+osprey.convert(
+    uhs_files=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    station_file=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    domain=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    config_file=<span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    loglevel=<span class="ansi-yellow-fg">'INFO'</span>,
+)
 <span class="ansi-red-fg">Docstring:</span>
 A simple conversion utility to provide users with the ability to convert old routing model setups into RVIC parameters.
 
@@ -7650,9 +7649,8 @@ Returns
 -------
 output : ComplexData:mimetype:`application/x-netcdf`
     Output Netcdf File
-<span class="ansi-red-fg">File:</span>      ~/code/birds/osprey/&lt;/tmp/osprey-venv/lib/python3.8/site-packages/birdy/client/base.py-0&gt;
-<span class="ansi-red-fg">Type:</span>      method
-</pre>
+<span class="ansi-red-fg">File:</span>      ~/python-sprint/py-repos/osprey/&lt;/home/quintins/.cache/pypoetry/virtualenvs/osprey-ZXncEVFc-py3.12/lib/python3.12/site-packages/birdy/client/base.py-0&gt;
+<span class="ansi-red-fg">Type:</span>      method</pre>
 </div>
 </div>
 </div>
@@ -7678,10 +7676,10 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># run convert</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">osprey</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
-    <span class="n">uhs_files</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"/data/samples/sample.uh_s2"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
-    <span class="n">station_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"/data/samples/station_file.txt"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
-    <span class="n">domain</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"/data/samples/sample_routing_domain.nc"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
-    <span class="n">config_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"/data/configs/convert.cfg"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
+    <span class="n">uhs_files</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/samples/sample.uh_s2"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
+    <span class="n">station_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/samples/station_file.txt"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/samples/sample_routing_domain.nc"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
+    <span class="n">config_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">files</span><span class="p">(</span><span class="s2">"tests"</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"data/configs/convert.cfg"</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()),</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -7704,7 +7702,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">output_data</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -7729,7 +7727,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">input_config</span> <span class="o">=</span> <span class="n">read_config</span><span class="p">(</span><span class="s2">"tests/data/configs/convert.cfg"</span><span class="p">)</span>
@@ -7753,7 +7751,7 @@ output : ComplexData:mimetype:`application/x-netcdf`
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Metadata of the output of RVIC convert module</span>

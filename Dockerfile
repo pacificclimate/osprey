@@ -1,4 +1,4 @@
-FROM python:3.12-slim AS builder
+FROM python:3.11-slim AS builder
 
 # Set custom PyPI index URL
 ENV PIP_INDEX_URL="https://pypi.pacificclimate.org/simple/"
@@ -22,7 +22,7 @@ RUN poetry config repositories.pcic https://pypi.pacificclimate.org/simple/ && \
 
 COPY ./osprey /tmp/osprey
 
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 LABEL Maintainer="https://github.com/pacificclimate/osprey" \
     Description="osprey WPS" \
