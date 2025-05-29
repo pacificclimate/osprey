@@ -5757,7 +5757,7 @@ test = ["black (>=25.1.0,<26.0.0)", "pytest (>=8.3.5,<9.0.0)"]
 type = "git"
 url = "https://github.com/pacificclimate/wps-tools.git"
 reference = "py-sprint-25q1"
-resolved_reference = "3b53833d00f15f84584623e6199c4ede1235914c"
+resolved_reference = "26c9a5e171ff40d496b16afd6571a4f0793d7900"
 
 [[package]]
 name = "wrapt"
