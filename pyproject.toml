@@ -16,13 +16,14 @@ classifiers = [
     "Programming Language :: Python",
     "Natural Language :: English",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
 keywords = ["wps", "pywps", "birdhouse", "osprey"]
 license = { text = "GNU General Public License v3" }
 readme = "README.md"
-requires-python = ">=3.11, <3.12"
+requires-python = ">=3.11, <3.13"
 dependencies = [
     "nchelpers @ git+https://github.com/pacificclimate/nchelpers.git@py-sprint-25q1",
     "wps-tools @ git+https://github.com/pacificclimate/wps-tools.git@py-sprint-25q1",
