@@ -203,11 +203,9 @@ def test_parameters_file_err(
     convolve_config_dict,
 ):
     # Invalid pour_points in empty text file
-    with (
-        NamedTemporaryFile(
-            suffix=".txt", prefix="tmp_copy", dir="/tmp", delete=True
-        ) as pour_file
-    ):
+    with NamedTemporaryFile(
+        suffix=".txt", prefix="tmp_copy", dir="/tmp", delete=True
+    ) as pour_file:
         pour_points_csv = f"file://{pour_file.name}"
         params = (
             f"case_id={case_id};"
