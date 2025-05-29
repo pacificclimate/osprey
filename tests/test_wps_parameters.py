@@ -66,12 +66,12 @@ def test_parameters_local(
     convolve_config_file,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+    with open(pour_points, "r") as pour_points_csv:
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"pour_points_csv={pour_points_csv.read()};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
         )
@@ -158,7 +158,7 @@ def test_parameters_https(
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"pour_points_csv=@xlink:href={pour_points};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box_csv};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
         )
@@ -206,15 +206,14 @@ def test_parameters_file_err(
     with (
         NamedTemporaryFile(
             suffix=".txt", prefix="tmp_copy", dir="/tmp", delete=True
-        ) as pour_file,
-        open(uh_box, "r") as uh_box_csv,
+        ) as pour_file
     ):
         pour_points_csv = f"file://{pour_file.name}"
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"pour_points_csv=@xlink:href={pour_points_csv};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
         )

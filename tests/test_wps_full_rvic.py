@@ -57,14 +57,14 @@ def test_full_rvic_local_pour_points(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+    with open(pour_points, "r") as pour_points_csv:
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv={pour_points_csv.read()};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"
@@ -163,7 +163,7 @@ def test_full_rvic_online_pour_points(
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv=@xlink:href={pour_points};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box_csv};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"
@@ -226,14 +226,14 @@ def test_full_rvic_date_err(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+    with open(pour_points, "r") as pour_points_csv:
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv={pour_points_csv.read()};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"

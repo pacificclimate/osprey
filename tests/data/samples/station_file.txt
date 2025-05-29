@@ -1,2 +1,2 @@
 1 station 0 0 0
-./tests/data/samples/sample.uh_s2
+/tmp/pywps_process_nir8f70f/sample.uh_s2
