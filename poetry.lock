@@ -852,7 +852,7 @@ description = "Cross-platform colored terminal text."
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 groups = ["main"]
-markers = "sys_platform == \"win32\" or platform_system == \"Windows\" or extra == \"dev\""
+markers = "platform_system == \"Windows\" or sys_platform == \"win32\" or extra == \"dev\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -3161,13 +3161,15 @@ reference = "pcic"
 
 [[package]]
 name = "nchelpers"
-version = "5.5.11"
+version = "5.5.12"
 description = "Helper classes and methods for Climate and Forecast NetCDF datasets"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "nchelpers-5.5.12-py3-none-any.whl", hash = "sha256:7c4cb48758ed3991003639f8aa85d7efcf0078e7dadd6f531ed9ff32fb76e3c7"},
+    {file = "nchelpers-5.5.12.tar.gz", hash = "sha256:7c7d4553c6484e17f023d332f9e71c8c030b420a53dd5af39f286c2b007a35df"},
+]
 
 [package.dependencies]
 cached-property = ">=2.0.1,<3.0.0"
@@ -3176,10 +3178,9 @@ pytest = ">=8.3.5,<9.0.0"
 python-dateutil = ">=2.9.0.post0,<3.0.0"
 
 [package.source]
-type = "git"
-url = "https://github.com/pacificclimate/nchelpers.git"
-reference = "py-sprint-25q1"
-resolved_reference = "a62cbfd1f314b94d73a93d1d4a158e30e42e3e60"
+type = "legacy"
+url = "https://pypi.pacificclimate.org/simple"
+reference = "pcic"
 
 [[package]]
 name = "nest-asyncio"
@@ -5740,13 +5741,15 @@ reference = "pcic"
 
 [[package]]
 name = "wps-tools"
-version = "2.1.3"
+version = "2.1.4"
 description = "A collection of modules used to help create wps processes"
 optional = false
 python-versions = ">=3.10,<=3.14"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "wps_tools-2.1.4-py3-none-any.whl", hash = "sha256:86f37128d78ee3eae02837be01eb8f567d89301a6733443ae78c38d859e693de"},
+    {file = "wps_tools-2.1.4.tar.gz", hash = "sha256:c71be69137c7ee5b55c4acf91c89fa5604c34daf75b07cbb28c70dac9ca993f3"},
+]
 
 [package.dependencies]
 beautifulsoup4 = ">=4.13.4,<5.0.0"
@@ -5760,10 +5763,9 @@ r = ["rpy2 (==3.3.6)"]
 test = ["black (>=25.1.0,<26.0.0)", "pytest (>=8.3.5,<9.0.0)"]
 
 [package.source]
-type = "git"
-url = "https://github.com/pacificclimate/wps-tools.git"
-reference = "py-sprint-25q1"
-resolved_reference = "26c9a5e171ff40d496b16afd6571a4f0793d7900"
+type = "legacy"
+url = "https://pypi.pacificclimate.org/simple"
+reference = "pcic"
 
 [[package]]
 name = "wrapt"
@@ -5892,4 +5894,4 @@ dev = ["beautifulsoup4", "birdhouse_birdy", "black", "bumpversion", "cruft", "fl
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11, <3.13"
-content-hash = "fc37a1adffdb31bb09540b2b7141ed003f8475658178ad6fd12628c34698457e"
+content-hash = "3be5f624fd1eef2c953e440d4f8dddd4a4124be64020e54907434eedcc8fce10"

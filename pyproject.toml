@@ -25,13 +25,11 @@ license = { text = "GNU General Public License v3" }
 readme = "README.md"
 requires-python = ">=3.11, <3.13"
 dependencies = [
-    "nchelpers @ git+https://github.com/pacificclimate/nchelpers.git@py-sprint-25q1",
-    "wps-tools @ git+https://github.com/pacificclimate/wps-tools.git@py-sprint-25q1",
     "chardet>=5.2.0,<6.0.0",
     "click>=8.2.1,<9.0.0",
     "gunicorn>=23.0.0,<24.0.0",
     "jinja2>=3.1.6,<4.0.0",
-    # "nchelpers>=5.5.11,<6.0.0",
+    "nchelpers>=5.5.12,<6.0.0",
     "netcdf4>=1.7.2,<2.0.0",
     "numpy>=1.26.4,<2.0.0",
     "psutil>=7.0.0,<8.0.0",
@@ -39,7 +37,7 @@ dependencies = [
     "rvic_daccs>=1.1.6,<2.0.0",
     "setuptools>=80.9.0,<81.0.0",
     "werkzeug>=3.1.3,<4.0.0",
-    # "wps_tools>=2.1.3,<3.0.0",
+    "wps_tools>=2.1.4,<3.0.0",
 
 ]
 
