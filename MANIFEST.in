@@ -1,6 +1,0 @@
-include Makefile
-include *.txt
-include *.md
-recursive-include osprey *
-global-exclude __pycache__
-global-exclude *.py[co]

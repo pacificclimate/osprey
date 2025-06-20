@@ -122,11 +122,10 @@ class FullRVIC(Process):
         uh_box_content = prep_csv(uh_box)
         pour_points_content = prep_csv(pour_points)
 
-        with NamedTemporaryFile(
-            mode="w+", suffix=".csv"
-        ) as temp_uh_box, NamedTemporaryFile(
-            mode="w+", suffix=".csv"
-        ) as temp_pour_points:
+        with (
+            NamedTemporaryFile(mode="w+", suffix=".csv") as temp_uh_box,
+            NamedTemporaryFile(mode="w+", suffix=".csv") as temp_pour_points,
+        ):
             temp_uh_box.write(uh_box_content)
             temp_uh_box.seek(0)
             temp_pour_points.write(pour_points_content)

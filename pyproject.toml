@@ -1,0 +1,200 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "osprey"
+version = "1.2.3"
+description = "A Web Processing Service for Climate Data Analysis."
+authors = [{ name = "Nikola Rados" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Programming Language :: Python",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+keywords = ["wps", "pywps", "birdhouse", "osprey"]
+license = { text = "GNU General Public License v3" }
+readme = "README.md"
+requires-python = ">=3.11, <3.13"
+dependencies = [
+    "chardet>=5.2.0,<6.0.0",
+    "click>=8.2.1,<9.0.0",
+    "gunicorn>=23.0.0,<24.0.0",
+    "jinja2>=3.1.6,<4.0.0",
+    "nchelpers>=5.5.12,<6.0.0",
+    "netcdf4>=1.7.2,<2.0.0",
+    "numpy>=1.26.4,<2.0.0",
+    "psutil>=7.0.0,<8.0.0",
+    "pywps>=4.6.0,<5.0.0",
+    "rvic_daccs>=1.1.6,<2.0.0",
+    "setuptools>=80.9.0,<81.0.0",
+    "werkzeug>=3.1.3,<4.0.0",
+    "wps_tools>=2.1.4,<3.0.0",
+
+]
+
+[project.optional-dependencies]
+dev = [
+    "beautifulsoup4>=4.13.4,<5.0.0",
+    "birdhouse_birdy>=0.8.7,<1.0.0",
+    "black>=25.1.0,<26.0.0",
+    "bumpversion>=0.6.0,<1.0.0",
+    "cruft>=2.16.0,<3.0.0",
+    "flake8>=7.2.0,<8.0.0",
+    "ipython>=9.2.0,<10.0.0",
+    "ipywidgets>=8.1.7,<9.0.0",
+    "jupyterlab>=4.4.3,<5.0.0",
+    "nbconvert>=7.16.6,<8.0.0",
+    "nbsphinx>=0.9.6,<1.0.0",
+    "nbval>=0.11.0,<1.0.0",
+    "nodejs>=0.1.1,<1.0.0",
+    "pytest>=8.3.5,<9.0.0",
+    "pytest_flake8>=1.3.0,<2.0.0",
+    "pytest_notebook>=0.10.0,<1.0.0",
+    "requests_mock>=1.12.1,<2.0.0",
+    "sphinx>=8.2.3,<9.0.0",
+]
+
+
+[project.scripts]
+osprey = "osprey.cli:cli"
+
+[project.urls]
+homepage = "http://www.pacificclimate.org/"
+repository = "https://github.com/pacificclimate/osprey"
+
+[tool.pytest.ini_options]
+markers = [
+    "online: marks tests that use online resources (deselect with '-m \"not online\"')",
+    "slow: marks tests that are slow (deselect with '-m \"not slow\"')",
+]
+[[tool.poetry.include]]
+path = "*.txt"
+format = ["sdist", "wheel"]
+
+[[tool.poetry.include]]
+path = "*.md"
+format = ["sdist", "wheel"]
+
+[[tool.poetry.include]]
+path = "osprey"
+format = ["sdist", "wheel"]
+
+[[tool.poetry.include]]
+path = "tests/data/configs/*.cfg"
+format = ["sdist", "wheel"]
+
+[[tool.poetry.source]]
+name = "pcic"
+url = "https://pypi.pacificclimate.org/simple/"
+priority = "primary"
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", "docs/source/conf.py", "build", "dist", "src"]
+
+[tool.doc8]
+ignore-path = ["docs/build", "docs/source/_templates", "docs/source/_static"]
+max-line-length = 120
+
+
+[tool.poe.tasks]
+
+
+# ── Python env via Poetry ────────────────────────────────────
+[tool.poe.tasks.lock]
+cmd = "poetry lock"
+help = "Build the lock file for the project"
+
+[tool.poe.tasks.install]
+cmd = "poetry install"
+help = "Install Python project dependencies using Poetry"
+
+[tool.poe.tasks.develop]
+cmd = "poetry install --extras dev"
+help = "Install development dependencies using Poetry"
+
+[tool.poe.tasks.start]
+cmd = "poetry run osprey start -d"
+help = "Start the Osprey service in detached mode"
+
+[tool.poe.tasks.stop]
+cmd = "poetry run osprey stop"
+help = "Stop the Osprey service"
+
+[tool.poe.tasks.restart]
+sequence = ["stop", "start"]
+help = "Restart the Osprey service"
+
+[tool.poe.tasks.status]
+cmd = "poetry run osprey status"
+help = "Show the status of the Osprey service"
+
+[tool.poe.tasks.dist]
+cmd = "poetry build"
+help = "Build a distribution package for the project"
+
+# ── Tests & lint ─────────────────────────────────────────────
+
+[tool.poe.tasks.test]
+cmd = "pytest -v -m 'not slow and not online' tests/"
+help = "Run fast, offline unit tests"
+
+[tool.poe.tasks.test-all]
+cmd = "pytest -v tests/"
+help = "Run all tests, including online ones"
+
+[tool.poe.tasks.lint]
+cmd = "black . --check"
+help = "Check code formatting using Black"
+
+# ── Notebook tasks ──────────────────────────────────────────
+
+[tool.poe.tasks.prepare-notebooks]
+cmd = "curl -L https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/raw/master/notebooks/output-sanitize.cfg -o docs/output-sanitize.cfg --silent"
+help = "Download the output sanitizer config for notebook tests"
+
+[tool.poe.tasks.test-notebooks]
+sequence = ["prepare-notebooks", "test-notebooks-local"]
+help = "Run all local notebook tests with sanitized output"
+
+[tool.poe.tasks.test-notebooks-local]
+cmd = "pytest --nbval --verbose notebooks/ --sanitize-with docs/output-sanitize.cfg --ignore notebooks/.ipynb_checkpoints"
+env = { LOCAL_URL = "http://localhost:5000" }
+help = "Run notebook tests locally using nbval with sanitization"
+
+# [tool.poe.tasks.test-notebooks-prod]
+# sequence = ["prepare-notebooks", "test-notebooks-prod-run"]
+# help = "Run notebook tests against the production environment"
+
+# [tool.poe.tasks.test-notebooks-prod-run]
+# cmd = "pytest --nbval --verbose notebooks/ --sanitize-with docs/output-sanitize.cfg --ignore notebooks/.ipynb_checkpoints"
+
+# [tool.poe.tasks.test-notebooks-dev]
+# sequence = ["prepare-notebooks", "test-notebooks-dev-run"]
+# help = "Run notebook tests against the dev environment"
+
+# [tool.poe.tasks.test-notebooks-dev-run]
+# cmd = "pytest --nbval --verbose notebooks/ --sanitize-with docs/output-sanitize.cfg --ignore notebooks/.ipynb_checkpoints"
+# env = { DEV_URL = "http://docker-dev03.pcic.uvic.ca:30100/wps" }
+
+# [tool.poe.tasks.test-notebooks-custom]
+# sequence = ["prepare-notebooks", "run-custom-port-test"]
+# help = "Run notebook tests against a custom dev server port"
+
+# [tool.poe.tasks.run-custom-port-test]
+# shell = "read -p 'Target port: ' PORT && env DEV_URL=http://docker-dev03.pcic.uvic.ca:$PORT/wps pytest --nbval --verbose notebooks/ --sanitize-with docs/output-sanitize.cfg --ignore notebooks/.ipynb_checkpoints"
+
+# ── Documentation ────────────────────────────────────────────
+
+[tool.poe.tasks.docs]
+cmd = "jupyter nbconvert --to html notebooks/tests/* --output-dir docs/formatted_demos/"
+help = "Convert notebooks to HTML for documentation"

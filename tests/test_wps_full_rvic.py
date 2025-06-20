@@ -1,5 +1,5 @@
 from pytest import mark
-from pkg_resources import resource_filename
+from importlib.resources import files
 
 from wps_tools.testing import run_wps_process, local_path, url_path
 from osprey.processes.wps_full_rvic import FullRVIC
@@ -30,8 +30,8 @@ from .utils import process_err_test
             "COLUMBIA",
             "2012-12-01-00",
             "2012-12-31",
-            resource_filename("tests", "data/samples/sample_pour.txt"),
-            resource_filename("tests", "data/samples/uhbox.csv"),
+            str(files("tests.data.samples") / "sample_pour.txt"),
+            str(files("tests.data.samples") / "uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
@@ -57,14 +57,14 @@ def test_full_rvic_local_pour_points(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+    with open(pour_points, "r") as pour_points_csv:
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv={pour_points_csv.read()};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"
@@ -101,7 +101,7 @@ def test_full_rvic_local_pour_points(
             "2012-12-01-00",
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
-            resource_filename("tests", "data/samples/uhbox.csv"),
+            str(files("tests.data.samples") / "uhbox.csv"),
             url_path(
                 "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
             ),
@@ -118,7 +118,7 @@ def test_full_rvic_local_pour_points(
             "2012-12-01-00",
             "2012-12-31",
             url_path("sample_pour.txt", "http", "climate_explorer_data_prep"),
-            resource_filename("tests", "data/samples/uhbox.csv"),
+            str(files("tests.data.samples") / "uhbox.csv"),
             url_path(
                 "sample_flow_parameters.nc", "opendap", "climate_explorer_data_prep"
             ),
@@ -163,7 +163,7 @@ def test_full_rvic_online_pour_points(
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv=@xlink:href={pour_points};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box_csv};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"
@@ -199,8 +199,8 @@ def test_full_rvic_online_pour_points(
             "COLUMBIA",
             None,
             "2012-12-31",
-            resource_filename("tests", "data/samples/sample_pour.txt"),
-            resource_filename("tests", "data/samples/uhbox.csv"),
+            str(files("tests.data.samples") / "sample_pour.txt"),
+            str(files("tests.data.samples") / "uhbox.csv"),
             local_path("samples/sample_flow_parameters.nc"),
             local_path("samples/sample_routing_domain.nc"),
             url_path("columbia_vicset2.nc", "opendap", "climate_explorer_data_prep"),
@@ -226,14 +226,14 @@ def test_full_rvic_date_err(
     params_config_dict,
     convolve_config_dict,
 ):
-    with open(uh_box, "r") as uh_box_csv, open(pour_points, "r") as pour_points_csv:
+    with open(pour_points, "r") as pour_points_csv:
         params = (
             f"case_id={case_id};"
             f"grid_id={grid_id};"
             f"run_startdate={run_startdate};"
             f"stop_date={stop_date};"
             f"pour_points_csv={pour_points_csv.read()};"
-            f"uh_box_csv={uh_box_csv.read()};"
+            f"uh_box_csv=@xlink:href=file://{uh_box};"
             f"routing=@xlink:href={routing};"
             f"domain=@xlink:href={domain};"
             f"input_forcings=@xlink:href={input_forcings};"
