@@ -1,5 +1,10 @@
 # Changes
 
+# 1.2.4
+*2025-06-20*
+
+* Maintenance updates [#103](https://github.com/pacificclimate/osprey/pull/103)
+
 # 1.2.3
 *2022-11-29*
 

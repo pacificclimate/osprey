@@ -26,7 +26,7 @@ FROM python:3.11-slim
 LABEL Maintainer="https://github.com/pacificclimate/osprey" \
     Description="osprey WPS" \
     Vendor="pacificclimate" \
-    Version="1.2.3"
+    Version="1.2.4"
 
 # Set working directory
 WORKDIR /tmp

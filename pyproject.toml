@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "osprey"
-version = "1.2.3"
+version = "1.2.4"
 description = "A Web Processing Service for Climate Data Analysis."
 authors = [{ name = "Nikola Rados" }]
 classifiers = [
